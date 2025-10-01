@@ -14,63 +14,71 @@
             {% csrf_token %}
             
             <!-- Row 1: First Name + Full Name -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="first_name">First Name</label>
-                    <input type="text" id="first_name" name="first_name" placeholder="Juan" required>
-                </div>
-                <div class="form-group">
-                    <label for="full_name">Full Name</label>
-                    <input type="text" id="full_name" name="full_name" placeholder="Dela Cruz" required>
-                </div>
-            </div>
+<div class="form-row">
+  <div class="form-group">
+    <label for="first_name">First Name</label>
+    <input type="text" id="first_name" name="first_name"
+           placeholder="Juan" required
+           value="{{ form.data.first_name|default_if_none:'' }}">
+  </div>
+  <div class="form-group">
+    <label for="full_name">Full Name</label>
+    <input type="text" id="full_name" name="full_name"
+           placeholder="Dela Cruz" required
+           value="{{ form.data.full_name|default_if_none:'' }}">
+  </div>
+</div>
 
-            <!-- Row 2: Institutional Email + Student ID -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="email">Institutional Email</label>
-                    <input type="email" id="email" name="email" placeholder="juan.delacruz@cit.edu" required>
-                </div>
-                <div class="form-group">
-                    <label for="student_id">Student ID</label>
-                    <input type="text" id="student_id" name="student_id" placeholder="25-1234-567" required>
-                </div>
-            </div>
+<!-- Row 2: Institutional Email + Student ID -->
+<div class="form-row">
+  <div class="form-group">
+    <label for="email">Institutional Email</label>
+    <input type="email" id="email" name="email"
+           placeholder="juan.delacruz@cit.edu" required
+           oninput="validateInstitutionalEmail(this)"
+           oninvalid="validateInstitutionalEmail(this)">
+  </div>
+  <div class="form-group">
+    <label for="student_id">Student ID</label>
+    <input type="text" id="student_id" name="student_id"
+           placeholder="25-1234-567" required
+           value="{{ form.data.student_id|default_if_none:'' }}">
+  </div>
+</div>
 
-            <!-- Row 3: Course Dropdown Full Width -->
-            <div class="form-row full-width">
-                <div class="form-group full-width">
-                    <label for="course">Course</label>
-                    <select id="course" name="course" required>
-                        <option value="">-- Select Course --</option>
-                        <option value="BSCS">BS Computer Science</option>
-                        <option value="BSIT">BS Information Technology</option>
-                        <option value="BSECE">BS Electronics Engineering</option>
-                        <option value="BSCE">BS Civil Engineering</option>
-                        <option value="BSEE">BS Electrical Engineering</option>
-                        <option value="BSME">BS Mechanical Engineering</option>
-                        <option value="BSArch">BS Architecture</option>
-                        <option value="BSBA">BS Business Administration</option>
-                        <option value="BSA">BS Accountancy</option>
-                        <option value="BSED">BS Education</option>
-                        <option value="BSPsych">BS Psychology</option>
-                        <option value="BSPolSci">BS Political Science</option>
-                    </select>
-                </div>
-            </div>
+<!-- Row 3: Course Dropdown Full Width -->
+<div class="form-row full-width">
+  <div class="form-group full-width">
+    <label for="course">Course</label>
+    <select id="course" name="course" required>
+      <option value="">-- Select Course --</option>
+      <option value="BSCS" {% if form.data.course == 'BSCS' %}selected{% endif %}>BS Computer Science</option>
+      <option value="BSIT" {% if form.data.course == 'BSIT' %}selected{% endif %}>BS Information Technology</option>
+      <option value="BSECE" {% if form.data.course == 'BSECE' %}selected{% endif %}>BS Electronics Engineering</option>
+      <option value="BSCE" {% if form.data.course == 'BSCE' %}selected{% endif %}>BS Civil Engineering</option>
+      <option value="BSEE" {% if form.data.course == 'BSEE' %}selected{% endif %}>BS Electrical Engineering</option>
+      <option value="BSME" {% if form.data.course == 'BSME' %}selected{% endif %}>BS Mechanical Engineering</option>
+      <option value="BSArch" {% if form.data.course == 'BSArch' %}selected{% endif %}>BS Architecture</option>
+      <option value="BSBA" {% if form.data.course == 'BSBA' %}selected{% endif %}>BS Business Administration</option>
+      <option value="BSA" {% if form.data.course == 'BSA' %}selected{% endif %}>BS Accountancy</option>
+      <option value="BSED" {% if form.data.course == 'BSED' %}selected{% endif %}>BS Education</option>
+      <option value="BSPsych" {% if form.data.course == 'BSPsych' %}selected{% endif %}>BS Psychology</option>
+      <option value="BSPolSci" {% if form.data.course == 'BSPolSci' %}selected{% endif %}>BS Political Science</option>
+    </select>
+  </div>
+</div>
 
-            <!-- Row 4: Password + Confirm Password -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter password" required>
-                </div>
-                <div class="form-group">
-                    <label for="confirm_password">Confirm Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required>
-                </div>
-            </div>
-
+<!-- Row 4: Password + Confirm Password -->
+<div class="form-row">
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Enter password" required>
+  </div>
+  <div class="form-group">
+    <label for="confirm_password">Confirm Password</label>
+    <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required>
+  </div>
+</div>
             <button type="submit">REGISTER</button>
         </form>
     </div>
