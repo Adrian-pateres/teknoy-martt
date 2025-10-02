@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Teknoy Mart{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo-text">
+      <!-- ✅ Logo image placed before Teknoy Mart text -->
+      <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo" class="navbar-logo">
+      <span>Teknoy Mart</span>
+    </div>
+    <nav>
+      <a href="{% url 'index' %}">Home</a>
+      <a href="#">Shop</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-section">
+      <h4>My Account</h4>
+      <p>Manage your purchases and profile settings.</p>
+    </div>
+    <div class="footer-section">
+      <h4>Contact</h4>
+      <p>Email: support@teknoymart.com</p>
+      <p>Phone: +63 912 345 6789</p>
+    </div>
+    <div class="footer-section">
+      <h4>Information</h4>
+      <ul>
+        <li><a href="#">New Products</a></li>
+        <li><a href="#">Top Sellers</a></li>
+        <li><a href="#">Secure Shopping</a></li>
+      </ul>
+    </div>
+  </footer>
+
+</body>
+</html>
