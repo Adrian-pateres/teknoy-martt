@@ -1,1 +1,35 @@
+{% extends "base.html" %}
 {% load static %}
+
+{% block title %}Welcome | Teknoy Mart{% endblock %}
+{% block body_class %}index-page{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+
+        <!-- Welcome Text -->
+        <h2 class="welcome-title">Welcome to Teknoy Mart 🎉</h2>
+        <p class="welcome-desc">
+            Your one-stop platform for convenient shopping, student deals, and campus essentials.  
+            Start exploring today!
+        </p>
+
+        <!-- Buttons -->
+        <div class="buttons">
+            <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-secondary">Register</a>
+        </div>
+
+        <!-- Guest -->
+        <div class="guest">
+            <a href="{% url 'home' %}" class="guest-link">Continue as Guest</a>
+        </div>
+    </div>
+
+    <!-- Right-side illustration / background -->
+    <div class="hero-image">
+        <img src="{% static 'images/hero-bg.png' %}" alt="Shopping Illustration">
+    </div>
+</section>
+{% endblock %}
