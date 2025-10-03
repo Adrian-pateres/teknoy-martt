@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from .forms import StudentRegistrationForm
 from django.contrib import messages
 from django import forms
+from django.contrib.auth.decorators import login_required
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150)
@@ -12,7 +13,12 @@ class LoginForm(forms.Form):
 def index(request):
     return render(request, "index.html")
 
-# Home (dashboard / after login or guest)
+# Guest home (view-only)
+def guest_home(request):
+    return render(request, "guest_home.html")
+
+# Home (dashboard / requires login)
+@login_required(login_url='guest_home')
 def home(request):
     return render(request, "home.html")
 
