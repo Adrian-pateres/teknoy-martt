@@ -1,76 +1,74 @@
-{% load static %}
+    {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Teknoy Mart</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login | Teknoy Mart</title>
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    </head>
+    <body>
 
-    <!-- Navbar -->
-    <header class="navbar">
-        <div class="logo-text">Teknoy Mart</div>
-        <nav>
-            <a href="#">Home</a>
-            <a href="#">Shop</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-        </nav>
-    </header>
+        <!-- Navbar -->
+        <header class="navbar">
+            <div class="logo-text">Teknoy Mart</div>
+            <nav>
+                <a href="#">Home</a>
+                <a href="#">Shop</a>
+                <a href="#">About</a>
+            </nav>
+        </header>
 
-    <!-- Login Section -->
-    <main class="login-section">
-        <div class="login-container">
-            
-            <!-- Left: Illustration -->
-            <div class="login-left">
-                <img src="{% static 'images/login-illustration.png' %}" alt="Shopping Illustration">
+        <!-- Login Section -->
+        <main class="login-section">
+            <div class="login-container">
+                
+                <!-- Left: Illustration -->
+                <div class="login-left">
+                    <img src="{% static 'images/login-illustration.png' %}" alt="Shopping Illustration">
+                </div>
+                <!-- Right: Form -->
+                <div class="login-right">
+                    <h2>Welcome Back 👋</h2>
+                    <p>Please log in to your account</p>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        
+                        <div class="options">
+                            <label><input type="checkbox"> Remember Me</label>
+                            <a href="#">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <a href="{% url 'register' %}" class="btn btn-secondary">Create Account</a>
+                    </form>
+                </div>
             </div>
+        </main>
 
-            <!-- Right: Form -->
-            <div class="login-right">
-                <h2>Welcome Back 👋</h2>
-                <p>Please log in to your account</p>
-
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    
-                    <div class="options">
-                        <label><input type="checkbox"> Remember Me</label>
-                        <a href="#">Forgot Password?</a>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Login</button>
-                    <a href="{% url 'register' %}" class="btn btn-secondary">Create Account</a>
-                </form>
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-section">
+                <h4>My Account</h4>
+                <p>Manage your purchases and profile settings.</p>
             </div>
-        </div>
-    </main>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p>Email: support@teknoymart.com</p>
+                <p>Phone: +63 912 345 6789</p>
+            </div>
+            <div class="footer-section">
+                <h4>Information</h4>
+                <ul>
+                    <li><a href="#">New Products</a></li>
+                    <li><a href="#">Top Sellers</a></li>
+                    <li><a href="#">Secure Shopping</a></li>
+                </ul>
+            </div>
+        </footer>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-section">
-            <h4>My Account</h4>
-            <p>Manage your purchases and profile settings.</p>
-        </div>
-        <div class="footer-section">
-            <h4>Contact</h4>
-            <p>Email: support@teknoymart.com</p>
-            <p>Phone: +63 912 345 6789</p>
-        </div>
-        <div class="footer-section">
-            <h4>Information</h4>
-            <ul>
-                <li><a href="#">New Products</a></li>
-                <li><a href="#">Top Sellers</a></li>
-                <li><a href="#">Secure Shopping</a></li>
-            </ul>
-        </div>
-    </footer>
-
-</body>
-</html>
+    </body>
+    </html>

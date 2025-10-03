@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Welcome | Teknoy Mart{% endblock %}
+{% block body_class %}guest-page{% endblock %}
+
+{% block content %}
+<main class="home-container">
+
+    <!-- Same as home.html -->
+    <div class="search-bar">
+        <input type="text" placeholder="Search (login required)" disabled>
+        <button disabled>🔍</button>
+    </div>
+
+    <div class="tabs">
+        <a href="#" class="active">Shop</a>
+        <a href="#">Products</a>
+        <a href="#">Categories</a>
+    </div>
+
+    <!-- Flash Deals Preview -->
+    <section class="product-section">
+        <h3>🔥 Flash Deals</h3>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="{% static 'images/item1.png' %}" alt="Item 1">
+                <p class="price">₱990</p>
+            </div>
+            <div class="product-card">
+                <img src="{% static 'images/item2.png' %}" alt="Item 2">
+                <p class="price">₱1450</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Banner -->
+    <div class="promo-banner">
+        <img src="{% static 'images/banner.png' %}" alt="Promo">
+    </div>
+
+    <!-- Login Button -->
+    <div class="buttons">
+        <a href="{% url 'login' %}" class="btn btn-primary">Login to Continue</a>
+    </div>
+
+</main>
+{% endblock %}

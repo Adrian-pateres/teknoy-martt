@@ -5,7 +5,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("", views.index, name="index"),   # landing page
-    path("home/", views.home, name="home"), # post-login / guest home
+    path('guest/', views.guest_home, name='guest_home'),  # default page
+    path("home/", views.home, name="home"), # post-login
     path("register/", views.register, name="register"),
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),

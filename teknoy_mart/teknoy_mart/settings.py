@@ -22,7 +22,6 @@ environ.Env.read_env(BASE_DIR / ".env")
 # BASE_DIR is already defined in a default Django project like this:
 # BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -124,9 +123,10 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles" 
 
 # Authentication redirects
+# Authentication redirects
 LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "home"
+LOGIN_REDIRECT_URL = "home"       # logged-in users still go to home
+LOGOUT_REDIRECT_URL = "index"     # after logout, send to landing page
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
