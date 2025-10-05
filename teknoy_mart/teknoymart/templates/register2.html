@@ -1,0 +1,70 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Register — Step 2</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+<body>
+  <div class="card" role="main">
+    <img src="{% static 'images/logo.png' %}" alt="Logo">
+    <h2>Account Details</h2>
+
+    <div class="step-indicator" aria-hidden="true">
+      <div class="step-circle"></div>
+      <div class="step-circle active"></div>
+      <div class="step-circle"></div>
+    </div>
+
+    <form method="post" action="{% url 'register_step2' %}">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="email">Institutional email</label>
+        <input id="email" name="email" type="email" placeholder="firstname.lastname@cit.edu" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" required aria-describedby="togglePasswordHelp">
+        <span id="togglePassword" class="toggle-password" role="button" aria-pressed="false" onclick="togglePassword('password', this)">Show</span>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm_password">Confirm password</label>
+        <input id="confirm_password" name="confirm_password" type="password" required>
+        <span class="toggle-password" role="button" onclick="togglePassword('confirm_password', this)">Show</span>
+      </div>
+
+      <!-- Back + Continue: back goes to step1, continue posts to step2 view -->
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <a href="{% url 'register_step1' %}" class="btn btn-secondary" style="width:48%; display:inline-block; text-align:center; line-height:2.2;">Back</a>
+        <button type="submit" class="btn btn-primary" style="width:48%;">Continue</button>
+      </div>
+      <p class="login-link">
+      Already have an account?
+      <a href="{% url 'login' %}">Login</a>
+    </p>
+    </form>
+  </div>
+  
+
+  <script>
+    function togglePassword(inputId, toggleEl) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+        toggleEl.textContent = 'Hide';
+        toggleEl.setAttribute('aria-pressed', 'true');
+      } else {
+        input.type = 'password';
+        toggleEl.textContent = 'Show';
+        toggleEl.setAttribute('aria-pressed', 'false');
+      }
+    }
+  </script>
+</body>
+</html>
