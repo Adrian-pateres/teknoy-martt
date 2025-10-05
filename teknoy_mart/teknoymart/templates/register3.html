@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - Step 3 | Teknoy Mart</title>
+  <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+<body>
+  <div class="card">
+    <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo">
+    <h2>Select User Type</h2>
+
+    <div class="step-indicator">
+      <div class="step-circle"></div>
+      <div class="step-circle"></div>
+      <div class="step-circle active"></div>
+    </div>
+
+    <form action="{% url 'register_step4' %}" method="post">
+      {% csrf_token %}
+      <div class="user-type-container">
+        <div class="user-card" onclick="selectType('seller')" id="sellerCard">
+          <img src="{% static 'images/seller.png' %}" alt="Seller">
+          <h4>Seller</h4>
+        </div>
+
+        <div class="user-card" onclick="selectType('buyer')" id="buyerCard">
+          <img src="{% static 'images/buyer.png' %}" alt="Buyer">
+          <h4>Buyer</h4>
+        </div>
+      </div>
+
+      <input type="hidden" name="user_type" id="user_type">
+      <button type="submit" class="btn btn-primary">Finish Registration</button>
+    </form>
+
+    <p class="login-link">
+      Already have an account?
+      <a href="{% url 'login' %}">Login</a>
+    </p>
+  </div>
+
+  <script>
+    function selectType(type) {
+      document.getElementById("user_type").value = type;
+      document.getElementById("sellerCard").classList.remove("selected");
+      document.getElementById("buyerCard").classList.remove("selected");
+      document.getElementById(type + "Card").classList.add("selected");
+    }
+  </script>
+</body>
+</html>

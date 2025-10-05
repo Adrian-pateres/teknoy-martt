@@ -1,99 +1,52 @@
-{% extends "base.html" %}
 {% load static %}
-<script src="{% static 'js/script.js' %}" defer></script>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Register — Step 1</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/register.css' %}">
+</head>
+<body>
+  <div class="card" role="main">
+    <img src="{% static 'images/logo.png' %}" alt="Logo">
+    <h2>Personal Information</h2>
 
-{% block title %}Register | Teknoy Mart{% endblock %}
-{% block body_class %}register-page{% endblock %}
+    <div class="step-indicator" aria-hidden="true">
+      <div class="step-circle active"></div>
+      <div class="step-circle"></div>
+      <div class="step-circle"></div>
+    </div>
 
-{% block content %}
-<main>
-  <div class="form-container">
-    <h2>Student Registration ✍️</h2>
-    <form method="POST" id="registerForm" action="{% url 'register' %}">
-    {% csrf_token %}
-      
-      <!-- Row 1: First Name + Full Name -->
-      <div class="form-row">
-        <div class="form-group">
-          <label for="first_name">First Name</label>
-          <input type="text" id="first_name" name="first_name"
-                 placeholder="Juan" required
-                 value="{{ form.data.first_name|default_if_none:'' }}">
-        </div>
-        <div class="form-group">
-          <label for="full_name">Full Name</label>
-          <input type="text" id="full_name" name="full_name"
-                 placeholder="Dela Cruz" required
-                 value="{{ form.data.full_name|default_if_none:'' }}">
-        </div>
+    <form method="post" action="{% url 'register_step1' %}">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="first_name">First name</label>
+        <input id="first_name" name="first_name" type="text" required>
       </div>
 
-      <!-- Row 2: Email + Student ID -->
-      <div class="form-row">
-        <div class="form-group">
-          <label for="email">Institutional Email</label>
-          <input
-  type="email"
-  id="email"
-  name="email"
-  placeholder="juan.delacruz@cit.edu"
-  required
-  autocomplete="email"
-  oninput="validateInstitutionalEmail(this)"
-  oninvalid="validateInstitutionalEmail(this)"
-/>
-        </div>
-        <div class="form-group">
-          <label for="student_id">Student ID</label>
-          <input type="text" id="student_id" name="student_id"
-                 placeholder="25-1234-567" required
-                 value="{{ form.data.student_id|default_if_none:'' }}">
-        </div>
+      <div class="form-group">
+        <label for="middle_name">Middle name (optional)</label>
+        <input id="middle_name" name="middle_name" type="text">
       </div>
 
-      <!-- Row 3: Course -->
-      <div class="form-row full-width">
-        <div class="form-group full-width">
-          <label for="course">Course</label>
-          <select id="course" name="course" required>
-            <option value="">-- Select Course --</option>
-            <option value="BSCS">BS Computer Science</option>
-            <option value="BSIT">BS Information Technology</option>
-            <option value="BSECE">BS Electronics Engineering</option>
-            <option value="BSCE">BS Civil Engineering</option>
-            <option value="BSEE">BS Electrical Engineering</option>
-            <option value="BSME">BS Mechanical Engineering</option>
-            <option value="BSArch">BS Architecture</option>
-            <option value="BSBA">BS Business Administration</option>
-            <option value="BSA">BS Accountancy</option>
-            <option value="BSED">BS Education</option>
-            <option value="BSPsych">BS Psychology</option>
-            <option value="BSPolSci">BS Political Science</option>
-          </select>
-        </div>
+      <div class="form-group">
+        <label for="last_name">Last name</label>
+        <input id="last_name" name="last_name" type="text" required>
       </div>
 
-      <!-- Row 4: Password + Confirm Password -->
-      <div class="form-row">
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter password" required>
-        </div>
-        <div class="form-group">
-          <label for="confirm_password">Confirm Password</label>
-          <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required>
-        </div>
+      <div class="form-group">
+        <label for="dob">Date of birth</label>
+        <input id="dob" name="dob" type="date" required>
       </div>
 
-      <!-- Submit Button -->
-      <button type="submit" class="btn btn-primary">Register</button>
-      <a href="{% url 'index' %}" class="btn btn-secondary">Back</a>
-    </form>
-
-    <!-- Back to Login -->
-    <p class="register-link">Already have an account?  
-      <a href="{% url 'login' %}">Login here</a>
+      <button type="submit" class="btn btn-primary">Continue</button>
+      <p class="login-link">
+      Already have an account?
+      <a href="{% url 'login' %}">Login</a>
     </p>
+    </form>
   </div>
-</main>
-{% endblock %}
+</body>
+</html>
