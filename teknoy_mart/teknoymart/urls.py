@@ -13,6 +13,10 @@ urlpatterns = [
     path('register/step2/', views.register_step2, name='register_step2'),
     path('register/step3/', views.register_step3, name='register_step3'),
     path('register/step4/', views.register_step4, name='register_step4'),
+
+    # Forgot/Reset Password
+    path("forgot-password/", views.forgot_password_view, name="forgot_password"),
+    path("reset-password/", views.reset_password_view, name="reset_password"),
 ]
 
 if settings.DEBUG:

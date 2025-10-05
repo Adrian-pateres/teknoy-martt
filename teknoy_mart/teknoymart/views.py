@@ -76,3 +76,26 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect("index")  # (landing page) after logout
+
+# Forgot Password view
+def forgot_password_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        # Simulate sending a reset link (you can integrate Django’s PasswordResetView later)
+        messages.success(request, f"A password reset link has been sent to {email}.")
+        return redirect("login")
+    return render(request, "forgot_password.html")
+
+# Reset Password view
+def reset_password_view(request):
+    if request.method == "POST":
+        new_password = request.POST.get("new_password")
+        confirm_password = request.POST.get("confirm_password")
+
+        if new_password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+        else:
+            messages.success(request, "Your password has been successfully reset!")
+            return redirect("login")
+    return render(request, "reset_password.html")
+
