@@ -1,29 +1,35 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from .validators import validate_institutional_email
-
+ 
+ 
 class StudentRegistrationForm(forms.ModelForm):
     email = forms.EmailField(
         validators=[validate_institutional_email],
         widget=forms.EmailInput(attrs={
             "id": "email",
             "placeholder": "juan.delacruz@cit.edu",
-            "required": "required"
+            "required": "required",
         }),
     )
     password = forms.CharField(widget=forms.PasswordInput(attrs={"id": "password"}))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={"id": "confirm_password"}))
-
+ 
     class Meta:
-        model = User
+        # IMPORTANT: don't bind a model at import time
+        model = None
         fields = ["first_name", "last_name", "email", "username"]  # username = StudentID
-
         widgets = {
             "first_name": forms.TextInput(attrs={"id": "first_name", "placeholder": "Juan", "required": "required"}),
-            "last_name": forms.TextInput(attrs={"id": "last_name", "placeholder": "Dela Cruz", "required": "required"}),
-            "username": forms.TextInput(attrs={"id": "student_id", "placeholder": "25-1234-567", "required": "required"}),
+            "last_name":  forms.TextInput(attrs={"id": "last_name",  "placeholder": "Dela Cruz", "required": "required"}),
+            "username":   forms.TextInput(attrs={"id": "student_id", "placeholder": "25-1234-567", "required": "required"}),
         }
-
+ 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Bind the user model only after Django apps are ready
+        self._meta.model = get_user_model()
+ 
     def clean(self):
         cleaned = super().clean()
         pwd = cleaned.get("password")
@@ -31,7 +37,7 @@ class StudentRegistrationForm(forms.ModelForm):
         if pwd and cpw and pwd != cpw:
             self.add_error("confirm_password", "Passwords do not match.")
         return cleaned
-
+ 
     def save(self, commit=True):
         user = super().save(commit=False)
         user.email = self.cleaned_data["email"]
