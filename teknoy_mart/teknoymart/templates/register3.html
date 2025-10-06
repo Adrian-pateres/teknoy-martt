@@ -17,7 +17,7 @@
       <div class="step-circle active"></div>
     </div>
 
-    <form action="{% url 'register_step4' %}" method="post">
+    <form method="post" action="{% url 'register_step3' %}">
       {% csrf_token %}
       <div class="user-type-container">
         <div class="user-card" onclick="selectType('seller')" id="sellerCard">

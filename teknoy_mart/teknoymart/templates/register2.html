@@ -18,12 +18,19 @@
       <div class="step-circle"></div>
     </div>
 
-    <form method="post" action="{% url 'register_step2' %}">
+    <form method="post" action="{% url 'register_step2' %}" id="registerForm">
       {% csrf_token %}
 
       <div class="form-group">
-        <label for="email">Institutional email</label>
-        <input id="email" name="email" type="email" placeholder="firstname.lastname@cit.edu" required>
+        <label for="student_id">Student ID</label>
+        <input id="student_id"
+               name="username"
+               type="text"
+               placeholder="25-1234-567"
+               inputmode="numeric"
+               pattern="[0-9]{2}-[0-9]{4}-[0-9]{3}"
+               title="Format: 25-1234-567"
+               required>
       </div>
 
       <div class="form-group">
@@ -38,18 +45,17 @@
         <span class="toggle-password" role="button" onclick="togglePassword('confirm_password', this)">Show</span>
       </div>
 
-      <!-- Back + Continue: back goes to step1, continue posts to step2 view -->
       <div style="display:flex; gap:10px; margin-top:10px;">
         <a href="{% url 'register_step1' %}" class="btn btn-secondary" style="width:48%; display:inline-block; text-align:center; line-height:2.2;">Back</a>
         <button type="submit" class="btn btn-primary" style="width:48%;">Continue</button>
       </div>
+
       <p class="login-link">
-      Already have an account?
-      <a href="{% url 'login' %}">Login</a>
-    </p>
+        Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+      </p>
     </form>
   </div>
-  
 
   <script>
     function togglePassword(inputId, toggleEl) {
