@@ -4,69 +4,114 @@
 {% block title %}Home | Teknoy Mart{% endblock %}
 {% block body_class %}home-page{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
 {% block content %}
-<main class="home-container">
+<main class="home-shell">
 
-    <!-- Search Bar -->
-    <div class="search-bar">
-        <input type="text" placeholder="Search products, categories...">
-        <button type="button">🔍</button>
+  <!-- Search -->
+  <div class="home-row search-bar">
+    <input id="productSearch" type="text" placeholder="Search products, categories..." aria-label="Search">
+    <button type="button" aria-label="Search">🔍</button>
+  </div>
+
+  <!-- Category chips -->
+  <div class="home-row cat-filter" role="tablist" aria-label="Filter by category">
+    <button class="chip active" data-cat="all" aria-pressed="true" role="tab">All</button>
+    <button class="chip" data-cat="apparel" role="tab">Apparel</button>
+    <button class="chip" data-cat="gadgets" role="tab">Gadgets</button>
+    <button class="chip" data-cat="supplies" role="tab">School Supplies</button>
+    <button class="chip" data-cat="food" role="tab">Food</button>
+    <button class="chip" data-cat="merch" role="tab">Merch</button>
+  </div>
+
+  <!-- Tabs (kept) -->
+  <div class="home-row tabs">
+    <a href="#" class="active">Shop</a>
+    <a href="#">Products</a>
+    <a href="#">Categories</a>
+  </div>
+
+  <!-- Flash Deals -->
+  <section class="home-row product-section">
+    <div class="section-head">
+      <h3>🔥 Flash Deals</h3>
+      <a href="#" class="view-all">View all</a>
     </div>
 
-    <!-- Category Tabs -->
-    <div class="tabs">
-        <a href="#" class="active">Shop</a>
-        <a href="#">Products</a>
-        <a href="#">Categories</a>
-    </div>
-
-    <!-- Flash Deals -->
-    <section class="product-section">
-        <h3>🔥 Flash Deals</h3>
-        <div class="product-grid">
-            <div class="product-card">
-                <img src="{% static 'images/item1.png' %}" alt="Item 1">
-                <p class="price">₱990</p>
-            </div>
-            <div class="product-card">
-                <img src="{% static 'images/item2.png' %}" alt="Item 2">
-                <p class="price">₱1450</p>
-            </div>
-            <div class="product-card">
-                <img src="{% static 'images/item3.png' %}" alt="Item 3">
-                <p class="price">₱550</p>
-            </div>
+    <div class="product-grid">
+      <article class="product-card" data-cat="gadgets" data-name="Wireless Mouse">
+        <div class="thumb"><img src="{% static 'images/mouse.jpg' %}" alt="Wireless Mouse"></div>
+        <div class="meta">
+          <p class="title">Wireless Mouse</p>
+          <p class="price">₱990</p>
         </div>
-    </section>
+      </article>
 
-    <!-- Recommended -->
-    <section class="product-section">
-        <h3>⭐ Recommended For You</h3>
-        <div class="product-grid">
-            <div class="product-card">
-                <img src="{% static 'images/item4.png' %}" alt="Item 4">
-                <p class="price">₱1500</p>
-            </div>
-            <div class="product-card">
-                <img src="{% static 'images/item5.png' %}" alt="Item 5">
-                <p class="price">₱990</p>
-            </div>
-            <div class="product-card">
-                <img src="{% static 'images/item6.png' %}" alt="Item 6">
-                <p class="price">₱25</p>
-            </div>
+      <article class="product-card" data-cat="apparel" data-name="CIT-U Hoodie">
+        <div class="thumb"><img src="{% static 'images/hoodie.png' %}" alt="CIT-U Hoodie"></div>
+        <div class="meta">
+          <p class="title">CIT-U Hoodie</p>
+          <p class="price">₱1450</p>
         </div>
-    </section>
+      </article>
 
-    <!-- Banner -->
-    <div class="promo-banner">
-        <img src="{% static 'images/banner.png' %}" alt="Promo Banner">
+      <article class="product-card" data-cat="supplies" data-name="Notebook A5">
+        <div class="thumb"><img src="{% static 'images/notebook.png' %}" alt="Notebook A5"></div>
+        <div class="meta">
+          <p class="title">Notebook A5</p>
+          <p class="price">₱120</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Recommended -->
+  <section class="home-row product-section">
+    <div class="section-head">
+      <h3>⭐ Recommended For You</h3>
+      <a href="#" class="view-all">View all</a>
     </div>
 
-    <!-- Logout Button -->
-    <div class="buttons">
-        <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+    <div class="product-grid">
+      <article class="product-card" data-cat="merch" data-name="Lion Keychain">
+        <div class="thumb"><img src="{% static 'images/keychain.png' %}" alt="Lion Keychain"></div>
+        <div class="meta">
+          <p class="title">Lion Keychain</p>
+          <p class="price">₱250</p>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="food" data-name="Bottled Water">
+        <div class="thumb"><img src="{% static 'images/bottledwater.png' %}" alt="Bottled Water"></div>
+        <div class="meta">
+          <p class="title">Bottled Water</p>
+          <p class="price">₱25</p>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="supplies" data-name="Ballpen Black">
+        <div class="thumb"><img src="{% static 'images/ballpen.png' %}" alt="Ballpen Black"></div>
+        <div class="meta">
+          <p class="title">Ballpen Black</p>
+          <p class="price">₱90</p>
+        </div>
+      </article>
     </div>
+  </section>
+
+  <!-- Banner -->
+  <div class="home-row promo-banner">
+    <img src="{% static 'images/promobanner.png' %}" alt="Promo Banner">
+  </div>
+
+  <!-- Actions -->
+  <div class="home-row buttons">
+    <a href="{% url 'product_create' %}" class="btn btn-primary">Upload Product</a>
+    <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+  </div>
 
 </main>
 {% endblock %}

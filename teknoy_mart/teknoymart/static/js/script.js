@@ -29,3 +29,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// --- Category + search filtering on home page ---
+document.addEventListener("DOMContentLoaded", () => {
+  const chips = Array.from(document.querySelectorAll(".cat-filter .chip"));
+  const cards = Array.from(document.querySelectorAll(".product-card"));
+  const search = document.getElementById("productSearch");
+
+  if (!chips.length || !cards.length) return;
+
+  let activeCat = "all";
+
+  function applyFilters() {
+    const q = (search?.value || "").trim().toLowerCase();
+
+    cards.forEach(card => {
+      const cat = (card.dataset.cat || "").toLowerCase();
+      const name = (card.dataset.name || "").toLowerCase();
+
+      const matchCat = activeCat === "all" || cat === activeCat;
+      const matchQuery = !q || name.includes(q) || cat.includes(q);
+
+      card.style.display = (matchCat && matchQuery) ? "" : "none";
+    });
+  }
+
+  // Chip clicks
+  chips.forEach(btn => {
+    btn.addEventListener("click", () => {
+      chips.forEach(c => { c.classList.remove("active"); c.setAttribute("aria-pressed", "false"); });
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+      activeCat = (btn.dataset.cat || "all").toLowerCase();
+      applyFilters();
+    });
+  });
+
+  // Search input
+  if (search) {
+    search.addEventListener("input", applyFilters);
+  }
+});

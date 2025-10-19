@@ -4,45 +4,72 @@
 {% block title %}Welcome | Teknoy Mart{% endblock %}
 {% block body_class %}guest-page{% endblock %}
 
+{# Reuse the same CSS used on home #}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
 {% block content %}
 <main class="home-container">
 
-    <!-- Same as home.html -->
-    <div class="search-bar">
-        <input type="text" placeholder="Search (login required)" disabled>
-        <button disabled>🔍</button>
-    </div>
+  <!-- Search (disabled) -->
+  <div class="search-bar is-disabled" title="Login to search">
+    <input type="text" placeholder="Search products, categories…" disabled aria-disabled="true">
+    <button type="button" disabled aria-disabled="true" aria-label="Search">🔍</button>
+  </div>
 
-    <div class="tabs">
-        <a href="#" class="active">Shop</a>
-        <a href="#">Products</a>
-        <a href="#">Categories</a>
-    </div>
+  <!-- Category chips (disabled look) -->
+  <div class="cat-filter is-disabled" role="tablist" aria-label="Filter by category">
+    <button class="chip active" disabled aria-disabled="true">All</button>
+    <button class="chip" disabled aria-disabled="true">Apparel</button>
+    <button class="chip" disabled aria-disabled="true">Gadgets</button>
+    <button class="chip" disabled aria-disabled="true">School Supplies</button>
+    <button class="chip" disabled aria-disabled="true">Food</button>
+    <button class="chip" disabled aria-disabled="true">Merch</button>
+  </div>
 
-    <!-- Flash Deals Preview -->
-    <section class="product-section">
-        <h3>🔥 Flash Deals</h3>
-        <div class="product-grid">
-            <div class="product-card">
-                <img src="{% static 'images/item1.png' %}" alt="Item 1">
-                <p class="price">₱990</p>
-            </div>
-            <div class="product-card">
-                <img src="{% static 'images/item2.png' %}" alt="Item 2">
-                <p class="price">₱1450</p>
-            </div>
-        </div>
-    </section>
+  <!-- Category Tabs -->
+  <div class="tabs">
+    <a href="#" class="active" aria-disabled="true">Shop</a>
+    <a href="#" aria-disabled="true">Products</a>
+    <a href="#" aria-disabled="true">Categories</a>
+  </div>
 
-    <!-- Promo Banner -->
-    <div class="promo-banner">
-        <img src="{% static 'images/banner.png' %}" alt="Promo">
+  <!-- Flash Deals (preview cards with lock overlay) -->
+  <section class="product-section">
+    <h3>🔥 Flash Deals</h3>
+    <div class="product-grid">
+      <div class="product-card preview">
+        <img src="{% static 'images/mouse.jpg' %}" alt="Item 1">
+        <p class="title">Wireless Mouse</p>
+        <p class="price">₱990</p>
+        <div class="lock-overlay" aria-hidden="true">Login to view</div>
+      </div>
+      <div class="product-card preview">
+        <img src="{% static 'images/hoodie.png' %}" alt="Item 2">
+        <p class="title">CIT-U Hoodie</p>
+        <p class="price">₱1450</p>
+        <div class="lock-overlay" aria-hidden="true">Login to view</div>
+      </div>
+      <div class="product-card preview">
+        <img src="{% static 'images/notebook.png' %}" alt="Item 3">
+        <p class="title">Notebook A5</p>
+        <p class="price">₱550</p>
+        <div class="lock-overlay" aria-hidden="true">Login to view</div>
+      </div>
     </div>
+  </section>
 
-    <!-- Login Button -->
-    <div class="buttons">
-        <a href="{% url 'login' %}" class="btn btn-primary">Login to Continue</a>
-    </div>
+  <!-- Promo Banner -->
+  <div class="promo-banner">
+    <img src="{% static 'images/promobanner.png' %}" alt="Promo Banner">
+  </div>
+
+  <!-- Call to action -->
+  <div class="buttons" style="display:flex; gap:.5rem; flex-wrap:wrap;">
+    <a href="{% url 'login' %}" class="btn btn-primary">Login to Continue</a>
+    <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
+  </div>
 
 </main>
 {% endblock %}

@@ -7,6 +7,7 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from .forms import ProductForm
 
 
 def _validate_institutional_email(email: str):
@@ -131,10 +132,10 @@ def register_step3(request):
 
         # prevent duplicates
         if User.objects.filter(username=username).exists():
-            messages.error(request, "That Student ID is already registered.")
+            messages.error(request, "")
             return redirect('register_step2')
         if User.objects.filter(email=email).exists():
-            messages.error(request, "That email is already registered.")
+            messages.error(request, "")
             return redirect('register_step2')
 
         # CREATE the user (this writes a row to Railway/MySQL immediately)
@@ -252,3 +253,16 @@ def reset_password_view(request):
             return redirect("login")
     return render(request, "reset_password.html")
 
+@login_required
+def product_create(request):
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            prod = form.save(commit=False)
+            prod.owner = request.user
+            prod.save()
+            messages.success(request, "")
+            return redirect("home")
+    else:
+        form = ProductForm()
+    return render(request, "product_upload.html", {"form": form})

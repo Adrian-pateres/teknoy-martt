@@ -1,4 +1,5 @@
 from django import forms
+from .models import Product
 from django.contrib.auth import get_user_model
 from .validators import validate_institutional_email
  
@@ -45,3 +46,14 @@ class StudentRegistrationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+    
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ["title","price","category","description","image"]
+        widgets = {
+            "title": forms.TextInput(attrs={"placeholder":"e.g., CIT-U Hoodie"}),
+            "price": forms.NumberInput(attrs={"step":"0.01", "min":"0"}),
+            "category": forms.Select(),
+            "description": forms.Textarea(attrs={"placeholder":"Brief details about your item…"}),
+        }
