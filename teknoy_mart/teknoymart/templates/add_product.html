@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Product | Teknoy Mart</title>
+  <link rel="stylesheet" href="{% static 'css/add_product.css' %}">
+  <script defer src="{% static 'js/add_product.js' %}"></script>
+</head>
+<body>
+  <form id="productForm" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card">
+
+      <!-- Upload Section -->
+      <div class="upload-section">
+        <h2>Upload Image</h2>
+        <input type="file" id="imageUpload" name="image" accept="image/*" style="display:none" onchange="previewImage(event)">
+        <div class="image-box" onclick="document.getElementById('imageUpload').click();">
+          <img id="imagePreview" src="" alt="" style="display:none;">
+          <span id="uploadText">Click to upload image</span>
+        </div>
+
+        <div class="sample-section">
+          <h3>Upload Sample Images</h3>
+          <div class="carousel">
+            <button type="button" onclick="scrollCarousel(-1)">&#10094;</button>
+            <div class="carousel-images" id="sampleCarousel">
+              <div class="sample-box" onclick="document.getElementById('sampleUpload').click();">
+                <span>+</span>
+              </div>
+            </div>
+            <button type="button" onclick="scrollCarousel(1)">&#10095;</button>
+          </div>
+          <input type="file" id="sampleUpload" name="sample_images" accept="image/*" multiple style="display:none" onchange="previewSamples(event)">
+        </div>
+      </div>
+
+      <!-- Form Section -->
+      <div class="form-section">
+        <h2>Add Product Details</h2>
+
+        <div>
+          <label for="title">Product Title</label>
+          <input type="text" id="title" name="title" placeholder="Enter product title" required>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+              <option value="">Select Category</option>
+              <option>Clothing</option>
+              <option>Electronics</option>
+              <option>Food</option>
+              <option>Accessories</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="price">Price (₱)</label>
+            <input type="number" id="price" name="price" placeholder="₱ ___.00" min="0" step="0.01" required>
+          </div>
+        </div>
+
+        <div>
+          <label for="description">Description</label>
+          <textarea id="description" name="description" placeholder="Enter product description..." required></textarea>
+        </div>
+
+        <div class="button-row">
+          <button type="button" class="btn btn-secondary" onclick="openModal('cancelModal')">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="validateForm()">Add Product</button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Cancel Modal -->
+  <div id="cancelModal" class="modal">
+    <div class="modal-content">
+      <h3>Cancel Adding Product?</h3>
+      <p>Are you sure you want to cancel? Your data will not be saved.</p>
+      <div class="modal-buttons">
+        <button class="btn btn-secondary" onclick="closeModal('cancelModal')">No</button>
+        <button class="btn btn-primary" onclick="confirmCancel()">Yes, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Confirmation Modal -->
+  <div id="addModal" class="modal">
+    <div class="modal-content">
+      <h3>Confirm Add Product</h3>
+      <p>Would you like to add this product?</p>
+      <div class="modal-buttons">
+        <button class="btn btn-secondary" onclick="closeModal('addModal')">No</button>
+        <button class="btn btn-primary" onclick="confirmAdd()">Yes, Add</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
