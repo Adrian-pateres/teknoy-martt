@@ -254,15 +254,18 @@ def reset_password_view(request):
     return render(request, "reset_password.html")
 
 @login_required
-def product_create(request):
+def add_product(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            prod = form.save(commit=False)
-            prod.owner = request.user
-            prod.save()
-            messages.success(request, "")
-            return redirect("home")
+            product = form.save(commit=False)
+            product.owner = request.user  # assuming Product has an owner field (FK to User)
+            product.save()
+            messages.success(request, "✅ Product added successfully!")
+            return redirect("home")  # you can change this to your actual landing page
+        else:
+            messages.error(request, "⚠️ Please correct the errors below.")
     else:
         form = ProductForm()
-    return render(request, "product_upload.html", {"form": form})
+
+    return render(request, "add_product.html", {"form": form})
