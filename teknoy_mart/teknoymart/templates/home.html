@@ -39,78 +39,54 @@
     <button class="chip" data-cat="merch" role="tab">Merch</button>
   </div>
 
-  <!-- Tabs (kept) -->
+  <!-- Tabs -->
   <div class="home-row tabs">
     <a href="#" class="active">Shop</a>
     <a href="#">Products</a>
     <a href="#">Categories</a>
   </div>
 
-  <!-- Flash Deals -->
+  <!-- Flash Deals (Dynamic Section) -->
   <section class="home-row product-section">
     <div class="section-head">
-      <h3>🔥 Flash Deals</h3>
+      <h3>🛒 Latest Products</h3>
       <a href="#" class="view-all">View all</a>
     </div>
 
     <div class="product-grid">
-      <article class="product-card" data-cat="gadgets" data-name="Wireless Mouse">
-        <div class="thumb"><img src="{% static 'images/mouse.jpg' %}" alt="Wireless Mouse"></div>
-        <div class="meta">
-          <p class="title">Wireless Mouse</p>
-          <p class="price">₱990</p>
-        </div>
-      </article>
-
-      <article class="product-card" data-cat="apparel" data-name="CIT-U Hoodie">
-        <div class="thumb"><img src="{% static 'images/hoodie.png' %}" alt="CIT-U Hoodie"></div>
-        <div class="meta">
-          <p class="title">CIT-U Hoodie</p>
-          <p class="price">₱1450</p>
-        </div>
-      </article>
-
-      <article class="product-card" data-cat="supplies" data-name="Notebook A5">
-        <div class="thumb"><img src="{% static 'images/notebook.png' %}" alt="Notebook A5"></div>
-        <div class="meta">
-          <p class="title">Notebook A5</p>
-          <p class="price">₱120</p>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- Recommended -->
-  <section class="home-row product-section">
-    <div class="section-head">
-      <h3>⭐ Recommended For You</h3>
-      <a href="#" class="view-all">View all</a>
-    </div>
-
-    <div class="product-grid">
-      <article class="product-card" data-cat="merch" data-name="Lion Keychain">
-        <div class="thumb"><img src="{% static 'images/keychain.png' %}" alt="Lion Keychain"></div>
-        <div class="meta">
-          <p class="title">Lion Keychain</p>
-          <p class="price">₱250</p>
-        </div>
-      </article>
-
-      <article class="product-card" data-cat="food" data-name="Bottled Water">
-        <div class="thumb"><img src="{% static 'images/bottledwater.png' %}" alt="Bottled Water"></div>
-        <div class="meta">
-          <p class="title">Bottled Water</p>
-          <p class="price">₱25</p>
-        </div>
-      </article>
-
-      <article class="product-card" data-cat="supplies" data-name="Ballpen Black">
-        <div class="thumb"><img src="{% static 'images/ballpen.png' %}" alt="Ballpen Black"></div>
-        <div class="meta">
-          <p class="title">Ballpen Black</p>
-          <p class="price">₱90</p>
-        </div>
-      </article>
+      {% if products %}
+        {% for product in products %}
+        <article class="product-card" data-cat="{{ product.category|lower }}" data-name="{{ product.title }}">
+          <div class="thumb">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.title }}">
+            {% else %}
+              <img src="{% static 'images/noimage.png' %}" alt="No image available">
+            {% endif %}
+          </div>
+          <div class="meta">
+            <p class="title">{{ product.title }}</p>
+            <p class="price">₱{{ product.price }}</p>
+          </div>
+        </article>
+        {% endfor %}
+      {% else %}
+        <!-- Fallback: Sample products if database is empty -->
+        <article class="product-card" data-cat="gadgets" data-name="Wireless Mouse">
+          <div class="thumb"><img src="{% static 'images/mouse.jpg' %}" alt="Wireless Mouse"></div>
+          <div class="meta">
+            <p class="title">Wireless Mouse</p>
+            <p class="price">₱990</p>
+          </div>
+        </article>
+        <article class="product-card" data-cat="apparel" data-name="CIT-U Hoodie">
+          <div class="thumb"><img src="{% static 'images/hoodie.png' %}" alt="CIT-U Hoodie"></div>
+          <div class="meta">
+            <p class="title">CIT-U Hoodie</p>
+            <p class="price">₱1450</p>
+          </div>
+        </article>
+      {% endif %}
     </div>
   </section>
 
@@ -119,9 +95,9 @@
     <img src="{% static 'images/promobanner.png' %}" alt="Promo Banner">
   </div>
 
-  <!-- Actions -->
+  <!-- Buttons -->
   <div class="home-row buttons">
-    <a href="{% url 'product_create' %}" class="btn btn-primary">Upload Product</a>
+    <a href="{% url 'product_list' %}" class="btn btn-primary">Upload Product</a>
     <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
   </div>
 

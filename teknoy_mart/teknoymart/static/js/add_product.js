@@ -1,68 +1,120 @@
-// Image preview
-function previewImage(event) {
-  const img = document.getElementById('imagePreview');
-  const text = document.getElementById('uploadText');
-  img.src = URL.createObjectURL(event.target.files[0]);
-  img.style.display = 'block';
-  text.style.display = 'none';
-}
+// --- Institutional Email Validation ---
+function validateInstitutionalEmail(el) {
+  el.setCustomValidity("");
 
-// Sample images preview
-function previewSamples(event) {
-  const carousel = document.getElementById('sampleCarousel');
-  carousel.innerHTML = '';
-  Array.from(event.target.files).forEach(file => {
-    const imgBox = document.createElement('div');
-    imgBox.classList.add('sample-box');
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(file);
-    imgBox.appendChild(img);
-    carousel.appendChild(imgBox);
-  });
-  const addBox = document.createElement('div');
-  addBox.classList.add('sample-box');
-  addBox.innerHTML = '<span>+</span>';
-  addBox.onclick = () => document.getElementById('sampleUpload').click();
-  carousel.appendChild(addBox);
-}
+  const v = (el.value || "").trim().toLowerCase();
+  if (!v) return;               // let "Please fill out this field." handle empty
+  if (!v.includes("@")) return; // let browser handle missing @ / bad format
 
-function scrollCarousel(direction) {
-  const carousel = document.getElementById('sampleCarousel');
-  carousel.scrollBy({ left: direction * 100, behavior: 'smooth' });
-}
+  const allowed = ["cit.edu", "cit.edu.ph"];
+  const domain = v.split("@")[1];
 
-// ===== MODAL FUNCTIONS =====
-function openModal(id) {
-  document.getElementById(id).style.display = 'flex';
-}
-function closeModal(id) {
-  document.getElementById(id).style.display = 'none';
-}
-function confirmCancel() {
-  window.location.href = "/";
-}
-function confirmAdd() {
-  document.getElementById('productForm').submit();
-}
-
-// ===== FORM VALIDATION =====
-function validateForm() {
-  const form = document.getElementById('productForm');
-  const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
-  let allValid = true;
-
-  requiredFields.forEach(field => {
-    if (!field.value.trim()) {
-      field.classList.add('invalid');
-      allValid = false;
-    } else {
-      field.classList.remove('invalid');
-    }
-  });
-
-  if (allValid) {
-    openModal('addModal');
-  } else {
-    alert("⚠️ Please fill in all required fields before submitting.");
+  if (!allowed.includes(domain)) {
+    el.setCustomValidity("Please use institutional email (@cit.edu or @cit.edu.ph).");
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("registerForm");
+  const email = document.getElementById("email");
+  if (form && email) {
+    form.addEventListener("submit", (e) => {
+      validateInstitutionalEmail(email);
+      if (!form.checkValidity()) {
+        e.preventDefault();       // stop submit
+        email.reportValidity();   // show the bubble
+      }
+    });
+  }
+});
+
+// --- Add Product Image Preview ---
+function previewImage(event) {
+  const input = event.target;
+  const preview = document.getElementById("imagePreview");
+  const uploadText = document.getElementById("uploadText");
+
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = "block";
+      uploadText.style.display = "none";
+    };
+    reader.readAsDataURL(input.files[0]);
+  } else {
+    preview.src = "";
+    preview.style.display = "none";
+    uploadText.style.display = "block";
+  }
+}
+
+// --- Form Validation / Modal Handling ---
+function validateForm() {
+  const form = document.getElementById("productForm");
+  if (form.checkValidity()) {
+    openModal("addModal");
+  } else {
+    form.reportValidity();
+  }
+}
+
+function openModal(id) {
+  document.getElementById(id).style.display = "block";
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+function confirmAdd() {
+  document.getElementById("productForm").submit();
+}
+
+function confirmCancel() {
+  window.location.href = "/"; // Redirect to home or previous page
+}
+
+// --- Optional: Category + Search Filtering on Home Page ---
+document.addEventListener("DOMContentLoaded", () => {
+  const chips = Array.from(document.querySelectorAll(".cat-filter .chip"));
+  const cards = Array.from(document.querySelectorAll(".product-card"));
+  const search = document.getElementById("productSearch");
+
+  if (!cards.length) return;
+
+  let activeCat = "all";
+
+  function applyFilters() {
+    const q = (search?.value || "").trim().toLowerCase();
+
+    cards.forEach(card => {
+      const cat = (card.dataset.cat || "").toLowerCase();
+      const name = (card.dataset.name || "").toLowerCase();
+
+      const matchCat = activeCat === "all" || cat === activeCat;
+      const matchQuery = !q || name.includes(q) || cat.includes(q);
+
+      card.style.display = (matchCat && matchQuery) ? "" : "none";
+    });
+  }
+
+  // Chip clicks
+  chips.forEach(btn => {
+    btn.addEventListener("click", () => {
+      chips.forEach(c => { 
+        c.classList.remove("active"); 
+        c.setAttribute("aria-pressed", "false"); 
+      });
+      btn.classList.add("active");
+      btn.setAttribute("aria-pressed", "true");
+      activeCat = (btn.dataset.cat || "all").toLowerCase();
+      applyFilters();
+    });
+  });
+
+  // Search input
+  if (search) {
+    search.addEventListener("input", applyFilters);
+  }
+});

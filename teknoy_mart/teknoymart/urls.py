@@ -22,6 +22,10 @@ urlpatterns = [
     path("register/step2/", views.register_step2, name="register_step2"),
     path("register/step3/", views.register_step3, name="register_step3"),
     path("register/step4/", views.register_step4, name="register_step4"),
+    path("add-product/", views.add_product, name="add_product"),
+    path('myproducts/', views.product_list, name='product_list'),
+    
+    
 
     # Product Upload
     path("products/new/", views.add_product, name="add_product"),  # unified

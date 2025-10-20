@@ -1,224 +1,247 @@
-/* Home Page Styling */
-.home-container {
-  padding: 20px;
-  background: #fafafa;
-  min-height: 100vh;
+/* ---- General Layout ---- */
+.home-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #f9fafb;
 }
 
-/* Search Bar */
+/* ---- Search Bar ---- */
 .search-bar {
   display: flex;
+  gap: 0.5rem;
   align-items: center;
-  margin-bottom: 20px;
-  background: #fff;
-  padding: 8px 12px;
-  border-radius: 25px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-.search-bar input {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-size: 14px;
-  padding: 8px;
-}
-.search-bar button {
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
 }
 
-/* Tabs */
+.search-bar input {
+  flex: 1;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.search-bar button {
+  background: #007bff;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.search-bar button:hover {
+  background: #0056b3;
+}
+
+/* ---- Category Chips ---- */
+.cat-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.cat-filter .chip {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-size: 0.9rem;
+}
+
+.cat-filter .chip:hover {
+  background: #f2f2f2;
+}
+
+.cat-filter .chip.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* ---- Tabs ---- */
 .tabs {
   display: flex;
   justify-content: space-around;
-  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
 }
+
 .tabs a {
-  font-size: 15px;
-  font-weight: bold;
-  color: #555;
+  flex: 1;
+  text-align: center;
+  padding: 0.6rem;
   text-decoration: none;
-  padding-bottom: 6px;
+  color: #444;
+  font-weight: 500;
+  transition: color 0.2s, border-color 0.2s;
 }
+
 .tabs a.active {
-  color: #8B0000;
-  border-bottom: 2px solid #8B0000;
+  border-bottom: 3px solid #007bff;
+  color: #007bff;
 }
 
-/* Sections */
-.product-section {
-  margin-bottom: 30px;
-}
-.product-section h3 {
-  margin-bottom: 12px;
-  color: #333;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-/* Grid */
-.product-grid {
+/* ---- Section Head ---- */
+.section-head {
   display: flex;
-  gap: 15px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-}
-.product-grid::-webkit-scrollbar {
-  display: none;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.3rem;
 }
 
-/* Product Card */
+.section-head h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.section-head .view-all {
+  font-size: 0.9rem;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.section-head .view-all:hover {
+  text-decoration: underline;
+}
+
+/* ---- Product Grid ---- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* smaller cards */
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+/* ---- Product Card ---- */
 .product-card {
-  min-width: 120px;
   background: #fff;
+  border: 1px solid #eee;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  padding: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s;
+  padding: 0.6rem;
   text-align: center;
-}
-.product-card img {
-  width: 100%;
-  border-radius: 10px;
-  margin-bottom: 8px;
-}
-.product-card .price {
-  font-weight: bold;
-  color: #8B0000;
 }
 
-/* Banner */
-.promo-banner {
-  margin: 25px 0;
-  text-align: center;
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, .08);
+  border-color: #e6e6e6;
 }
+
+/* ---- Thumbnail ---- */
+.product-card .thumb {
+  aspect-ratio: 1/1;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.product-card .thumb img {
+  width: 80%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ---- Product Meta ---- */
+.product-card .meta {
+  padding: 0;
+}
+
+.product-card .title {
+  margin: 0;
+  font-weight: 600;
+  color: #222;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-card .price {
+  margin: 0.15rem 0 0;
+  color: #8B0000;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ---- Promo Banner ---- */
 .promo-banner img {
   width: 100%;
   border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .08);
 }
 
-/* Guest */
-.guest-page .search-bar input,
-.guest-page .search-bar button {
-  opacity: 0.5;
-  cursor: not-allowed;
+/* ---- Buttons ---- */
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }
 
-/* ---- Home shell & rows ---- */
-.home-shell{
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 1.25rem 1rem 2.5rem;
-}
-.home-row{ margin-top: 1rem; }
-
-/* ---- Search bar ---- */
-.search-bar{
-  display:flex; gap:.5rem; align-items:center;
-  background:#fff; padding:.5rem; border:1px solid #eee;
-  border-radius:14px; box-shadow:0 6px 18px rgba(0,0,0,.04);
-}
-.search-bar input{
-  flex:1; border:none; outline:none; font-size:1rem;
-  padding:.8rem .9rem; border-radius:10px; background:transparent;
-}
-.search-bar button{
-  padding:.65rem .9rem; border:none; border-radius:10px;
-  background:#8B0000; color:#fff; cursor:pointer; font-weight:700;
-}
-.search-bar button:hover{ background:#760000; }
-
-/* ---- Chips ---- */
-.cat-filter{ display:flex; gap:.5rem; flex-wrap:wrap; }
-.chip{
-  border:1px solid #eee; background:#fff; color:#333;
-  padding:.45rem .9rem; border-radius:999px; cursor:pointer;
-  font-weight:700; transition:.15s ease;
-}
-.chip:hover{ border-color:#ddd; transform:translateY(-1px); }
-.chip.active{ background:#8B0000; color:#fff; border-color:#8B0000; }
-
-/* ---- Tabs (kept simple) ---- */
-.tabs{ display:flex; gap:1rem; margin-top:.25rem; }
-.tabs a{ color:#444; text-decoration:none; font-weight:700; padding:.4rem 0; }
-.tabs a.active{ color:#8B0000; border-bottom:2px solid #8B0000; }
-
-/* ---- Section headers ---- */
-.section-head{ display:flex; align-items:center; justify-content:space-between; }
-.section-head h3{ margin:0; font-size:1.15rem; font-weight:800; color:#222; }
-.view-all{ font-weight:700; color:#8B0000; text-decoration:none; }
-.view-all:hover{ text-decoration:underline; }
-
-/* ---- Product grid ---- */
-.product-grid{
-  display:grid;
-  grid-template-columns: repeat( auto-fit, minmax(180px, 1fr) );
-  gap:1rem;
-  margin-top:.75rem;
-}
-.product-card{
-  background:#fff; border:1px solid #eee; border-radius:16px; overflow:hidden;
-  box-shadow:0 8px 20px rgba(0,0,0,.04);
-  transition: transform .12s ease, box-shadow .12s ease, border-color .12s;
-}
-.product-card:hover{
-  transform: translateY(-3px);
-  box-shadow:0 14px 30px rgba(0,0,0,.08);
-  border-color:#e6e6e6;
-}
-.product-card .thumb{
-  aspect-ratio:1/1; background:#fafafa; display:flex; align-items:center; justify-content:center;
-}
-.product-card .thumb img{ width:85%; height:auto; object-fit:contain; }
-.product-card .meta{ padding:.8rem .9rem 1rem; }
-.product-card .title{
-  margin:0 0 .25rem; font-weight:700; color:#222;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
-.product-card .price{ margin:0; color:#8B0000; font-weight:800; }
-
-/* ---- Banner ---- */
-.promo-banner img{
-  width:100%; height:auto; display:block; border-radius:16px;
-  box-shadow:0 10px 26px rgba(0,0,0,.06);
+.buttons .btn {
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  transition: background 0.2s ease;
 }
 
-/* ---- Buttons row ---- */
-.buttons{ display:flex; gap:.6rem; flex-wrap:wrap; }
-.buttons .btn{
-  display:inline-block; padding:.8rem 1rem; border-radius:12px; font-weight:700;
-  text-decoration:none; border:1px solid transparent;
-}
-.btn-primary{ background:#8B0000; color:#fff; }
-.btn-primary:hover{ background:#760000; }
-.btn-secondary{ background:#fff; border-color:#ddd; color:#333; }
-.btn-secondary:hover{ border-color:#bbb; }
-
-/* ---- Small screens ---- */
-@media (max-width:480px){
-  .home-shell{ padding: .9rem .75rem 2rem; }
+.buttons .btn-primary {
+  background: #007bff;
+  color: white;
 }
 
-/* --- Guest page: promo banner sizing --- */
-.guest-page .promo-banner {
-  max-width: 1100px;            /* keep it from spanning too wide */
-  margin: 1rem auto 2rem;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,.06);
+.buttons .btn-primary:hover {
+  background: #0056b3;
 }
 
-.guest-page .promo-banner img {
-  width: 100%;
-  height: 220px;                /* controlled height */
-  object-fit: cover;            /* crop gracefully */
-  display: block;
+.buttons .btn-secondary {
+  background: #e5e7eb;
+  color: #333;
 }
 
-/* Slightly taller on bigger screens */
-@media (min-width: 992px) {
-  .guest-page .promo-banner img {
-    height: 280px;
+.buttons .btn-secondary:hover {
+  background: #d1d5db;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+  .home-shell {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .product-card {
+    padding: 0.5rem;
+    border-radius: 10px;
+  }
+
+  .product-card .title {
+    font-size: 0.85rem;
+  }
+
+  .product-card .price {
+    font-size: 0.8rem;
+  }
+
+  .section-head h3 {
+    font-size: 1rem;
   }
 }

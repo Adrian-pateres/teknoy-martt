@@ -6,6 +6,9 @@ from django.contrib import messages
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db import IntegrityError
+from .forms import ProductForm
+from .models import Product 
 from .models import Profile
 
 # ---------------- Helper Functions ----------------
@@ -212,6 +215,22 @@ def add_product(request):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
+            product.owner = request.user  # <-- assign the logged-in user
+            product.save()
+            return redirect('product_list')  # redirect to the product list page
+    else:
+        form = ProductForm()
+    return render(request, 'add_product.html', {'form': form})
+
+
+def product_list(request):
+    products = Product.objects.all().order_by('-created_at')
+    return render(request, 'product_list.html', {'products': products})
+
+def home(request):
+    # Fetch all products (newest first)
+    products = Product.objects.all().order_by('-created_at')
+    return render(request, 'home.html', {'products': products})
             product.owner = request.user
             product.save()
             messages.success(request, "✅ Product added successfully!")

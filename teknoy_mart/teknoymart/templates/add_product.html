@@ -16,25 +16,11 @@
       <!-- Upload Section -->
       <div class="upload-section">
         <h2>Upload Image</h2>
-        <input type="file" id="imageUpload" name="image" accept="image/*" style="display:none" onchange="previewImage(event)">
         <div class="image-box" onclick="document.getElementById('imageUpload').click();">
           <img id="imagePreview" src="" alt="" style="display:none;">
           <span id="uploadText">Click to upload image</span>
         </div>
-
-        <div class="sample-section">
-          <h3>Upload Sample Images</h3>
-          <div class="carousel">
-            <button type="button" onclick="scrollCarousel(-1)">&#10094;</button>
-            <div class="carousel-images" id="sampleCarousel">
-              <div class="sample-box" onclick="document.getElementById('sampleUpload').click();">
-                <span>+</span>
-              </div>
-            </div>
-            <button type="button" onclick="scrollCarousel(1)">&#10095;</button>
-          </div>
-          <input type="file" id="sampleUpload" name="sample_images" accept="image/*" multiple style="display:none" onchange="previewSamples(event)">
-        </div>
+        <input type="file" id="imageUpload" name="image" accept="image/*" style="display:none" onchange="previewImage(event)">
       </div>
 
       <!-- Form Section -->
@@ -42,30 +28,36 @@
         <h2>Add Product Details</h2>
 
         <div>
-          <label for="title">Product Title</label>
-          <input type="text" id="title" name="title" placeholder="Enter product title" required>
+          <label for="{{ form.title.id_for_label }}">Product Title</label>
+          {{ form.title }}
+          {% if form.title.errors %}
+            <p class="invalid">{{ form.title.errors.0 }}</p>
+          {% endif %}
         </div>
 
         <div class="form-row">
           <div class="field">
-            <label for="category">Category</label>
-            <select id="category" name="category" required>
-              <option value="">Select Category</option>
-              <option>Clothing</option>
-              <option>Electronics</option>
-              <option>Food</option>
-              <option>Accessories</option>
-            </select>
+            <label for="{{ form.category.id_for_label }}">Category</label>
+            {{ form.category }}
+            {% if form.category.errors %}
+              <p class="invalid">{{ form.category.errors.0 }}</p>
+            {% endif %}
           </div>
           <div class="field">
-            <label for="price">Price (₱)</label>
-            <input type="number" id="price" name="price" placeholder="₱ ___.00" min="0" step="0.01" required>
+            <label for="{{ form.price.id_for_label }}">Price (₱)</label>
+            {{ form.price }}
+            {% if form.price.errors %}
+              <p class="invalid">{{ form.price.errors.0 }}</p>
+            {% endif %}
           </div>
         </div>
 
         <div>
-          <label for="description">Description</label>
-          <textarea id="description" name="description" placeholder="Enter product description..." required></textarea>
+          <label for="{{ form.description.id_for_label }}">Description</label>
+          {{ form.description }}
+          {% if form.description.errors %}
+            <p class="invalid">{{ form.description.errors.0 }}</p>
+          {% endif %}
         </div>
 
         <div class="button-row">
