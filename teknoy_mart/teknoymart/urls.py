@@ -1,17 +1,23 @@
-from django.urls import path
-from . import views
 from django.urls import path, reverse_lazy
 from django.conf import settings
-from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+from . import views
 
 urlpatterns = [
+    # Landing / Home
     path("", views.index, name="index"),
     path("guest/", views.guest_home, name="guest_home"),
-    path("home/", views.home, name="home"),
+    
+    # Dashboards
+    path("home/", views.home, name="home"),                  # seller dashboard
+    path("home/buyer/", views.home_buyer, name="home_buyer"),  # buyer dashboard
+
+    # Authentication
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
 
+    # Registration Wizard
     path("register/", views.register_step1, name="register_step1"),
     path("register/step2/", views.register_step2, name="register_step2"),
     path("register/step3/", views.register_step3, name="register_step3"),
@@ -21,8 +27,10 @@ urlpatterns = [
     
     
 
-    # -------- Password reset flow (built-in) --------
-    # 1) user enters email
+    # Product Upload
+    path("products/new/", views.add_product, name="add_product"),  # unified
+
+    # -------- Password Reset Flow --------
     path(
         "forgot-password/",
         auth_views.PasswordResetView.as_view(
@@ -31,7 +39,6 @@ urlpatterns = [
         ),
         name="forgot_password",
     ),
-    # 2) “we sent you an email” screen
     path(
         "forgot-password/done/",
         auth_views.PasswordResetDoneView.as_view(
@@ -39,7 +46,6 @@ urlpatterns = [
         ),
         name="password_reset_done",
     ),
-    # 3) link from email opens this form
     path(
         "reset/<uidb64>/<token>/",
         auth_views.PasswordResetConfirmView.as_view(
@@ -48,7 +54,6 @@ urlpatterns = [
         ),
         name="password_reset_confirm",
     ),
-    # 4) finished
     path(
         "reset/done/",
         auth_views.PasswordResetCompleteView.as_view(

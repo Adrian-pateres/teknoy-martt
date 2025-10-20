@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Buyer Dashboard | Teknoy Mart{% endblock %}
+{% block body_class %}buyer-page{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/buyer.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Buyer Navbar (Overrides base) -->
+<header class="navbar buyer-navbar">
+    <div class="logo-text">Teknoy Mart</div>
+    <div class="search-bar">
+        <input type="text" placeholder="Search products..." aria-label="Search">
+        <button type="button">🔍</button>
+    </div>
+    <nav>
+        <a href="#">Profile</a>
+        <a href="#">🛒 Cart</a>
+        <a href="{% url 'logout' %}" class="logout">Logout</a>
+    </nav>
+</header>
+
+<main class="buyer-shell">
+
+  <!-- Product Section -->
+  <section class="product-section">
+    <h3>🛍️ Available Products</h3>
+
+    <div class="product-grid">
+      <article class="product-card">
+        <div class="thumb"><img src="{% static 'images/mouse.jpg' %}" alt="Product"></div>
+        <div class="meta">
+          <p class="title">Wireless Mouse</p>
+          <p class="price">₱990</p>
+          <button class="add-cart">Add to Cart</button>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <div class="thumb"><img src="{% static 'images/hoodie.png' %}" alt="Product"></div>
+        <div class="meta">
+          <p class="title">CIT-U Hoodie</p>
+          <p class="price">₱1450</p>
+          <button class="add-cart">Add to Cart</button>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <div class="thumb"><img src="{% static 'images/notebook.png' %}" alt="Product"></div>
+        <div class="meta">
+          <p class="title">Notebook A5</p>
+          <p class="price">₱120</p>
+          <button class="add-cart">Add to Cart</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Delivery & Payment Section -->
+  <section class="checkout-section">
+    <h3>🚚 Delivery Details</h3>
+    <p>(Form fields will be added here...)</p>
+
+    <h3>💳 Payment Method</h3>
+    <p>(Payment options will be added here...)</p>
+  </section>
+
+</main>
+
+{% endblock %}
