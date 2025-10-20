@@ -98,11 +98,9 @@ def register_step2(request):
 
 def register_step3(request):
     if request.method == 'POST':
-        # Save role selection
         role = request.POST.get('user_type', '')
         request.session['user_type'] = role
 
-        # Gather session data
         first_name = request.session.get('first_name', '')
         last_name  = request.session.get('last_name', '')
         email      = request.session.get('email')
@@ -122,7 +120,6 @@ def register_step3(request):
             messages.error(request, "Some details are missing. Please restart registration.")
             return redirect('register_step1')
 
-        # Prevent duplicates
         if User.objects.filter(username=username).exists():
             messages.error(request, "That Student ID is already registered.")
             return redirect('register_step2')
@@ -130,7 +127,6 @@ def register_step3(request):
             messages.error(request, "That email is already registered.")
             return redirect('register_step2')
 
-        # Create user
         user = User.objects.create_user(
             username=username,
             email=email,
@@ -141,10 +137,7 @@ def register_step3(request):
             is_active=True
         )
 
-        # Create profile with role
         Profile.objects.create(user=user, role=role)
-
-        # Store user ID for step4
         request.session['registered_user_id'] = user.id
 
         return redirect('register_step4')
@@ -160,20 +153,14 @@ def register_step4(request):
     user = User.objects.get(id=user_id)
     profile = Profile.objects.get(user=user)
 
-    # Auto-login
     login(request, user)
 
-    # Clear session
     for k in ("first_name","middle_name","last_name","email","dob","username","password","user_type","registered_user_id"):
         request.session.pop(k, None)
 
     messages.success(request, "Account created successfully!")
 
-    # Redirect based on role
-    if profile.role == 'seller':
-        return redirect('home')
-    else:
-        return redirect('home_buyer')
+    return redirect('home') if profile.role == 'seller' else redirect('home_buyer')
 
 # ---------------- Authentication ----------------
 def login_view(request):
@@ -185,7 +172,6 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user:
                 login(request, user)
-                # Redirect by role
                 try:
                     profile = Profile.objects.get(user=user)
                     return redirect('home') if profile.role == 'seller' else redirect('home_buyer')
@@ -221,15 +207,17 @@ def reset_password_view(request):
 
 # ---------------- Product Views ----------------
 @login_required
-def product_create(request):
+def add_product(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            prod = form.save(commit=False)
-            prod.owner = request.user
-            prod.save()
-            messages.success(request, "Product uploaded successfully!")
+            product = form.save(commit=False)
+            product.owner = request.user
+            product.save()
+            messages.success(request, "✅ Product added successfully!")
             return redirect("home")
+        else:
+            messages.error(request, "⚠️ Please correct the errors below.")
     else:
         form = ProductForm()
     return render(request, "product_upload.html", {"form": form})

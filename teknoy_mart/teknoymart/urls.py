@@ -10,7 +10,7 @@ urlpatterns = [
     path("guest/", views.guest_home, name="guest_home"),
     
     # Dashboards
-    path("home/", views.home, name="home"),             # seller dashboard
+    path("home/", views.home, name="home"),                  # seller dashboard
     path("home/buyer/", views.home_buyer, name="home_buyer"),  # buyer dashboard
 
     # Authentication
@@ -24,7 +24,7 @@ urlpatterns = [
     path("register/step4/", views.register_step4, name="register_step4"),
 
     # Product Upload
-    path("products/new/", views.product_create, name="product_create"),
+    path("products/new/", views.add_product, name="add_product"),  # unified
 
     # -------- Password Reset Flow --------
     path(
@@ -59,6 +59,5 @@ urlpatterns = [
     ),
 ]
 
-# Serve media in DEBUG mode
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
