@@ -32,7 +32,11 @@
         <!-- Navigation -->
         <div class="btn-group">
             <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
-            <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
+            {% if role == 'buyer' %}
+                <a href="{% url 'home_buyer' %}" class="btn btn-secondary">Go to Dashboard</a>
+            {% else %}
+                <a href="{% url 'home' %}" class="btn btn-secondary">Go to Dashboard</a>
+            {% endif %}
         </div>
     </div>
 </body>

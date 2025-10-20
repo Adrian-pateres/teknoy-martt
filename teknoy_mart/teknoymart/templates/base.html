@@ -11,19 +11,18 @@
 </head>
 <body class="{% block body_class %}{% endblock %}">
 
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="logo-text">
-      <!-- ✅ Logo image placed before Teknoy Mart text -->
-      <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo" class="navbar-logo">
-      <span>Teknoy Mart</span>
-    </div>
-    <nav>
-      <a href="{% url 'index' %}">Home</a>
-      <a href="#">Shop</a>
-      <a href="#">About</a>
-    </nav>
-  </header>
+{% block navbar %}
+<header class="navbar">
+  <div class="logo-text">
+    <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo" class="navbar-logo">
+    <span>Teknoy Mart</span>
+  </div>
+  <nav>
+    <a href="#">About</a>
+  </nav>
+</header>
+{% endblock %}
+
 
   <!-- Main Content -->
   <main>

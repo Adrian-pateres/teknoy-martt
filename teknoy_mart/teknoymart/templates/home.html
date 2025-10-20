@@ -8,7 +8,19 @@
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 
-{% block content %}
+{% block navbar %}
+<header class="navbar">
+  <div class="logo-text">
+    <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo" class="navbar-logo">
+    <span>Teknoy Mart</span>
+  </div>
+  <nav>
+    <a href="#">Profile</a>
+    <a href="#">Settings</a>
+    <a href="#">About</a>
+  </nav>
+</header>
+
 <main class="home-shell">
 
   <!-- Search -->
