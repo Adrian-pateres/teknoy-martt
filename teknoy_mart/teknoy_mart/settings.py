@@ -15,6 +15,7 @@ import os
 import environ
 
 
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = "noreply@teknoymart.local"
 
