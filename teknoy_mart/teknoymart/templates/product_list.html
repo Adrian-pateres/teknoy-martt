@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Products | Teknoy Mart{% endblock %}
+{% block body_class %}product-list-page{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/product_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="product-list-shell">
+
+  <!-- Header -->
+  <div class="product-list-header">
+    <h2>🛒 My Uploaded Products</h2>
+    <a href="{% url 'add_product' %}" class="btn btn-primary">+ Add Product</a>
+  </div>
+
+  <!-- Product Grid -->
+  {% if products %}
+  <div class="product-list-grid">
+    {% for product in products %}
+    <article class="product-card">
+      <div class="thumb">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.title }}">
+        {% else %}
+          <img src="{% static 'images/noimage.png' %}" alt="No image available">
+        {% endif %}
+      </div>
+
+      <div class="details">
+        <h3>{{ product.title }}</h3>
+        <p class="category">{{ product.category }}</p>
+        <p class="price">₱{{ product.price }}</p>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="no-products">You haven’t uploaded any products yet.</p>
+  {% endif %}
+
+  <!-- Footer -->
+  <div class="product-list-footer">
+    <a href="{% url 'home' %}" class="btn btn-secondary">🏠 Back to Home</a>
+    <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+  </div>
+
+</main>
+{% endblock %}

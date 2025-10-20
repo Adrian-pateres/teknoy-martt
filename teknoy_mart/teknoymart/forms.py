@@ -57,3 +57,20 @@ class ProductForm(forms.ModelForm):
             "category": forms.Select(),
             "description": forms.Textarea(attrs={"placeholder":"Brief details about your item…"}),
         }
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['title', 'category', 'price', 'description', 'image']
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Enter product title', 'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
+            'price': forms.NumberInput(attrs={'min':0, 'step':0.01, 'class':'form-control'}),
+            'description': forms.Textarea(attrs={'placeholder':'Enter product description...', 'class':'form-control'}),
+        }
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image and image.size > 2*1024*1024:
+            raise forms.ValidationError("Image too large. Max size 2MB.")
+        return image

@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from .forms import ProductForm
-
+from .models import Product 
 
 def _validate_institutional_email(email: str):
     email = (email or "").strip().lower()
@@ -253,19 +253,24 @@ def reset_password_view(request):
             return redirect("login")
     return render(request, "reset_password.html")
 
-@login_required
 def add_product(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
-            product.owner = request.user  # assuming Product has an owner field (FK to User)
+            product.owner = request.user  # <-- assign the logged-in user
             product.save()
-            messages.success(request, "✅ Product added successfully!")
-            return redirect("home")  # you can change this to your actual landing page
-        else:
-            messages.error(request, "⚠️ Please correct the errors below.")
+            return redirect('product_list')  # redirect to the product list page
     else:
         form = ProductForm()
+    return render(request, 'add_product.html', {'form': form})
 
-    return render(request, "add_product.html", {"form": form})
+
+def product_list(request):
+    products = Product.objects.all().order_by('-created_at')
+    return render(request, 'product_list.html', {'products': products})
+
+def home(request):
+    # Fetch all products (newest first)
+    products = Product.objects.all().order_by('-created_at')
+    return render(request, 'home.html', {'products': products})

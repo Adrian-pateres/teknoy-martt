@@ -17,6 +17,8 @@ urlpatterns = [
     path("register/step3/", views.register_step3, name="register_step3"),
     path("register/step4/", views.register_step4, name="register_step4"),
     path("add-product/", views.add_product, name="add_product"),
+    path('myproducts/', views.product_list, name='product_list'),
+    
     
 
     # -------- Password reset flow (built-in) --------
