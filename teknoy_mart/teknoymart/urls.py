@@ -6,8 +6,15 @@ from . import views
 
 urlpatterns = [
 
-    path("home/seller/", views.seller_home, name="seller_home"),
-    path("home/buyer/",  views.buyer_home,  name="buyer_home"),
+    # --- Product CRUD ---
+    path("products/", views.product_list, name="product_list"),                      # READ
+    path("products/add/", views.add_product, name="add_product"),                    # CREATE
+    path("products/<int:pk>/edit/", views.edit_product, name="edit_product"),        # UPDATE
+    path("products/<int:pk>/delete/", views.delete_product, name="delete_product"),  # DELETE
+
+
+    path("home/", views.home, name="home"),                    # seller dashboard
+    path("home-buyer/", views.buyer_home, name="home_buyer"),  # buyer dashboard    
     
     # Landing / Home
     path("", views.index, name="index"),
@@ -33,7 +40,6 @@ urlpatterns = [
 
     # Product Upload
     path("products/new/", views.add_product, name="add_product"),  # unified
-    path("products/", views.product_list, name="product_list"),
 
     # -------- Password Reset Flow --------
     path(

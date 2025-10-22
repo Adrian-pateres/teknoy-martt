@@ -1,16 +1,31 @@
 from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from .forms import StudentRegistrationForm, ProductForm
 from django.contrib import messages
 from django import forms
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from .forms import ProductForm
 from .models import Product 
 from .models import Profile
 from django.http import HttpResponseForbidden
+
+
+def role_required(role: str):
+    """Require login AND the given profile.role."""
+    def decorator(view_func):
+        @login_required(login_url="login")
+        @user_passes_test(
+            lambda u: hasattr(u, "profile") and u.profile.role == role,
+            login_url="login"
+        )
+        def _wrapped(request, *args, **kwargs):
+            return view_func(request, *args, **kwargs)
+        return _wrapped
+    return decorator
+
 
 # ---------------- Helper Functions ----------------
 def _validate_institutional_email(email: str):
@@ -162,7 +177,7 @@ def register_step4(request):
                   "username","password","confirm_password","role"):
             request.session.pop(k, None)
 
-        messages.success(request, "Account created successfully! Please log in.")
+        messages.success(request, "")
         return redirect('login')  # ← do NOT log them in here
 
     # GET: show your confirmation page with a Finish button
@@ -171,28 +186,29 @@ def register_step4(request):
 # ---------------- Authentication ----------------
 def login_view(request):
     if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get("username")
-            password = form.cleaned_data.get("password")
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                # Redirect by role
-                try:
-                    role = user.profile.role
-                except Profile.DoesNotExist:
-                    return redirect("guest_home")
-                return redirect("seller_home" if role == "seller" else "buyer_home")
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            role = getattr(getattr(user, "profile", None), "role", None)
+            # Use our current route names:
+            if role == "seller":
+                return redirect("home")             # seller dashboard
+            elif role == "buyer":
+                return redirect("home_buyer")       # buyer dashboard
             else:
-                messages.error(request, "Invalid username or password")
-    else:
-        form = LoginForm()
-    return render(request, "login.html", {"form": form})
+                messages.warning(request, "No role on profile; sending to guest.")
+                return redirect("guest_home")
+        else:
+            messages.error(request, "")
+    return render(request, "login.html")
+
 
 def logout_view(request):
     logout(request)
     return redirect("index")
+
 
 def forgot_password_view(request):
     if request.method == "POST":
@@ -200,6 +216,7 @@ def forgot_password_view(request):
         messages.success(request, f"A password reset link has been sent to {email}.")
         return redirect("login")
     return render(request, "forgot_password.html")
+
 
 def reset_password_view(request):
     if request.method == "POST":
@@ -213,47 +230,9 @@ def reset_password_view(request):
     return render(request, "reset_password.html")
 
 # ---------------- Product Views ----------------
-@login_required
-def add_product(request):
-    """
-    Create a new product owned by the logged-in user.
-    Template: add_product.html
-    """
-    if request.method == "POST":
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            product = form.save(commit=False)
-            product.owner = request.user
-            product.save()
-            messages.success(request, "")
-            return redirect("product_list")  # or "home" if you prefer
-        else:
-            messages.error(request, "⚠️ Please correct the errors below.")
-    else:
-        form = ProductForm()
 
-    return render(request, "add_product.html", {"form": form})
-
-
-def product_list(request):
-    """
-    Simple list of products.
-    Template: product_list.html
-    """
-    products = Product.objects.all().order_by("-created_at")
-    return render(request, "product_list.html", {"products": products})
-
-
-@login_required(login_url="guest_home")
-def home(request):
-    products = Product.objects.all().order_by("-created_at")
-    return render(request, "home.html", {"products": products})
-
-
-def role_required(required):
-    """
-    Use as @role_required("seller") or @role_required("buyer")
-    """
+# -------- Single role decorator --------
+def role_required(required):  # use: @role_required("seller") or @role_required("buyer")
     def decorator(view_fn):
         def _wrapped(request, *args, **kwargs):
             if not request.user.is_authenticated:
@@ -270,6 +249,7 @@ def role_required(required):
 
 
 # Sellers can add products
+@login_required
 @role_required("seller")
 def add_product(request):
     if request.method == "POST":
@@ -278,20 +258,78 @@ def add_product(request):
             product = form.save(commit=False)
             product.owner = request.user
             product.save()
-            return redirect("product_list")  # or "seller_home"
+            messages.success(request, "Product added.")
+            return redirect("product_list")
+        messages.error(request, "Please correct the errors below.")
     else:
         form = ProductForm()
-    return render(request, "add_product.html", {"form": form})
+    return render(request, "add_product.html", {"form": form, "editing": False})
 
-# Seller dashboard/home
+# -------- Seller dashboard (named 'home' to match your URLs) --------
+@login_required
 @role_required("seller")
-def seller_home(request):
-    products = Product.objects.all().order_by("-created_at")
-    # use your seller template; if you currently use 'home.html' for seller, keep it
+def home(request):
+    # Seller sees only their products
+    products = Product.objects.filter(owner=request.user).order_by("-created_at")
     return render(request, "home.html", {"products": products})
 
-# Buyer dashboard/home
+# -------- Buyer dashboard --------
+@login_required
 @role_required("buyer")
 def buyer_home(request):
+    # Buyer sees all products
+    products = Product.objects.all().order_by("-created_at")
+    return render(request, "home_buyer.html", {"products": products})
+
+# -------- CRUD: list only MY products (seller) --------
+@login_required
+@role_required("seller")
+def product_list(request):
+    products = Product.objects.filter(owner=request.user).order_by("-created_at")
+    return render(request, "product_list.html", {"products": products})
+
+
+# -------- UPDATE --------
+@login_required
+@role_required("seller")
+def edit_product(request, pk):
+    product = get_object_or_404(Product, pk=pk, owner=request.user)
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Product updated.")
+            return redirect("product_list")
+        messages.error(request, "Please correct the errors below.")
+    else:
+        form = ProductForm(instance=product)
+    return render(request, "add_product.html", {"form": form, "editing": True, "product": product})
+
+
+# -------- DELETE --------
+@login_required
+@role_required("seller")
+def delete_product(request, pk):
+    product = get_object_or_404(Product, pk=pk, owner=request.user)
+    if request.method == "POST":
+        product.delete()
+        messages.success(request, "Product deleted.")
+        return redirect("product_list")
+    # If someone GETs this URL, just bounce back to list
+    return redirect("product_list")
+
+
+@login_required
+@role_required("seller")
+def seller_home(request):
+    # Show ONLY this seller's products
+    products = Product.objects.filter(owner=request.user).order_by("-created_at")
+    return render(request, "home.html", {"products": products})
+
+
+@login_required
+@role_required("buyer")
+def buyer_home(request):
+    # Show marketplace feed for buyers (all products)
     products = Product.objects.all().order_by("-created_at")
     return render(request, "home_buyer.html", {"products": products})

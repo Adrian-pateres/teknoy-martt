@@ -31,18 +31,43 @@
                     <h2>Welcome👋</h2>
                     <p>Please log in to your account.</p>
 
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        
-                        <div class="options">
-                            <label><input type="checkbox"> Remember Me</label>
-                            <a href="{% url 'forgot_password' %}">Forgot Password?</a>
-                        </div>
+                    <form method="post" action="{% url 'login' %}">
+  {% csrf_token %}
 
-                        <button type="submit" class="btn btn-primary">Login</button>
-                        <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
-                    </form>
+  {% if messages %}
+    <div class="form-messages">
+      {% for message in messages %}
+        <div class="msg {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <label for="id_username">Username</label>
+  <input
+    type="text"
+    id="id_username"
+    name="username"
+    placeholder="Student ID (e.g., 25-1234-567)"
+    required
+    autocomplete="username">
+
+  <label for="id_password">Password</label>
+  <input
+    type="password"
+    id="id_password"
+    name="password"
+    placeholder="••••••••"
+    required
+    autocomplete="current-password">
+
+  <div class="options">
+    <label><input type="checkbox" name="remember"> Remember Me</label>
+    <a href="{% url 'forgot_password' %}">Forgot Password?</a>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Login</button>
+  <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
+</form>
                 </div>
             </div>
         </main>

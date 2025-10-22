@@ -17,29 +17,47 @@
     <a href="{% url 'add_product' %}" class="btn btn-primary">+ Add Product</a>
   </div>
 
-  <!-- Product Grid -->
-  {% if products %}
-  <div class="product-list-grid">
-    {% for product in products %}
-    <article class="product-card">
-      <div class="thumb">
-        {% if product.image %}
-          <img src="{{ product.image.url }}" alt="{{ product.title }}">
-        {% else %}
-          <img src="{% static 'images/noimage.png' %}" alt="No image available">
-        {% endif %}
-      </div>
+  <!-- Flash messages -->
+  {% if messages %}
+    <div class="flash">
+      {% for message in messages %}
+        <div class="flash-msg {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
 
-      <div class="details">
-        <h3>{{ product.title }}</h3>
-        <p class="category">{{ product.category }}</p>
-        <p class="price">₱{{ product.price }}</p>
-      </div>
-    </article>
-    {% endfor %}
-  </div>
+  {% if products %}
+    <!-- Product Grid -->
+    <div class="product-list-grid">
+      {% for product in products %}
+      <article class="product-card">
+        <div class="thumb">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.title }}">
+          {% else %}
+            <img src="{% static 'images/noimage.png' %}" alt="No image available">
+          {% endif %}
+        </div>
+
+        <div class="details">
+          <h3>{{ product.title }}</h3>
+          <p class="category">{{ product.category }}</p>
+          <p class="price">₱{{ product.price }}</p>
+        </div>
+
+        <div class="actions">
+          <a class="btn btn-sm btn-primary" href="{% url 'edit_product' product.pk %}">Edit</a>
+
+          <form action="{% url 'delete_product' product.pk %}" method="post" class="inline" onsubmit="return confirm('Delete this product?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
   {% else %}
-  <p class="no-products">You haven’t uploaded any products yet.</p>
+    <p class="no-products">You haven’t uploaded any products yet.</p>
   {% endif %}
 
   <!-- Footer -->

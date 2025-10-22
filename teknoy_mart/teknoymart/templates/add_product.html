@@ -25,7 +25,8 @@
 
       <!-- Form Section -->
       <div class="form-section">
-        <h2>Add Product Details</h2>
+        <!-- CHANGED: dynamic heading -->
+        <h2>{{ editing|yesno:"Edit Product,Add Product" }}</h2>
 
         <div>
           <label for="{{ form.title.id_for_label }}">Product Title</label>
@@ -62,7 +63,10 @@
 
         <div class="button-row">
           <button type="button" class="btn btn-secondary" onclick="openModal('cancelModal')">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="validateForm()">Add Product</button>
+          <!-- CHANGED: dynamic button text -->
+          <button type="button" class="btn btn-primary" onclick="validateForm()">
+            {{ editing|yesno:"Save Changes,Add Product" }}
+          </button>
         </div>
       </div>
     </div>
@@ -91,9 +95,10 @@
       </div>
     </div>
   </div>
+
   <script>
-  // Seller should go back to the seller dashboard
-  window.CANCEL_URL = "{% url 'home' %}";
-</script>
+    // Seller should go back to the seller dashboard
+    window.CANCEL_URL = "{% url 'home' %}";
+  </script>
 </body>
 </html>
