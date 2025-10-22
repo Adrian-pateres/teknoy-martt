@@ -196,33 +196,55 @@ textarea { resize: none; height: 120px; }
 }
 .btn-secondary:hover { background-color: #8B0000; color: #fff; }
 
+/* ===== Modal base ===== */
 .modal {
-  display: none;
   position: fixed;
-  inset: 0;
-  background-color: rgba(0,0,0,0.5);
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
+  inset: 0;                      /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0, 0, 0, 0.45);
+  display: none;                 /* hidden by default */
+  align-items: center;           /* vertical center */
+  justify-content: center;       /* horizontal center */
+  padding: 16px;                 /* breathing room on small screens */
+  z-index: 1000;
 }
-.modal-content {
-  background: #fff;
-  border-radius: 16px;
-  padding: 30px;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
-}
-.modal-content h3 { color: #8B0000; margin-bottom: 10px; }
-.modal-content p { color: #333; margin-bottom: 25px; }
 
+/* Toggle visibility */
+.modal.open {
+  display: flex;
+}
+
+/* Dialog panel */
+.modal-content {
+  width: 100%;
+  max-width: 480px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.18);
+  text-align: center;            /* center text and buttons */
+}
+
+/* Title & text spacing */
+.modal-content h3 {
+  margin: 0 0 8px;
+}
+.modal-content p {
+  margin: 0 0 18px;
+  color: #444;
+}
+
+/* Buttons row */
 .modal-buttons {
   display: flex;
-  justify-content: center;
-  gap: 15px;
+  gap: 10px;
+  justify-content: center;       /* center buttons */
 }
-.modal-buttons .btn { padding: 10px 25px; font-size: 14px; }
+
+/* (Optional) improve button sizes inside modals */
+.modal .btn {
+  min-width: 140px;
+}
+
 
 .invalid {
   border: 2px solid red !important;

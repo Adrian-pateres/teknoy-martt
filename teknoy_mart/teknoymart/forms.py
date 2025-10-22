@@ -63,21 +63,13 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ["title", "price", "category", "description", "image"]
         widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "e.g., CIT-U Hoodie"}),
+            "title": forms.TextInput(attrs={"placeholder": "Product title"}),
             "price": forms.NumberInput(attrs={"step": "0.01", "min": "0"}),
             "category": forms.Select(),
-            "description": forms.Textarea(attrs={"placeholder":"Brief details about your item…"}),
-        }
-
-class ProductForm(forms.ModelForm):
-    class Meta:
-        model = Product
-        fields = ['title', 'category', 'price', 'description', 'image']
-        widgets = {
-            'title': forms.TextInput(attrs={'placeholder': 'Enter product title', 'class': 'form-control'}),
-            'category': forms.Select(attrs={'class': 'form-control'}),
-            'price': forms.NumberInput(attrs={'min':0, 'step':0.01, 'class':'form-control'}),
-            'description': forms.Textarea(attrs={'placeholder':'Enter product description...', 'class':'form-control'}),
+            "description": forms.Textarea(attrs={
+                "rows": 4, 
+                "placeholder": "Brief details about your item…"}
+            ),
         }
 
     def clean_image(self):
@@ -85,5 +77,3 @@ class ProductForm(forms.ModelForm):
         if image and image.size > 2*1024*1024:
             raise forms.ValidationError("Image too large. Max size 2MB.")
         return image
-            "description": forms.Textarea(attrs={"placeholder": "Brief details about your item…"}),
-        }

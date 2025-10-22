@@ -5,6 +5,10 @@ from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
+
+    path("home/seller/", views.seller_home, name="seller_home"),
+    path("home/buyer/",  views.buyer_home,  name="buyer_home"),
+    
     # Landing / Home
     path("", views.index, name="index"),
     path("guest/", views.guest_home, name="guest_home"),
@@ -29,6 +33,7 @@ urlpatterns = [
 
     # Product Upload
     path("products/new/", views.add_product, name="add_product"),  # unified
+    path("products/", views.product_list, name="product_list"),
 
     # -------- Password Reset Flow --------
     path(

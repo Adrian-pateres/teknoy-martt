@@ -17,37 +17,39 @@
       <div class="step-circle active"></div>
     </div>
 
-    <form method="post" action="{% url 'register_step3' %}">
-      {% csrf_token %}
-      <div class="user-type-container">
-        <div class="user-card" onclick="selectType('seller')" id="sellerCard">
-          <img src="{% static 'images/seller.png' %}" alt="Seller">
-          <h4>Seller</h4>
-        </div>
+    <form method="post" action="{% url 'register_step3' %}" onsubmit="return requireType();">
+  {% csrf_token %}
+  <div class="user-type-container">
+    <div class="user-card" onclick="selectType('seller')" id="sellerCard">
+      <img src="{% static 'images/seller.png' %}" alt="Seller">
+      <h4>Seller</h4>
+    </div>
 
-        <div class="user-card" onclick="selectType('buyer')" id="buyerCard">
-          <img src="{% static 'images/buyer.png' %}" alt="Buyer">
-          <h4>Buyer</h4>
-        </div>
-      </div>
-
-      <input type="hidden" name="user_type" id="user_type">
-      <button type="submit" class="btn btn-primary">Finish Registration</button>
-    </form>
-
-    <p class="login-link">
-      Already have an account?
-      <a href="{% url 'login' %}">Login</a>
-    </p>
+    <div class="user-card" onclick="selectType('buyer')" id="buyerCard">
+      <img src="{% static 'images/buyer.png' %}" alt="Buyer">
+      <h4>Buyer</h4>
+    </div>
   </div>
 
-  <script>
-    function selectType(type) {
-      document.getElementById("user_type").value = type;
-      document.getElementById("sellerCard").classList.remove("selected");
-      document.getElementById("buyerCard").classList.remove("selected");
-      document.getElementById(type + "Card").classList.add("selected");
+  <input type="hidden" name="user_type" id="user_type">
+  <!-- just a label change -->
+  <button type="submit" class="btn btn-primary">Continue</button>
+</form>
+
+<script>
+  function selectType(type) {
+    document.getElementById("user_type").value = type;
+    document.getElementById("sellerCard").classList.remove("selected");
+    document.getElementById("buyerCard").classList.remove("selected");
+    document.getElementById(type + "Card").classList.add("selected");
+  }
+  function requireType() {
+    if (!document.getElementById("user_type").value) {
+      alert("Please select Seller or Buyer.");
+      return false;
     }
-  </script>
+    return true;
+  }
+</script>
 </body>
 </html>

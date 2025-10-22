@@ -10,6 +10,7 @@ from django.db import IntegrityError
 from .forms import ProductForm
 from .models import Product 
 from .models import Profile
+from django.http import HttpResponseForbidden
 
 # ---------------- Helper Functions ----------------
 def _validate_institutional_email(email: str):
@@ -100,29 +101,43 @@ def register_step2(request):
     return render(request, 'register2.html')
 
 def register_step3(request):
+    """
+    Step 3: Pick role (seller/buyer).
+    Only store the choice in the session and move to Step 4.
+    """
     if request.method == 'POST':
-        role = request.POST.get('user_type', '')
-        request.session['user_type'] = role
+        role = request.POST.get('user_type', '').strip()
+        if role not in ('seller', 'buyer'):
+            messages.error(request, "Please choose either Seller or Buyer.")
+            return render(request, 'register3.html')
 
-        first_name = request.session.get('first_name', '')
-        last_name  = request.session.get('last_name', '')
-        email      = request.session.get('email')
-        username   = request.session.get('username')
-        password   = request.session.get('password')
+        # keep only the choice here
+        request.session['role'] = role
+        return redirect('register_step4')
 
-        missing = [k for k, v in {
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-            "username": username,
-            "password": password,
-            "role": role
-        }.items() if not v]
+    return render(request, 'register3.html')
 
-        if missing:
-            messages.error(request, "Some details are missing. Please restart registration.")
-            return redirect('register_step1')
+def register_step4(request):
+    """
+    Step 4:
+      - GET  → show the confirmation page with a 'Finish Registration' button
+      - POST → create the user + profile, clear session, and send to Login
+    """
+    # Make sure all required data from steps 1–3 are still present
+    needed = ['first_name', 'last_name', 'email', 'username', 'password', 'role']
+    if any(not request.session.get(k) for k in needed):
+        messages.error(request, "Your session expired. Please start registration again.")
+        return redirect('register_step1')
 
+    if request.method == 'POST':
+        first_name = request.session['first_name']
+        last_name  = request.session['last_name']
+        email      = request.session['email']
+        username   = request.session['username']  # student ID
+        password   = request.session['password']
+        role       = request.session['role']
+
+        # duplicates safety
         if User.objects.filter(username=username).exists():
             messages.error(request, "That Student ID is already registered.")
             return redirect('register_step2')
@@ -130,6 +145,7 @@ def register_step3(request):
             messages.error(request, "That email is already registered.")
             return redirect('register_step2')
 
+        # create user
         user = User.objects.create_user(
             username=username,
             email=email,
@@ -137,33 +153,20 @@ def register_step3(request):
             first_name=first_name,
             last_name=last_name,
             is_staff=False,
-            is_active=True
+            is_active=True,
         )
-
         Profile.objects.create(user=user, role=role)
-        request.session['registered_user_id'] = user.id
 
-        return redirect('register_step4')
+        # clear sensitive session data
+        for k in ("first_name","middle_name","last_name","email","dob",
+                  "username","password","confirm_password","role"):
+            request.session.pop(k, None)
 
-    return render(request, 'register3.html')
+        messages.success(request, "Account created successfully! Please log in.")
+        return redirect('login')  # ← do NOT log them in here
 
-def register_step4(request):
-    user_id = request.session.get('registered_user_id')
-    if not user_id:
-        messages.error(request, "Something went wrong. Please restart registration.")
-        return redirect('register_step1')
-
-    user = User.objects.get(id=user_id)
-    profile = Profile.objects.get(user=user)
-
-    login(request, user)
-
-    for k in ("first_name","middle_name","last_name","email","dob","username","password","user_type","registered_user_id"):
-        request.session.pop(k, None)
-
-    messages.success(request, "Account created successfully!")
-
-    return redirect('home') if profile.role == 'seller' else redirect('home_buyer')
+    # GET: show your confirmation page with a Finish button
+    return render(request, 'register4.html')
 
 # ---------------- Authentication ----------------
 def login_view(request):
@@ -173,13 +176,14 @@ def login_view(request):
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
             user = authenticate(request, username=username, password=password)
-            if user:
+            if user is not None:
                 login(request, user)
+                # Redirect by role
                 try:
-                    profile = Profile.objects.get(user=user)
-                    return redirect('home') if profile.role == 'seller' else redirect('home_buyer')
+                    role = user.profile.role
                 except Profile.DoesNotExist:
-                    return redirect('home')
+                    return redirect("guest_home")
+                return redirect("seller_home" if role == "seller" else "buyer_home")
             else:
                 messages.error(request, "Invalid username or password")
     else:
@@ -211,32 +215,83 @@ def reset_password_view(request):
 # ---------------- Product Views ----------------
 @login_required
 def add_product(request):
+    """
+    Create a new product owned by the logged-in user.
+    Template: add_product.html
+    """
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
-            product.owner = request.user  # <-- assign the logged-in user
-            product.save()
-            return redirect('product_list')  # redirect to the product list page
-    else:
-        form = ProductForm()
-    return render(request, 'add_product.html', {'form': form})
-
-
-def product_list(request):
-    products = Product.objects.all().order_by('-created_at')
-    return render(request, 'product_list.html', {'products': products})
-
-def home(request):
-    # Fetch all products (newest first)
-    products = Product.objects.all().order_by('-created_at')
-    return render(request, 'home.html', {'products': products})
             product.owner = request.user
             product.save()
-            messages.success(request, "✅ Product added successfully!")
-            return redirect("home")
+            messages.success(request, "")
+            return redirect("product_list")  # or "home" if you prefer
         else:
             messages.error(request, "⚠️ Please correct the errors below.")
     else:
         form = ProductForm()
-    return render(request, "product_upload.html", {"form": form})
+
+    return render(request, "add_product.html", {"form": form})
+
+
+def product_list(request):
+    """
+    Simple list of products.
+    Template: product_list.html
+    """
+    products = Product.objects.all().order_by("-created_at")
+    return render(request, "product_list.html", {"products": products})
+
+
+@login_required(login_url="guest_home")
+def home(request):
+    products = Product.objects.all().order_by("-created_at")
+    return render(request, "home.html", {"products": products})
+
+
+def role_required(required):
+    """
+    Use as @role_required("seller") or @role_required("buyer")
+    """
+    def decorator(view_fn):
+        def _wrapped(request, *args, **kwargs):
+            if not request.user.is_authenticated:
+                return redirect("login")
+            try:
+                role = request.user.profile.role  # 'seller' or 'buyer'
+            except Profile.DoesNotExist:
+                return HttpResponseForbidden("Profile not found.")
+            if role != required:
+                return HttpResponseForbidden("You do not have access to this page.")
+            return view_fn(request, *args, **kwargs)
+        return _wrapped
+    return decorator
+
+
+# Sellers can add products
+@role_required("seller")
+def add_product(request):
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.owner = request.user
+            product.save()
+            return redirect("product_list")  # or "seller_home"
+    else:
+        form = ProductForm()
+    return render(request, "add_product.html", {"form": form})
+
+# Seller dashboard/home
+@role_required("seller")
+def seller_home(request):
+    products = Product.objects.all().order_by("-created_at")
+    # use your seller template; if you currently use 'home.html' for seller, keep it
+    return render(request, "home.html", {"products": products})
+
+# Buyer dashboard/home
+@role_required("buyer")
+def buyer_home(request):
+    products = Product.objects.all().order_by("-created_at")
+    return render(request, "home_buyer.html", {"products": products})

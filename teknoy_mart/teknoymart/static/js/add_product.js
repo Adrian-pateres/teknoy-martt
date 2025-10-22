@@ -60,11 +60,20 @@ function validateForm() {
 }
 
 function openModal(id) {
-  document.getElementById(id).style.display = "block";
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add("open");           // uses CSS class instead of inline style
+  document.body.style.overflow = "hidden"; // lock background scroll
 }
 
 function closeModal(id) {
-  document.getElementById(id).style.display = "none";
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove("open");
+  // If no other modal is open, restore scroll
+  if (!document.querySelector(".modal.open")) {
+    document.body.style.overflow = "";
+  }
 }
 
 function confirmAdd() {
@@ -72,7 +81,9 @@ function confirmAdd() {
 }
 
 function confirmCancel() {
-  window.location.href = "/"; // Redirect to home or previous page
+  //fall back to seller home or root
+  const url = window.CANCEL_URL || "/home/" || "/";
+  window.location.href = url;
 }
 
 // --- Optional: Category + Search Filtering on Home Page ---
@@ -116,5 +127,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // Search input
   if (search) {
     search.addEventListener("input", applyFilters);
+  }
+});
+
+
+// Close when clicking the dark backdrop
+document.addEventListener("click", (e) => {
+  const modal = e.target.closest(".modal");
+  if (modal && e.target === modal) {
+    modal.classList.remove("open");
+    if (!document.querySelector(".modal.open")) {
+      document.body.style.overflow = "";
+    }
+  }
+});
+
+// Close on ESC
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.querySelectorAll(".modal.open").forEach(m => m.classList.remove("open"));
+    document.body.style.overflow = "";
   }
 });

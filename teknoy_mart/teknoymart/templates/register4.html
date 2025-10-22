@@ -2,42 +2,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Created - Teknoy Mart</title>
-    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Created - Teknoy Mart</title>
+  <link rel="stylesheet" href="{% static 'css/register.css' %}">
 </head>
 <body>
-    <div class="card">
-        <!-- Logo -->
-        <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo" class="logo-small">
+  <div class="card">
+    <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo" class="logo-small">
 
-        <!-- Title -->
-        <h2>🎉 Account Created Successfully!</h2>
+    <h2>🎉 Account Created Successfully!</h2>
 
-        <!-- Success Icon -->
-        <div class="success-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="85" height="85" viewBox="0 0 24 24" fill="none" stroke="#8B0000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-        </div>
-
-        <!-- Message -->
-        <p class="success-message">
-            Your Teknoy Mart account has been successfully created!<br>
-            You can now log in to start exploring.
-        </p>
-
-        <!-- Navigation -->
-        <div class="btn-group">
-            <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
-            {% if role == 'buyer' %}
-                <a href="{% url 'home_buyer' %}" class="btn btn-secondary">Go to Dashboard</a>
-            {% else %}
-                <a href="{% url 'home' %}" class="btn btn-secondary">Go to Dashboard</a>
-            {% endif %}
-        </div>
+    <div class="success-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="85" height="85" viewBox="0 0 24 24" fill="none" stroke="#8B0000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
     </div>
+
+    <p class="success-message">
+      Your Teknoy Mart account will be created after you click <b>Finish Registration</b>.
+      After that, please log in to continue.
+    </p>
+    
+    <!-- Optional navigation (kept) -->
+    <div class="btn-group">
+  <!-- Finish button: POST to create the account -->
+  <form method="post" action="{% url 'register_step4' %}" style="width:100%; margin:0;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary" style="width:100%;">Finish Registration</button>
+  </form>
+  <a href="{% url 'login' %}" class="btn btn-secondary" style="width:100%;">Login</a>
+</div>
 </body>
 </html>
