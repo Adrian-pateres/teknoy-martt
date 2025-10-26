@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 import environ
+import dj_database_url
 
 
 # --- DEV: prints emails to the terminal ---
@@ -88,7 +89,17 @@ WSGI_APPLICATION = 'teknoy_mart.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": env.db("DATABASE_URL")
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT", "6543"),
+        "OPTIONS": {
+            "sslmode": os.getenv("POSTGRES_SSLMODE", "require"),
+        },
+    }
 }
 
 
