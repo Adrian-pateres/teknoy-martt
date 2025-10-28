@@ -52,13 +52,28 @@
     autocomplete="username">
 
   <label for="id_password">Password</label>
-  <input
+  <div class="pw-wrap">
+    <input
     type="password"
     id="id_password"
     name="password"
     placeholder="••••••••"
     required
     autocomplete="current-password">
+    <button type="button" class="pw-toggle" aria-label="Show password" aria-pressed="false">
+
+    <svg class="eye-open" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+
+    <svg class="eye-closed" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.78 20.78 0 0 1 5.06-6.06"/>
+      <path d="M1 1l22 22"/>
+      <path d="M9.88 9.88A3 3 0 0 0 12 15a3 3 0 0 0 2.12-.88"/>
+    </svg>
+  </button>
+</div>
 
   <div class="options">
     <label><input type="checkbox" name="remember"> Remember Me</label>
@@ -92,6 +107,19 @@
                 </ul>
             </div>
         </footer>
-
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const input = document.getElementById('id_password');
+          const btn = document.querySelector('.pw-toggle');
+          if (!input || !btn) return;
+          
+          btn.addEventListener('click', function () {
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+            input.focus({ preventScroll: true });
+          });
+        });
+      </script>
     </body>
-    </html>
+</html>

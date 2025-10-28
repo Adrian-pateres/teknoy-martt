@@ -514,3 +514,40 @@ select {
   .grid-2{ grid-template-columns:1fr; }
 }
 
+/*Password reveal overlay (inside the input)*/
+.pw-wrap {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.pw-wrap > input {
+  width: 100%;
+  padding-right: 44px;
+  box-sizing: border-box;
+}
+
+.pw-toggle {
+  position: absolute;
+  right: 12px;
+  top: 38%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+.pw-toggle:hover { opacity: .90; }
+.pw-toggle:focus { outline: 2px solid #8B0000; outline-offset: 2px; }
+
+.pw-toggle[aria-pressed="true"]  .eye-open   { display: none; }
+.pw-toggle[aria-pressed="false"] .eye-closed { display: none; }
