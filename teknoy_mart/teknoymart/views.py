@@ -43,7 +43,7 @@ class LoginForm(forms.Form):
 
 # ---------------- Index / Home ----------------
 def index(request):
-    return render(request, "index.html")
+    return render(request, "teknoymart/index.html")
 
 def guest_home(request):
     return render(request, "guest_home.html")
