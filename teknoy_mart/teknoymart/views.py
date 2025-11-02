@@ -46,15 +46,15 @@ def index(request):
     return render(request, "teknoymart/index.html")
 
 def guest_home(request):
-    return render(request, "guest_home.html")
+    return render(request, "home/guest_home.html")
 
 @login_required(login_url='guest_home')
 def home(request):
-    return render(request, "home.html")  # seller dashboard
+    return render(request, "home/home.html")  # seller dashboard
 
 @login_required(login_url='guest_home')
 def home_buyer(request):
-    return render(request, "home_buyer.html")  # buyer dashboard
+    return render(request, "home/home_buyer.html")
 
 # ---------------- Registration ----------------
 def register_step1(request):
@@ -68,11 +68,11 @@ def register_step1(request):
             email = _validate_institutional_email(email)
         except ValidationError as e:
             messages.error(request, str(e))
-            return render(request, 'register.html')
+            return render(request, 'register/register.html')
 
         if not first or not last:
             messages.error(request, "First name and Last name are required.")
-            return render(request, 'register.html')
+            return render(request, 'register/register.html')
 
         request.session['first_name'] = first
         request.session['middle_name'] = middle
@@ -82,7 +82,7 @@ def register_step1(request):
 
         return redirect('register_step2')
 
-    return render(request, 'register.html')
+    return render(request, 'register/register.html')
 
 def register_step2(request):
     if request.method == 'POST':
@@ -93,19 +93,19 @@ def register_step2(request):
 
         if not email:
             messages.error(request, "Email is required.")
-            return render(request, 'register2.html')
+            return render(request, 'register/register2.html')
         em = email.lower()
         if '@' not in em or em.split('@',1)[1] not in ('cit.edu', 'cit.edu.ph'):
             messages.error(request, "Please use institutional email (@cit.edu or @cit.edu.ph).")
-            return render(request, 'register2.html')
+            return render(request, 'register/register2.html')
 
         if not username:
             messages.error(request, "Student ID is required.")
-            return render(request, 'register2.html')
+            return render(request, 'register/register2.html')
 
         if pwd1 != pwd2:
             messages.error(request, "Passwords do not match.")
-            return render(request, 'register2.html')
+            return render(request, 'register/register2.html')
 
         request.session['email'] = email
         request.session['username'] = username
@@ -113,7 +113,7 @@ def register_step2(request):
 
         return redirect('register_step3')
 
-    return render(request, 'register2.html')
+    return render(request, 'register/register2.html')
 
 def register_step3(request):
     """
@@ -124,13 +124,13 @@ def register_step3(request):
         role = request.POST.get('user_type', '').strip()
         if role not in ('seller', 'buyer'):
             messages.error(request, "Please choose either Seller or Buyer.")
-            return render(request, 'register3.html')
+            return render(request, 'register/register3.html')
 
         # keep only the choice here
         request.session['role'] = role
         return redirect('register_step4')
 
-    return render(request, 'register3.html')
+    return render(request, 'register/register3.html')
 
 def register_step4(request):
     """
@@ -181,7 +181,7 @@ def register_step4(request):
         return redirect('login')  # ← do NOT log them in here
 
     # GET: show your confirmation page with a Finish button
-    return render(request, 'register4.html')
+    return render(request, 'register/register4.html')
 
 # ---------------- Authentication ----------------
 def login_view(request):
@@ -202,7 +202,7 @@ def login_view(request):
                 return redirect("guest_home")
         else:
             messages.error(request, "")
-    return render(request, "login.html")
+    return render(request, "login/login.html")
 
 
 def logout_view(request):
@@ -215,7 +215,7 @@ def forgot_password_view(request):
         email = request.POST.get("email")
         messages.success(request, f"A password reset link has been sent to {email}.")
         return redirect("login")
-    return render(request, "forgot_password.html")
+    return render(request, "password/forgot_password.html")
 
 
 def reset_password_view(request):
@@ -227,7 +227,7 @@ def reset_password_view(request):
         else:
             messages.success(request, "Your password has been successfully reset!")
             return redirect("login")
-    return render(request, "reset_password.html")
+    return render(request, "password/reset_password.html")
 
 # ---------------- Product Views ----------------
 
@@ -263,7 +263,7 @@ def add_product(request):
         messages.error(request, "Please correct the errors below.")
     else:
         form = ProductForm()
-    return render(request, "add_product.html", {"form": form, "editing": False})
+    return render(request, "product/add_product.html", {"form": form, "editing": False})
 
 # -------- Seller dashboard (named 'home' to match your URLs) --------
 @login_required
@@ -271,7 +271,7 @@ def add_product(request):
 def home(request):
     # Seller sees only their products
     products = Product.objects.filter(owner=request.user).order_by("-created_at")
-    return render(request, "home.html", {"products": products})
+    return render(request, "home/home.html", {"products": products})
 
 # -------- Buyer dashboard --------
 @login_required
@@ -279,14 +279,14 @@ def home(request):
 def buyer_home(request):
     # Buyer sees all products
     products = Product.objects.all().order_by("-created_at")
-    return render(request, "home_buyer.html", {"products": products})
+    return render(request, "home/home_buyer.html", {"products": products})
 
 # -------- CRUD: list only MY products (seller) --------
 @login_required
 @role_required("seller")
 def product_list(request):
     products = Product.objects.filter(owner=request.user).order_by("-created_at")
-    return render(request, "product_list.html", {"products": products})
+    return render(request, "product/product_list.html", {"products": products})
 
 
 # -------- UPDATE --------
@@ -303,7 +303,7 @@ def edit_product(request, pk):
         messages.error(request, "Please correct the errors below.")
     else:
         form = ProductForm(instance=product)
-    return render(request, "add_product.html", {"form": form, "editing": True, "product": product})
+    return render(request, "product/add_product.html", {"form": form, "editing": True, "product": product})
 
 
 # -------- DELETE --------
@@ -324,7 +324,7 @@ def delete_product(request, pk):
 def seller_home(request):
     # Show ONLY this seller's products
     products = Product.objects.filter(owner=request.user).order_by("-created_at")
-    return render(request, "home.html", {"products": products})
+    return render(request, "home/home.html", {"products": products})
 
 
 @login_required
@@ -332,4 +332,4 @@ def seller_home(request):
 def buyer_home(request):
     # Show marketplace feed for buyers (all products)
     products = Product.objects.all().order_by("-created_at")
-    return render(request, "home_buyer.html", {"products": products})
+    return render(request, "home/home_buyer.html", {"products": products})
