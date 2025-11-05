@@ -25,7 +25,7 @@
 }
 
 .search-bar button {
-  background: #007bff;
+  background: #b71c1c;
   border: none;
   color: white;
   font-size: 1rem;
@@ -36,7 +36,7 @@
 }
 
 .search-bar button:hover {
-  background: #0056b3;
+  background: #8b0000;
 }
 
 /* ---- Category Chips ---- */
@@ -61,9 +61,9 @@
 }
 
 .cat-filter .chip.active {
-  background: #007bff;
+  background: #b71c1c;
   color: white;
-  border-color: #007bff;
+  border-color: #b71c1c;
 }
 
 /* ---- Tabs ---- */
@@ -84,8 +84,8 @@
 }
 
 .tabs a.active {
-  border-bottom: 3px solid #007bff;
-  color: #007bff;
+  border-bottom: 3px solid #b71c1c;
+  color: #b71c1c;
 }
 
 /* ---- Section Head ---- */
@@ -104,7 +104,7 @@
 
 .section-head .view-all {
   font-size: 0.9rem;
-  color: #007bff;
+  color: #b71c1c;
   text-decoration: none;
 }
 
@@ -115,15 +115,15 @@
 /* ---- Product Grid ---- */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* smaller cards */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 0.75rem;
   margin-top: 0.75rem;
 }
 
 /* ---- Product Card ---- */
 .product-card {
-  background: #fff;
-  border: 1px solid #eee;
+  background: #fff5f5;
+  border: 1px solid #f8bdbd;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, .05);
@@ -171,7 +171,7 @@
 
 .product-card .price {
   margin: 0.15rem 0 0;
-  color: #8B0000;
+  color: #c62828;
   font-weight: 700;
   font-size: 0.85rem;
 }
@@ -199,12 +199,12 @@
 }
 
 .buttons .btn-primary {
-  background: #007bff;
+  background: #b71c1c;
   color: white;
 }
 
 .buttons .btn-primary:hover {
-  background: #0056b3;
+  background: #8b0000;
 }
 
 .buttons .btn-secondary {
@@ -214,6 +214,79 @@
 
 .buttons .btn-secondary:hover {
   background: #d1d5db;
+}
+
+/* ---- Tab View Toggling ---- */
+.tab-view {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.active-view {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Category Grouped View ---- */
+.category-block {
+  margin-bottom: 2rem;
+}
+
+.category-block .category-title h3 {
+  font-size: 1.2rem;
+  color: #b71c1c;
+  margin-bottom: 0.8rem;
+  font-weight: bold;
+}
+
+/* ---- Category Slider Wrapper (with side buttons) ---- */
+.category-slider-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  gap: 0.75rem;
+}
+
+/* Side Buttons (left/right) */
+.side-btn {
+  background: #b71c1c;
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.side-btn:hover {
+  background: #8b0000;
+  transform: scale(1.1);
+}
+
+/* ---- Category Slider ---- */
+.category-slider {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.5rem;
+  scroll-behavior: smooth;
+}
+
+.category-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.product-card.small {
+  flex: 0 0 calc(33.333% - 1rem);
+  scroll-snap-align: center;
 }
 
 /* ---- Responsive ---- */
@@ -242,6 +315,12 @@
   }
 
   .section-head h3 {
+    font-size: 1rem;
+  }
+
+  .side-btn {
+    width: 32px;
+    height: 32px;
     font-size: 1rem;
   }
 }
