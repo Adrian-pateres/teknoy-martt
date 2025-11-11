@@ -185,6 +185,7 @@ select {
 }
 
 .btn-primary {
+  text-decoration: none;
   background-color: #8B0000;
   color: #fff;
 }

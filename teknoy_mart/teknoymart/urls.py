@@ -72,6 +72,10 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+
+    # Buyer purchase
+    path("buy-now/<int:product_id>/", views.buy_now, name="buy_now"),
+    path("payment-success/", views.payment_success, name="payment_success"),
 ]
 
 if settings.DEBUG:
