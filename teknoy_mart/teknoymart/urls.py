@@ -22,7 +22,7 @@ urlpatterns = [
     
     # Dashboards
     path("home/", views.home, name="home"),                  # seller dashboard
-    path("home/buyer/", views.home_buyer, name="home_buyer"),  # buyer dashboard
+
 
     # Authentication
     path("login/", views.login_view, name="login"),
