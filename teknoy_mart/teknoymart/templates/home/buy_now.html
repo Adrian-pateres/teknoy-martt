@@ -1,0 +1,171 @@
+{% extends "teknoymart/base.html" %}
+{% load static %}
+
+{% block title %}Buy Now | Teknoy Mart{% endblock %}
+
+{% block extra_css %}
+<style>
+.buy-container {
+  max-width: 750px;
+  margin: 3rem auto;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 2rem;
+}
+.product-summary {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1.5rem;
+}
+.product-summary img {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+.product-info h2 {
+  margin-bottom: .3rem;
+  color: #222;
+}
+.product-info .price {
+  color: #c62828;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: .3rem;
+}
+.payment-section {
+  margin-top: 2rem;
+}
+.payment-options {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.payment-card {
+  width: 200px;
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: .2s;
+}
+.payment-card:hover {
+  border-color: #c62828;
+  background: #fff;
+}
+.payment-card.selected {
+  border-color: #c62828;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.payment-card img {
+  width: 80px;
+  height: 80px;
+  margin-bottom: .5rem;
+}
+label {
+  display: block;
+  margin-bottom: .5rem;
+  font-weight: 600;
+  color: #333;
+}
+input[type="text"] {
+  width: 100%;
+  padding: .8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+button.pay-btn {
+  display: block;
+  width: 100%;
+  margin-top: 1.5rem;
+  background: #c62828;
+  color: white;
+  font-weight: 600;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .2s;
+}
+button.pay-btn:hover {
+  background: #a31e1e;
+}
+.back-link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #555;
+  text-decoration: none;
+  text-align: center;
+  width: 100%;
+}
+.back-link:hover {
+  color: #c62828;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="buy-container">
+  <div class="product-summary">
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.title }}">
+    {% else %}
+      <img src="https://cdn-icons-png.flaticon.com/512/126/126477.png" alt="No Image">
+    {% endif %}
+    <div class="product-info">
+      <h2>{{ product.title }}</h2>
+      <p>{{ product.description }}</p>
+      <p class="price">₱{{ product.price }}</p>
+    </div>
+  </div>
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="payment-section">
+      <h3 style="text-align:center;">Choose Payment Method</h3>
+      <div class="payment-options">
+        <div class="payment-card" onclick="selectPayment('GCash')">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/GCash_Logo.svg" alt="GCash">
+          <p>GCash</p>
+        </div>
+        <div class="payment-card" onclick="selectPayment('Maya')">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Maya_Logo.svg" alt="Maya">
+          <p>Maya</p>
+        </div>
+        <div class="payment-card" onclick="selectPayment('PayPal')">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+          <p>PayPal</p>
+        </div>
+      </div>
+
+      <input type="hidden" name="payment_method" id="payment_method">
+
+      <label for="reference_number">Enter Reference Number</label>
+      <input type="text" id="reference_number" name="reference_number" placeholder="e.g. 1234-5678-ABCD" required>
+
+      <button type="submit" class="pay-btn">Confirm & Pay</button>
+      <a href="{% url 'home_buyer' %}" class="back-link">← Back to Shop</a>
+    </div>
+  </form>
+</div>
+
+<script>
+let selectedCard = null;
+function selectPayment(method) {
+  document.getElementById("payment_method").value = method;
+  document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('selected'));
+  const selected = Array.from(document.querySelectorAll('.payment-card')).find(c => c.innerText.includes(method));
+  if (selected) selected.classList.add('selected');
+}
+</script>
+{% endblock %}

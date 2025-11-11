@@ -6,8 +6,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
-{% endblock %}
-
+{% endblock %}  
 {% block navbar %}
 <header class="navbar">
   <div class="logo-text">
@@ -23,7 +22,7 @@
 
 <main class="home-shell">
 
-  <!-- 🔍 Search Bar -->
+</div>  <!-- 🔍 Search Bar -->
   <div class="home-row search-bar">
     <input id="productSearch" type="text" placeholder="Search products, categories..." aria-label="Search">
     <button type="button" aria-label="Search">🔍</button>
@@ -66,7 +65,8 @@
           <div class="meta">
             <p class="title">{{ product.title }}</p>
             <p class="price">₱{{ product.price }}</p>
-            <a class="btn btn-primary">Add to Cart</a>
+            <a href="{% url 'buy_now' product.id %}" class="btn btn-primary" style="text-decoration: none;">Buy Now</a>
+
           </div>
         </article>
         {% empty %}
@@ -82,7 +82,6 @@
 
     <!-- Buttons -->
     <div class="home-row buttons">
-      <a href="{% url 'product_list' %}" class="btn btn-primary">Upload Product</a>
       <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
     </div>
   </section>

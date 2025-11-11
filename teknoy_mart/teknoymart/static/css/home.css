@@ -199,6 +199,7 @@
 }
 
 .buttons .btn-primary {
+  text-decoration: none;
   background: #b71c1c;
   color: white;
 }
