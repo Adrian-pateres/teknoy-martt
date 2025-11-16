@@ -6,42 +6,34 @@ from . import views
 
 urlpatterns = [
 
+    # --- Landing / Home ---
+    path("", views.index, name="index"),                # Home page
+    path("guest/", views.guest_home, name="guest_home"),
+
+    # --- Dashboards ---
+    path("home/", views.home, name="home"),            # seller dashboard
+    path("home/buyer/", views.home_buyer, name="home_buyer"),  # buyer dashboard
+
     # --- Product CRUD ---
     path("products/", views.product_list, name="product_list"),                      # READ
     path("products/add/", views.add_product, name="add_product"),                    # CREATE
     path("products/<int:pk>/edit/", views.edit_product, name="edit_product"),        # UPDATE
     path("products/<int:pk>/delete/", views.delete_product, name="delete_product"),  # DELETE
 
-
-    path("home/", views.home, name="home"),                    # seller dashboard
-    path("home-buyer/", views.buyer_home, name="home_buyer"),  # buyer dashboard    
-    
-    # Landing / Home
-    path("", views.index, name="index"),
-    path("guest/", views.guest_home, name="guest_home"),
-    
-    # Dashboards
-    path("home/", views.home, name="home"),                  # seller dashboard
-    path("home/buyer/", views.home_buyer, name="home_buyer"),  # buyer dashboard
-
-    # Authentication
+    # --- User Authentication ---
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
 
-    # Registration Wizard
+    # --- Registration Wizard ---
     path("register/", views.register_step1, name="register_step1"),
     path("register/step2/", views.register_step2, name="register_step2"),
     path("register/step3/", views.register_step3, name="register_step3"),
     path("register/step4/", views.register_step4, name="register_step4"),
-    path("add-product/", views.add_product, name="add_product"),
-    path('myproducts/', views.product_list, name='product_list'),
-    
-    
 
-    # Product Upload
-    path("products/new/", views.add_product, name="add_product"),  # unified
+    # --- About Page ---
+    path("about/", views.about, name="about"),
 
-    # -------- Password Reset Flow --------
+    # --- Password Reset Flow ---
     path(
         "forgot-password/",
         auth_views.PasswordResetView.as_view(
@@ -74,5 +66,6 @@ urlpatterns = [
     ),
 ]
 
+# --- Static & Media Files ---
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
