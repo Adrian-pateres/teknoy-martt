@@ -1,74 +1,163 @@
 {% extends "teknoymart/base.html" %}
 {% load static %}
 
-{% block title %}Buyer Dashboard | Teknoy Mart{% endblock %}
-{% block body_class %}buyer-page{% endblock %}
+{% block title %}Home | Teknoy Mart{% endblock %}
+{% block body_class %}home-page{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/buyer.css' %}">
-{% endblock %}
-
-{% block content %}
-
-<!-- Buyer Navbar (Overrides base) -->
-<header class="navbar buyer-navbar">
-    <div class="logo-text">Teknoy Mart</div>
-    <div class="search-bar">
-        <input type="text" placeholder="Search products..." aria-label="Search">
-        <button type="button">🔍</button>
-    </div>
-    <nav>
-        <a href="#">Profile</a>
-        <a href="#">🛒 Cart</a>
-        <a href="{% url 'logout' %}" class="logout">Logout</a>
-    </nav>
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}  
+{% block navbar %}
+<header class="navbar">
+  <div class="logo-text">
+    <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo" class="navbar-logo">
+    <span>Teknoy Mart</span>
+  </div>
+  <nav>
+    <a href="#">Profile</a>
+    <a href="#">Settings</a>
+    <a href="#">About</a>
+  </nav>
 </header>
 
-<main class="buyer-shell">
+<main class="home-shell">
 
-  <!-- Product Section -->
-  <section class="product-section">
-    <h3>🛍️ Available Products</h3>
+</div>  <!-- 🔍 Search Bar -->
+  <div class="home-row search-bar">
+    <input id="productSearch" type="text" placeholder="Search products, categories..." aria-label="Search">
+    <button type="button" aria-label="Search">🔍</button>
+  </div>
 
-    <div class="product-grid">
-      <article class="product-card">
-        <div class="thumb"><img src="{% static 'images/mouse.jpg' %}" alt="Product"></div>
-        <div class="meta">
-          <p class="title">Wireless Mouse</p>
-          <p class="price">₱990</p>
-          <button class="add-cart">Add to Cart</button>
-        </div>
-      </article>
+  <!-- 🧭 Tabs -->
+  <div class="home-row tabs">
+    <a href="#" class="tab-link active" data-tab="shop">Shop</a>
+    <a href="#" class="tab-link" data-tab="categories">Categories</a>
+  </div>
 
-      <article class="product-card">
-        <div class="thumb"><img src="{% static 'images/hoodie.png' %}" alt="Product"></div>
-        <div class="meta">
-          <p class="title">CIT-U Hoodie</p>
-          <p class="price">₱1450</p>
-          <button class="add-cart">Add to Cart</button>
-        </div>
-      </article>
+  <!-- 🏪 SHOP VIEW -->
+  <section id="shop-view" class="tab-view active-view">
+    <!-- Category chips -->
+    <div class="home-row cat-filter" role="tablist" aria-label="Filter by category">
+      <button class="chip active" data-cat="all" aria-pressed="true" role="tab">All</button>
+      <button class="chip" data-cat="clothing" role="tab">Clothing</button>
+      <button class="chip" data-cat="electronics" role="tab">Electronics</button>
+      <button class="chip" data-cat="food" role="tab">Food</button>
+      <button class="chip" data-cat="accessories" role="tab">Accessories</button>
+    </div>
 
-      <article class="product-card">
-        <div class="thumb"><img src="{% static 'images/notebook.png' %}" alt="Product"></div>
-        <div class="meta">
-          <p class="title">Notebook A5</p>
-          <p class="price">₱120</p>
-          <button class="add-cart">Add to Cart</button>
-        </div>
-      </article>
+    <!-- Latest Products -->
+    <section class="home-row product-section">
+      <div class="section-head">
+        <h3>🛒 Latest Products</h3>
+        <a href="#" class="view-all">View all</a>
+      </div>
+
+      <div class="product-grid">
+        {% for product in products %}
+        <article class="product-card" data-cat="{{ product.category|lower }}">
+          <div class="thumb">
+            {% if product.image %}
+              <img src="{{ product.image.url }}" alt="{{ product.title }}">
+            {% else %}
+              <img src="{% static 'images/noimage.png' %}" alt="No image available">
+            {% endif %}
+          </div>
+          <div class="meta">
+            <p class="title">{{ product.title }}</p>
+            <p class="price">₱{{ product.price }}</p>
+            <a href="{% url 'buy_now' product.id %}" class="btn btn-primary" style="text-decoration: none;">Buy Now</a>
+
+          </div>
+        </article>
+        {% empty %}
+        <p>No products yet.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Banner -->
+    <div class="home-row promo-banner">
+      <img src="{% static 'images/promobanner.png' %}" alt="Promo Banner">
+    </div>
+
+    <!-- Buttons -->
+    <div class="home-row buttons">
+      <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
     </div>
   </section>
 
-  <!-- Delivery & Payment Section -->
-  <section class="checkout-section">
-    <h3>🚚 Delivery Details</h3>
-    <p>(Form fields will be added here...)</p>
+  <!-- 📂 CATEGORIES VIEW -->
+  <section id="categories-view" class="tab-view">
+    <div class="home-row">
+      {% regroup products by category as category_list %}
+      {% for group in category_list %}
+      <div class="category-block">
+        <div class="category-title">
+          <h3>📂 {{ group.grouper }}</h3>
+        </div>
 
-    <h3>💳 Payment Method</h3>
-    <p>(Payment options will be added here...)</p>
+        <div class="category-slider-wrapper">
+          <button class="side-btn prev" aria-label="Previous">&#10094;</button>
+
+          <div class="category-slider">
+            {% for product in group.list %}
+            <article class="product-card small">
+              <div class="thumb">
+                {% if product.image %}
+                  <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                {% else %}
+                  <img src="{% static 'images/noimage.png' %}" alt="No image available">
+                {% endif %}
+              </div>
+              <div class="meta">
+                <p class="title">{{ product.title }}</p>
+                <p class="price">₱{{ product.price }}</p>
+              </div>
+            </article>
+            {% endfor %}
+          </div>
+
+          <button class="side-btn next" aria-label="Next">&#10095;</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
   </section>
 
 </main>
+
+<!-- ⚙️ JS: Tabs + Slider -->
+<script>
+  // Tab Switching
+  const tabLinks = document.querySelectorAll(".tab-link");
+  const tabViews = document.querySelectorAll(".tab-view");
+
+  tabLinks.forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+
+      tabLinks.forEach(l => l.classList.remove("active"));
+      tabViews.forEach(v => v.classList.remove("active-view"));
+
+      link.classList.add("active");
+      document.getElementById(`${link.dataset.tab}-view`).classList.add("active-view");
+    });
+  });
+
+  // Category Sliders
+  document.querySelectorAll(".category-block").forEach(block => {
+    const slider = block.querySelector(".category-slider");
+    const prev = block.querySelector(".side-btn.prev");
+    const next = block.querySelector(".side-btn.next");
+
+    prev.addEventListener("click", () => {
+      slider.scrollBy({ left: -300, behavior: "smooth" });
+    });
+
+    next.addEventListener("click", () => {
+      slider.scrollBy({ left: 300, behavior: "smooth" });
+    });
+  });
+</script>
 
 {% endblock %}
