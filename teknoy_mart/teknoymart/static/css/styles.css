@@ -47,6 +47,13 @@ body {
   color: #8B0000;
 }
 
+nav a.active {
+  color: #ff6600;
+  font-weight: bold;
+  border-bottom: 2px solid #ff6600;
+}
+
+
 /* Hero Section */
 .hero {
   display: flex;
