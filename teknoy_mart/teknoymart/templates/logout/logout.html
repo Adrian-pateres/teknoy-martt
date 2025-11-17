@@ -1,0 +1,72 @@
+{% extends "teknoymart/base.html" %}
+
+{% load static %} 
+
+<div class="logout-container">
+  <!-- First Popup -->
+  <div class="popup-card" id="step1">
+    <h2>Confirm Logout</h2>
+    <p>Are you sure you want to log out?</p>
+
+    <div class="btn-group">
+      <button class="btn confirm-btn" onclick="showFinalConfirm()">Yes</button>
+      <a href="{% url 'index' %}" class="btn cancel-btn">Cancel</a>
+    </div>
+  </div>
+
+  <!-- Second Popup (Final Confirmation) -->
+  <div class="popup-card" id="finalConfirmPopup">
+    <h2>Logout Successful</h2>
+    <p>Click below to return to home.</p>
+
+    <form action="{% url 'index' %}" method="GET">
+      <button type="submit" class="btn confirm-btn" style="width:100%">Return Home</button>
+    </form>
+  </div>
+</div>
+
+<style>
+.logout-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  font-family: 'Poppins', sans-serif;
+  background: rgba(0,0,0,0.5);
+}
+
+.popup-card {
+  background: #fff;
+  padding: 30px;
+  width: 350px;
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: fadeSlide 0.4s ease-in-out;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h2 { font-size: 22px; margin-bottom: 10px; font-weight: 600; }
+p { font-size: 14px; color: #444; margin-bottom: 25px; }
+
+.btn-group { display: flex; justify-content: space-between; gap: 12px; }
+.btn { flex: 1; padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: 0.2s ease; }
+.confirm-btn { background: #d9534f; color: white; }
+.confirm-btn:hover { background: #c0392b; }
+.cancel-btn { background: #e0e0e0; }
+.cancel-btn:hover { background: #cfcfcf; }
+#finalConfirmPopup { display: none; }
+</style>
+
+<script>
+function showFinalConfirm() {
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('finalConfirmPopup').style.display = 'block';
+}
+</script>
+
+{% endblock %}
