@@ -239,3 +239,33 @@ def delete_product(request, pk):
         product.delete()
         messages.success(request, "Product deleted successfully.")
     return redirect("product_list")
+
+
+@login_required
+@role_required("buyer")
+def buy_now(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == "POST":
+        payment_method = request.POST.get("payment_method")
+        ref_number = request.POST.get("reference_number")
+
+        if not payment_method:
+            messages.error(request, "Please select a payment method.")
+            return redirect("buy_now", product_id=product.id)
+
+        if not ref_number or len(ref_number.strip()) < 6:
+            messages.error(request, "Please enter a valid reference number.")
+            return redirect("buy_now", product_id=product.id)
+
+        # TODO: You can save transaction record here later
+        messages.success(request, "Payment successful!")
+        return redirect("payment_success")
+
+    return render(request, "home/buy_now.html", {"product": product})
+
+
+@login_required
+@role_required("buyer")
+def payment_success(request):
+    return render(request, "home/payment_success.html")

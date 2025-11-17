@@ -69,3 +69,47 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Transaction(models.Model):
+    PAYMENT_METHODS = [
+        ("GCASH", "GCash"),
+        ("MAYA", "Maya"),
+        ("PAYPAL", "PayPal"),
+    ]
+
+    STATUS_CHOICES = [
+        ("PENDING", "Pending"),
+        ("PAID", "Paid"),
+        ("FAILED", "Failed"),
+    ]
+
+    buyer = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="buyer_transactions"
+    )
+
+    seller = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="seller_transactions"
+    )
+
+    product = models.ForeignKey(
+        'Product', on_delete=models.CASCADE, related_name="transactions"
+    )
+
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+
+    reference_number = models.CharField(
+        max_length=50, blank=True, null=True
+    )
+
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="PENDING"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    paid_at = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Transaction #{self.id} - {self.product.title}"
