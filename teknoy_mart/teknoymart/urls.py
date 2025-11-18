@@ -4,21 +4,21 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from . import views
 
-urlpatterns = [
 
+urlpatterns = [
     # --- Landing / Home ---
-    path("", views.index, name="index"),                # Home page
+    path("", views.index, name="index"),
     path("guest/", views.guest_home, name="guest_home"),
 
     # --- Dashboards ---
-    path("home/", views.home, name="home"),            # seller dashboard
-    path("home/buyer/", views.home_buyer, name="home_buyer"),  # buyer dashboard
+    path("home/", views.home, name="home"),
+    path("home/buyer/", views.home_buyer, name="home_buyer"),
 
     # --- Product CRUD ---
-    path("products/", views.product_list, name="product_list"),                      # READ
-    path("products/add/", views.add_product, name="add_product"),                    # CREATE
-    path("products/<int:pk>/edit/", views.edit_product, name="edit_product"),        # UPDATE
-    path("products/<int:pk>/delete/", views.delete_product, name="delete_product"),  # DELETE
+    path("products/", views.product_list, name="product_list"),
+    path("products/add/", views.add_product, name="add_product"),
+    path("products/<int:pk>/edit/", views.edit_product, name="edit_product"),
+    path("products/<int:pk>/delete/", views.delete_product, name="delete_product"),
 
     # --- User Authentication ---
     path("login/", views.login_view, name="login"),
@@ -32,6 +32,12 @@ urlpatterns = [
 
     # --- About Page ---
     path("about/", views.about, name="about"),
+
+    # --- Settings Pages ---
+    path("settings/preferences/", views.preferences_view, name="preferences"),
+    path("settings/privacy/", views.privacy_settings_view, name="privacy_settings"),
+    path("settings/terms/", views.terms_view, name="terms"),
+    path("settings/about/", views.settings_about_view, name="settings_about"),
 
     # --- Password Reset Flow ---
     path(
@@ -65,6 +71,7 @@ urlpatterns = [
         name="password_reset_complete",
     ),
 ]
+
 
 # --- Static & Media Files ---
 if settings.DEBUG:

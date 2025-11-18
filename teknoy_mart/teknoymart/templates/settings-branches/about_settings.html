@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="logout-container">
+  <div class="logout-box">
+    <h2>About Settings</h2>
+    <p>Learn more about the CIT-U eCommerce Platform and its features.</p>
+
+    <div class="about-settings-content">
+      <h3>System Overview</h3>
+      <p>
+        The <strong>CIT-U eCommerce Platform</strong> is an exclusive online marketplace for Cebu Institute of Technology - University (CIT-U) students. 
+        It allows students to buy, sell, and rent items within the campus community. To ensure security, only users with a valid CIT-U email address can register and log in.
+      </p>
+
+      <h3>Development Information</h3>
+      <ul>
+        <li>Frontend: HTML, CSS, JavaScript (with Django templates or optional React)</li>
+        <li>Backend: Python, Django</li>
+        <li>Database: MySQL, Supabase</li>
+        <li>Authentication: Django Authentication with university email validation</li>
+        <li>Deployment: Heroku / Vercel / Docker (optional)</li>
+      </ul>
+
+      <h3>Support Information</h3>
+      <p>
+        For technical issues or feature requests, students can contact the development team via the official CIT-U eCommerce support channel or email. The platform is maintained to ensure secure, reliable, and smooth operations for all users.
+      </p>
+    </div>
+
+    <div class="btn-group">
+      <a href="{% url 'index' %}" class="btn cancel-btn">Back</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<style>
+.logout-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 75vh;
+}
+
+.logout-box {
+  background: white;
+  padding: 30px;
+  width: 500px;
+  text-align: left;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.logout-box h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.about-settings-content h3 {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.about-settings-content p, .about-settings-content ul {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #333;
+}
+
+.about-settings-content ul { padding-left: 20px; }
+
+.btn-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-align: center;
+}
+
+.cancel-btn { background: #6c757d; color: white; }
+.cancel-btn:hover { background: #5a6268; }
+</style>

@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Profile, Product
+from .models import Profile, Product, UserPreferences, UserPrivacySettings
 from .validators import validate_institutional_email
+
 
 class StudentRegistrationForm(forms.ModelForm):
     ROLE_CHOICES = [
@@ -29,7 +30,7 @@ class StudentRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = get_user_model()
-        fields = ["first_name", "last_name", "username", "email"]  # username = StudentID
+        fields = ["first_name", "last_name", "username", "email"]
         widgets = {
             "first_name": forms.TextInput(attrs={"id": "first_name", "placeholder": "Juan", "required": "required"}),
             "last_name":  forms.TextInput(attrs={"id": "last_name",  "placeholder": "Dela Cruz", "required": "required"}),
@@ -45,14 +46,12 @@ class StudentRegistrationForm(forms.ModelForm):
         return cleaned
 
     def save(self, commit=True):
-        # Create the user first
         user = super().save(commit=False)
         user.email = self.cleaned_data["email"]
         user.set_password(self.cleaned_data["password"])
 
         if commit:
             user.save()
-            # Create Profile with selected role
             Profile.objects.create(user=user, role=self.cleaned_data['role'])
 
         return user
@@ -77,3 +76,39 @@ class ProductForm(forms.ModelForm):
         if image and image.size > 2*1024*1024:
             raise forms.ValidationError("Image too large. Max size 2MB.")
         return image
+
+
+class UserPreferencesForm(forms.ModelForm):
+    class Meta:
+        model = UserPreferences
+        fields = [
+            "email_alerts",
+            "message_notifications",
+            "system_activity_updates",
+            "language",
+            "time_format_24h",
+            "homepage_view",
+            "dark_mode",
+            "font_size",
+            "layout_density",
+        ]
+
+
+class UserPrivacyForm(forms.ModelForm):
+    class Meta:
+        model = UserPrivacySettings
+        fields = [
+            "show_profile_public",
+            "show_activity_public",
+            "allow_data_export",
+            "allow_data_analysis",
+            "two_factor_enabled",
+            "login_alerts_enabled",
+        ]
+
+
+class TermsAcceptanceForm(forms.Form):
+    agree = forms.BooleanField(
+        required=True,
+        label="I have read and agree to the Terms & Conditions",
+    )

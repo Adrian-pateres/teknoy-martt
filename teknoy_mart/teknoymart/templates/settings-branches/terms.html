@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="logout-container">
+  <div class="logout-box">
+    <h2>Terms & Conditions</h2>
+    <p>Please read the following carefully before using the platform:</p>
+
+     <div class="terms-content">
+      <h3>1. Acceptance of Terms</h3>
+      <p>By accessing or using the CIT-U eCommerce Platform, you agree to comply with these Terms and Conditions. All users must have a valid CIT-U email address to register and use the services.</p>
+
+      <h3>2. User Responsibilities</h3>
+      <ul>
+        <li>Users must provide accurate information during registration.</li>
+        <li>Users are responsible for the security of their accounts, including passwords and login credentials.</li>
+        <li>Users must respect other users and avoid posting offensive, illegal, or inappropriate content.</li>
+      </ul>
+
+      <h3>3. Buying, Selling, and Renting</h3>
+      <ul>
+        <li>All transactions are conducted at the user’s own risk.</li>
+        <li>Items listed must comply with university regulations and local laws.</li>
+        <li>The platform is not responsible for disputes between buyers and sellers.</li>
+      </ul>
+
+      <h3>4. Privacy and Security</h3>
+      <p>User data will be handled according to the Privacy Policy. Users must not attempt to access other accounts or bypass platform security features.</p>
+
+      <h3>5. Termination</h3>
+      <p>The platform reserves the right to suspend or terminate accounts that violate these Terms and Conditions.</p>
+
+      <h3>6. Changes to Terms</h3>
+      <p>We may update these Terms periodically. Continued use of the platform indicates acceptance of any changes.</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="checkbox-group">
+        {{ form.agree }}
+        {{ form.agree.label_tag }}
+        {% if form.agree.errors %}
+          <div class="error">{{ form.agree.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="btn-group">
+        <a href="{% url 'index' %}" class="btn cancel-btn">Back</a>
+        <button type="submit" class="btn confirm-btn">Confirm</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+<style>
+/* keep all your existing styles */
+.logout-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 75vh;
+}
+
+.logout-box {
+  background: white;
+  padding: 30px;
+  width: 500px;
+  text-align: left;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.logout-box h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.terms-content h3 {
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.terms-content p, .terms-content ul {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #333;
+}
+
+.terms-content ul { padding-left: 20px; }
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-align: center;
+}
+
+.confirm-btn { background: #28a745; color: white; }
+.confirm-btn:hover { background: #218838; }
+
+.cancel-btn { background: #6c757d; color: white; }
+.cancel-btn:hover { background: #5a6268; }
+</style>
