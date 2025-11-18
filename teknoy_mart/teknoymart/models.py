@@ -1,13 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-<<<<<<< HEAD
 from django.contrib.auth import get_user_model 
 from django.conf import settings
-=======
-from django.contrib.auth import get_user_model
-from django.conf import settings
-
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
 class Profile(models.Model):
     ROLE_CHOICES = [
@@ -52,7 +46,6 @@ class UserRecord(models.Model):
 # --- Product model for sellers ---
 class Product(models.Model):
     CATEGORY_CHOICES = [
-<<<<<<< HEAD
         ("apparel", "Apparel"),
         ("gadgets", "Gadgets"),
         ("supplies", "School Supplies"),
@@ -73,8 +66,6 @@ class Product(models.Model):
     
 class Product(models.Model):
     CATEGORY_CHOICES = [
-=======
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
         ('Clothing', 'Clothing'),
         ('Electronics', 'Electronics'),
         ('Food', 'Food'),
@@ -92,7 +83,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
-<<<<<<< HEAD
     
 class Transaction(models.Model):
     PAYMENT_METHODS = [
@@ -138,31 +128,18 @@ class Transaction(models.Model):
         return f"Transaction #{self.id} - {self.product.title}"
     
     # ------ Model for user preferences ------
-=======
-
-
-# ------ Model for user preferences ------
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 class UserPreferences(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="preferences",
     )
-<<<<<<< HEAD
-
-=======
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
     email_alerts = models.BooleanField(default=True)
     message_notifications = models.BooleanField(default=True)
     system_activity_updates = models.BooleanField(default=False)
 
     language = models.CharField(
-<<<<<<< HEAD
         max_length=100,
-=======
-        max_length=10,
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
         choices=[
             ("en", "English"),
             ("es", "Spanish"),
@@ -172,11 +149,7 @@ class UserPreferences(models.Model):
     )
     time_format_24h = models.BooleanField(default=True)
     homepage_view = models.CharField(
-<<<<<<< HEAD
         max_length=200,
-=======
-        max_length=20,
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
         choices=[
             ("dashboard", "Dashboard"),
             ("inbox", "Inbox"),
@@ -187,11 +160,7 @@ class UserPreferences(models.Model):
 
     dark_mode = models.BooleanField(default=False)
     font_size = models.CharField(
-<<<<<<< HEAD
         max_length=100,
-=======
-        max_length=10,
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
         choices=[
             ("small", "Small"),
             ("medium", "Medium"),
@@ -200,11 +169,7 @@ class UserPreferences(models.Model):
         default="medium",
     )
     layout_density = models.CharField(
-<<<<<<< HEAD
         max_length=100,
-=======
-        max_length=10,
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
         choices=[
             ("comfortable", "Comfortable"),
             ("compact", "Compact"),
@@ -214,14 +179,8 @@ class UserPreferences(models.Model):
 
     def __str__(self):
         return f"{self.user} preferences"
-<<<<<<< HEAD
     
     # ------ Model for user privacy settings ------
-=======
-
-
-# ------ Model for user privacy settings ------
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 class UserPrivacySettings(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
@@ -242,8 +201,4 @@ class UserPrivacySettings(models.Model):
     login_alerts_enabled = models.BooleanField(default=True)
 
     def __str__(self):
-<<<<<<< HEAD
         return f"{self.user} privacy settings"
-=======
-        return f"{self.user} privacy settings"
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc

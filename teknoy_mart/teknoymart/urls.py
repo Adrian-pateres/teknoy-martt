@@ -9,13 +9,10 @@ urlpatterns = [
     # --- Landing / Home ---
     path("", views.index, name="index"),
     path("guest/", views.guest_home, name="guest_home"),
-<<<<<<< HEAD
     
     # Dashboards
     path("home/", views.home, name="home"),                  # seller dashboard
 
-=======
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
     # --- Dashboards ---
     path("home/", views.home, name="home"),
@@ -36,7 +33,6 @@ urlpatterns = [
     path("register/step2/", views.register_step2, name="register_step2"),
     path("register/step3/", views.register_step3, name="register_step3"),
     path("register/step4/", views.register_step4, name="register_step4"),
-<<<<<<< HEAD
     path("add-product/", views.add_product, name="add_product"),
     path('myproducts/', views.product_list, name='product_list'),
     
@@ -48,8 +44,6 @@ urlpatterns = [
     path("settings/privacy/", views.privacy_settings_view, name="privacy_settings"),
     path("settings/terms/", views.terms_view, name="terms"),
     path("settings/about/", views.settings_about_view, name="settings_about"),
-=======
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
     # --- About Page ---
     path("about/", views.about, name="about"),
@@ -94,7 +88,6 @@ urlpatterns = [
         name="password_reset_complete",
     ),
 
-<<<<<<< HEAD
     path("buy-now/<int:product_id>/", views.buy_now, name="buy_now"),
     path("payment-success/", views.payment_success, name="payment_success"),
 
@@ -119,10 +112,6 @@ urlpatterns = [
 
     path("logout-confirm/", views.logout_page_view, name="logout_confirm"),
     path("logout/", views.logout_view, name="logout"),
-=======
-        path("buy-now/<int:product_id>/", views.buy_now, name="buy_now"),
-    path("payment-success/", views.payment_success, name="payment_success"),
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 ]
 
 

@@ -1,9 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-<<<<<<< HEAD
 from .models import Profile, Product
-=======
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 from .models import Profile, Product, UserPreferences, UserPrivacySettings
 from .validators import validate_institutional_email
 
@@ -116,7 +113,6 @@ class TermsAcceptanceForm(forms.Form):
         required=True,
         label="I have read and agree to the Terms & Conditions",
     )
-<<<<<<< HEAD
 
 
 class ProfileUpdateForm(forms.ModelForm):
@@ -127,5 +123,3 @@ class ProfileUpdateForm(forms.ModelForm):
             'birth_date': forms.DateInput(attrs={'type': 'date'}),
             'bio': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Add a bio...'}),
         }
-=======
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc

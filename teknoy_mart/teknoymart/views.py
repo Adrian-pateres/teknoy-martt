@@ -1,22 +1,11 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-<<<<<<< HEAD
 from .forms import StudentRegistrationForm, ProductForm, UserPreferencesForm, UserPrivacyForm, TermsAcceptanceForm, ProfileUpdateForm
-=======
-from .forms import (
-    StudentRegistrationForm, 
-    ProductForm, 
-    UserPreferencesForm, 
-    UserPrivacyForm, 
-    TermsAcceptanceForm
-)
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 from django.contrib import messages
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-<<<<<<< HEAD
 from django.db import IntegrityError
 from .forms import ProductForm
 from .models import Product, Profile, UserPreferences, UserPrivacySettings
@@ -39,11 +28,6 @@ def role_required(role: str):
             return view_func(request, *args, **kwargs)
         return _wrapped
     return decorator
-=======
-from .models import Product, Profile, UserPreferences, UserPrivacySettings
-from django.http import HttpResponseForbidden
-from django.utils import timezone
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
 
 # ---------------- Helper Functions ----------------
@@ -61,31 +45,10 @@ class LoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
 
-<<<<<<< HEAD
 def about(request):
     return render(request, "teknoymart/about.html")
 
 # ---------------- Index / Home ----------------
-=======
-
-# -------- Role-based decorator --------
-def role_required(required):
-    def decorator(view_fn):
-        @login_required(login_url="login")
-        def _wrapped(request, *args, **kwargs):
-            try:
-                role = request.user.profile.role
-            except Profile.DoesNotExist:
-                return HttpResponseForbidden("Profile not found.")
-            if role != required:
-                return HttpResponseForbidden("You do not have access to this page.")
-            return view_fn(request, *args, **kwargs)
-        return _wrapped
-    return decorator
-
-
-# ---------------- Landing / Home ----------------
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 def index(request):
     return render(request, "teknoymart/index.html")
 
@@ -221,11 +184,7 @@ def register_step4(request):
             request.session.pop(k, None)
 
         messages.success(request, "Registration successful! You can now log in.")
-<<<<<<< HEAD
         return redirect('login')  # ← do NOT log them in here
-=======
-        return redirect('login')
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
     return render(request, 'register/register4.html')
 
@@ -257,7 +216,6 @@ def logout_view(request):
 
 
 # ---------------- Product Views ----------------
-<<<<<<< HEAD
 
 # -------- Single role decorator --------
 def role_required(required):
@@ -277,8 +235,6 @@ def role_required(required):
 
 
 # Sellers can add products
-=======
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 @login_required
 @role_required("seller")
 def add_product(request):
@@ -296,7 +252,6 @@ def add_product(request):
     return render(request, "product/add_product.html", {"form": form, "editing": False})
 
 
-<<<<<<< HEAD
 # -------- Buyer dashboard --------
 @login_required
 @role_required("buyer")
@@ -305,8 +260,6 @@ def buyer_home(request):
     return render(request, "home/home_buyer.html", {"products": products})
 
 # -------- CRUD: list only MY products (seller) --------
-=======
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 @login_required
 @role_required("seller")
 def product_list(request):
@@ -341,11 +294,8 @@ def delete_product(request, pk):
     if request.method == "POST":
         product.delete()
         messages.success(request, "Product deleted successfully.")
-<<<<<<< HEAD
         return redirect("product_list")
     # If someone GETs this URL, just bounce back to list
-=======
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
     return redirect("product_list")
 
 
@@ -370,7 +320,6 @@ def preferences_view(request):
     return render(request, "settings/preferences.html", {"form": form})
 
 
-<<<<<<< HEAD
 @login_required
 @role_required("buyer")
 def buy_now(request, product_id):
@@ -421,16 +370,10 @@ def preferences_view(request):
         return render(request, "settings-branches/preferences.html", {"form": form})
     
 
-=======
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 @login_required(login_url="login")
 def privacy_settings_view(request):
     """User privacy settings page"""
     settings_obj, _ = UserPrivacySettings.objects.get_or_create(user=request.user)
-<<<<<<< HEAD
-=======
-
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
     if request.method == "POST":
         form = UserPrivacyForm(request.POST, instance=settings_obj)
         if form.is_valid():
@@ -441,14 +384,8 @@ def privacy_settings_view(request):
             messages.error(request, "Please correct the errors below.")
     else:
         form = UserPrivacyForm(instance=settings_obj)
-<<<<<<< HEAD
         return render(request, "settings-branches/privacy.html", {"form": form})
     
-=======
-
-    return render(request, "settings/privacy.html", {"form": form})
-
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
 @login_required(login_url="login")
 def terms_view(request):
@@ -469,17 +406,12 @@ def terms_view(request):
         initial = {"agree": profile.terms_accepted}
         form = TermsAcceptanceForm(initial=initial)
 
-<<<<<<< HEAD
     return render(request, "settings-branches/terms.html", {"form": form, "profile": profile})
-=======
-    return render(request, "settings/terms.html", {"form": form, "profile": profile})
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
 
 @login_required(login_url="login")
 def settings_about_view(request):
     """Static informational page about the settings system"""
-<<<<<<< HEAD
     return render(request, "settings-branches/about_settings.html")
 
 # ---------------- Buyer Settings Views ----------------
@@ -619,6 +551,3 @@ def logout_page_view(request):
 def logout_view(request):
     logout(request)
     return redirect("index")
-=======
-    return render(request, "settings/about_settings.html")
->>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
