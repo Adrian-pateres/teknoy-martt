@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth import get_user_model
+<<<<<<< HEAD
 from .models import Profile, Product
+=======
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 from .models import Profile, Product, UserPreferences, UserPrivacySettings
 from .validators import validate_institutional_email
 
@@ -31,7 +34,7 @@ class StudentRegistrationForm(forms.ModelForm):
 
     class Meta:
         model = get_user_model()
-        fields = ["first_name", "last_name", "username", "email"]  # username = StudentID
+        fields = ["first_name", "last_name", "username", "email"]
         widgets = {
             "first_name": forms.TextInput(attrs={"id": "first_name", "placeholder": "Juan", "required": "required"}),
             "last_name":  forms.TextInput(attrs={"id": "last_name",  "placeholder": "Dela Cruz", "required": "required"}),
@@ -47,14 +50,12 @@ class StudentRegistrationForm(forms.ModelForm):
         return cleaned
 
     def save(self, commit=True):
-        # Create the user first
         user = super().save(commit=False)
         user.email = self.cleaned_data["email"]
         user.set_password(self.cleaned_data["password"])
 
         if commit:
             user.save()
-            # Create Profile with selected role
             Profile.objects.create(user=user, role=self.cleaned_data['role'])
 
         return user
@@ -115,6 +116,7 @@ class TermsAcceptanceForm(forms.Form):
         required=True,
         label="I have read and agree to the Terms & Conditions",
     )
+<<<<<<< HEAD
 
 
 class ProfileUpdateForm(forms.ModelForm):
@@ -125,3 +127,5 @@ class ProfileUpdateForm(forms.ModelForm):
             'birth_date': forms.DateInput(attrs={'type': 'date'}),
             'bio': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Add a bio...'}),
         }
+=======
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc

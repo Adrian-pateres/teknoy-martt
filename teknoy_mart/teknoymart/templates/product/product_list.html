@@ -59,7 +59,6 @@
           <!-- Hidden form for deletion -->
           <form id="delete-form-{{ product.pk }}" action="{% url 'delete_product' product.pk %}" method="post" style="display:none;">
             {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
           </form>
         </div>
       </article>
@@ -74,7 +73,6 @@
     <a href="{% url 'home' %}" class="btn btn-secondary">Home</a>
     <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
   </div>
-
 </main>
 
 <!-- Delete Confirmation Modal -->
@@ -119,4 +117,8 @@
   });
 </script>
 
+<<<<<<< HEAD
 {% endblock %}
+=======
+{% endblock %}
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc

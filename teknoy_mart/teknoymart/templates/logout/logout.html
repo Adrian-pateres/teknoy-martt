@@ -1,14 +1,23 @@
 {% extends "teknoymart/base.html" %}
+<<<<<<< HEAD
 {% load static %}
 
 {% block content %}
 <div class="logout-container">
+=======
+
+{% load static %} 
+
+<div class="logout-container">
+  <!-- First Popup -->
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
   <div class="popup-card" id="step1">
     <h2>Confirm Logout</h2>
     <p>Are you sure you want to log out?</p>
 
     <div class="btn-group">
       <button class="btn confirm-btn" onclick="showFinalConfirm()">Yes</button>
+<<<<<<< HEAD
       
       {% if request.user.profile.role == 'seller' %}
         <a href="{% url 'home' %}" class="btn cancel-btn">Cancel</a>
@@ -18,12 +27,23 @@
     </div>
   </div>
 
+=======
+      <a href="{% url 'index' %}" class="btn cancel-btn">Cancel</a>
+    </div>
+  </div>
+
+  <!-- Second Popup (Final Confirmation) -->
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
   <div class="popup-card" id="finalConfirmPopup">
     <h2>Logout Successful</h2>
     <p>Click below to return to home.</p>
 
+<<<<<<< HEAD
     <form action="{% url 'logout' %}" method="POST">
       {% csrf_token %}
+=======
+    <form action="{% url 'index' %}" method="GET">
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
       <button type="submit" class="btn confirm-btn" style="width:100%">Return Home</button>
     </form>
   </div>
@@ -36,7 +56,11 @@
   align-items: center;
   min-height: 70vh;
   font-family: 'Poppins', sans-serif;
+<<<<<<< HEAD
   /* background: rgba(0,0,0,0.5); Remove this if you want it on your white background, or keep it for dimming */
+=======
+  background: rgba(0,0,0,0.5);
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 }
 
 .popup-card {
@@ -58,10 +82,17 @@ h2 { font-size: 22px; margin-bottom: 10px; font-weight: 600; }
 p { font-size: 14px; color: #444; margin-bottom: 25px; }
 
 .btn-group { display: flex; justify-content: space-between; gap: 12px; }
+<<<<<<< HEAD
 .btn { flex: 1; padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: 0.2s ease; text-decoration: none; line-height: 1.5;}
 .confirm-btn { background: #d9534f; color: white; }
 .confirm-btn:hover { background: #c0392b; }
 .cancel-btn { background: #e0e0e0; color: #333; }
+=======
+.btn { flex: 1; padding: 10px 0; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: 0.2s ease; }
+.confirm-btn { background: #d9534f; color: white; }
+.confirm-btn:hover { background: #c0392b; }
+.cancel-btn { background: #e0e0e0; }
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 .cancel-btn:hover { background: #cfcfcf; }
 #finalConfirmPopup { display: none; }
 </style>
@@ -73,4 +104,8 @@ function showFinalConfirm() {
 }
 </script>
 
+<<<<<<< HEAD
 {% endblock %}
+=======
+{% endblock %}
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc

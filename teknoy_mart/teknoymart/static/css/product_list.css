@@ -51,7 +51,6 @@
   transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
-
 .product-card .thumb {
   width: 100%;
   height: 180px;
@@ -64,7 +63,6 @@
   height: 100%;
   object-fit: cover;
 }
-
 .product-card .details {
   padding: 1rem;
 }

@@ -1,11 +1,22 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
+<<<<<<< HEAD
 from .forms import StudentRegistrationForm, ProductForm, UserPreferencesForm, UserPrivacyForm, TermsAcceptanceForm, ProfileUpdateForm
+=======
+from .forms import (
+    StudentRegistrationForm, 
+    ProductForm, 
+    UserPreferencesForm, 
+    UserPrivacyForm, 
+    TermsAcceptanceForm
+)
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 from django.contrib import messages
 from django import forms
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+<<<<<<< HEAD
 from django.db import IntegrityError
 from .forms import ProductForm
 from .models import Product, Profile, UserPreferences, UserPrivacySettings
@@ -28,6 +39,11 @@ def role_required(role: str):
             return view_func(request, *args, **kwargs)
         return _wrapped
     return decorator
+=======
+from .models import Product, Profile, UserPreferences, UserPrivacySettings
+from django.http import HttpResponseForbidden
+from django.utils import timezone
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
 
 # ---------------- Helper Functions ----------------
@@ -40,27 +56,61 @@ def _validate_institutional_email(email: str):
         raise ValidationError("Please use institutional email (@cit.edu or @cit.edu.ph).")
     return email
 
+
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
 
+<<<<<<< HEAD
 def about(request):
     return render(request, "teknoymart/about.html")
 
 # ---------------- Index / Home ----------------
+=======
+
+# -------- Role-based decorator --------
+def role_required(required):
+    def decorator(view_fn):
+        @login_required(login_url="login")
+        def _wrapped(request, *args, **kwargs):
+            try:
+                role = request.user.profile.role
+            except Profile.DoesNotExist:
+                return HttpResponseForbidden("Profile not found.")
+            if role != required:
+                return HttpResponseForbidden("You do not have access to this page.")
+            return view_fn(request, *args, **kwargs)
+        return _wrapped
+    return decorator
+
+
+# ---------------- Landing / Home ----------------
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 def index(request):
     return render(request, "teknoymart/index.html")
+
+
+def about(request):
+    return render(request, "teknoymart/about.html")
+
 
 def guest_home(request):
     return render(request, "home/guest_home.html")
 
-@login_required(login_url='guest_home')
-def home(request):
-    return render(request, "home/home.html")  # seller dashboard
 
 @login_required(login_url='guest_home')
+@role_required("seller")
+def home(request):
+    products = Product.objects.filter(owner=request.user).order_by("-created_at")
+    return render(request, "home/home.html", {"products": products})
+
+
+@login_required(login_url='guest_home')
+@role_required("buyer")
 def home_buyer(request):
-    return render(request, "home/home_buyer.html")
+    products = Product.objects.all().order_by("-created_at")
+    return render(request, "home/home_buyer.html", {"products": products})
+
 
 # ---------------- Registration ----------------
 def register_step1(request):
@@ -89,6 +139,7 @@ def register_step1(request):
         return redirect('register_step2')
 
     return render(request, 'register/register.html')
+
 
 def register_step2(request):
     if request.method == 'POST':
@@ -121,30 +172,20 @@ def register_step2(request):
 
     return render(request, 'register/register2.html')
 
+
 def register_step3(request):
-    """
-    Step 3: Pick role (seller/buyer).
-    Only store the choice in the session and move to Step 4.
-    """
     if request.method == 'POST':
         role = request.POST.get('user_type', '').strip()
         if role not in ('seller', 'buyer'):
             messages.error(request, "Please choose either Seller or Buyer.")
             return render(request, 'register/register3.html')
-
-        # keep only the choice here
         request.session['role'] = role
         return redirect('register_step4')
 
     return render(request, 'register/register3.html')
 
+
 def register_step4(request):
-    """
-    Step 4:
-      - GET  → show the confirmation page with a 'Finish Registration' button
-      - POST → create the user + profile, clear session, and send to Login
-    """
-    # Make sure all required data from steps 1–3 are still present
     needed = ['first_name', 'last_name', 'email', 'username', 'password', 'role']
     if any(not request.session.get(k) for k in needed):
         messages.error(request, "Your session expired. Please start registration again.")
@@ -154,11 +195,10 @@ def register_step4(request):
         first_name = request.session['first_name']
         last_name  = request.session['last_name']
         email      = request.session['email']
-        username   = request.session['username']  # student ID
+        username   = request.session['username']
         password   = request.session['password']
         role       = request.session['role']
 
-        # duplicates safety
         if User.objects.filter(username=username).exists():
             messages.error(request, "That Student ID is already registered.")
             return redirect('register_step2')
@@ -166,29 +206,29 @@ def register_step4(request):
             messages.error(request, "That email is already registered.")
             return redirect('register_step2')
 
-        # create user
         user = User.objects.create_user(
             username=username,
             email=email,
             password=password,
             first_name=first_name,
             last_name=last_name,
-            is_staff=False,
-            is_active=True,
         )
         dob_str = request.session.get('dob')
         Profile.objects.create(user=user, role=role, birth_date=dob_str)
 
-        # clear sensitive session data
-        for k in ("first_name","middle_name","last_name","email","dob",
-                  "username","password","confirm_password","role"):
+        # Clear session keys
+        for k in ("first_name","middle_name","last_name","email","dob","username","password","confirm_password","role"):
             request.session.pop(k, None)
 
         messages.success(request, "Registration successful! You can now log in.")
+<<<<<<< HEAD
         return redirect('login')  # ← do NOT log them in here
+=======
+        return redirect('login')
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
-    # GET: show your confirmation page with a Finish button
     return render(request, 'register/register4.html')
+
 
 # ---------------- Authentication ----------------
 def login_view(request):
@@ -199,13 +239,12 @@ def login_view(request):
         if user is not None:
             login(request, user)
             role = getattr(getattr(user, "profile", None), "role", None)
-            # Use our current route names:
             if role == "seller":
-                return redirect("home")             # seller dashboard
+                return redirect("home")
             elif role == "buyer":
-                return redirect("home_buyer")       # buyer dashboard
+                return redirect("home_buyer")
             else:
-                messages.warning(request, "No role on profile; sending to guest.")
+                messages.warning(request, "No role found; redirecting to guest page.")
                 return redirect("guest_home")
         else:
             messages.error(request, "Invalid username or password.")
@@ -217,26 +256,8 @@ def logout_view(request):
     return redirect("index")
 
 
-def forgot_password_view(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-        messages.success(request, f"A password reset link has been sent to {email}.")
-        return redirect("login")
-    return render(request, "password/forgot_password.html")
-
-
-def reset_password_view(request):
-    if request.method == "POST":
-        new_password = request.POST.get("new_password")
-        confirm_password = request.POST.get("confirm_password")
-        if new_password != confirm_password:
-            messages.error(request, "Passwords do not match.")
-        else:
-            messages.success(request, "Your password has been successfully reset!")
-            return redirect("login")
-    return render(request, "password/reset_password.html")
-
 # ---------------- Product Views ----------------
+<<<<<<< HEAD
 
 # -------- Single role decorator --------
 def role_required(required):
@@ -256,6 +277,8 @@ def role_required(required):
 
 
 # Sellers can add products
+=======
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 @login_required
 @role_required("seller")
 def add_product(request):
@@ -272,14 +295,8 @@ def add_product(request):
         form = ProductForm()
     return render(request, "product/add_product.html", {"form": form, "editing": False})
 
-# -------- Seller dashboard (named 'home' to match your URLs) --------
-@login_required
-@role_required("seller")
-def home(request):
-    # Seller sees only their products
-    products = Product.objects.filter(owner=request.user).order_by("-created_at")
-    return render(request, "home/home.html", {"products": products})
 
+<<<<<<< HEAD
 # -------- Buyer dashboard --------
 @login_required
 @role_required("buyer")
@@ -288,6 +305,8 @@ def buyer_home(request):
     return render(request, "home/home_buyer.html", {"products": products})
 
 # -------- CRUD: list only MY products (seller) --------
+=======
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 @login_required
 @role_required("seller")
 def product_list(request):
@@ -295,7 +314,6 @@ def product_list(request):
     return render(request, "product/product_list.html", {"products": products})
 
 
-# -------- UPDATE --------
 @login_required
 @role_required("seller")
 def edit_product(request, pk):
@@ -309,10 +327,13 @@ def edit_product(request, pk):
         messages.error(request, "Please correct the errors below.")
     else:
         form = ProductForm(instance=product)
-    return render(request, "product/add_product.html", {"form": form, "editing": True, "product": product})
+    return render(
+        request,
+        "product/add_product.html",
+        {"form": form, "editing": True, "product": product},
+    )
 
 
-# -------- DELETE --------
 @login_required
 @role_required("seller")
 def delete_product(request, pk):
@@ -320,19 +341,36 @@ def delete_product(request, pk):
     if request.method == "POST":
         product.delete()
         messages.success(request, "Product deleted successfully.")
+<<<<<<< HEAD
         return redirect("product_list")
     # If someone GETs this URL, just bounce back to list
+=======
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
     return redirect("product_list")
 
 
-@login_required
-@role_required("seller")
-def seller_home(request):
-    # Show ONLY this seller's products
-    products = Product.objects.filter(owner=request.user).order_by("-created_at")
-    return render(request, "home/home.html", {"products": products})
+# --------------- Settings Views ----------------
+
+@login_required(login_url="login")
+def preferences_view(request):
+    """User preferences page"""
+    prefs, _ = UserPreferences.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        form = UserPreferencesForm(request.POST, instance=prefs)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Preferences saved successfully.")
+            return redirect("preferences")
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = UserPreferencesForm(instance=prefs)
+
+    return render(request, "settings/preferences.html", {"form": form})
 
 
+<<<<<<< HEAD
 @login_required
 @role_required("buyer")
 def buy_now(request, product_id):
@@ -383,10 +421,16 @@ def preferences_view(request):
         return render(request, "settings-branches/preferences.html", {"form": form})
     
 
+=======
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 @login_required(login_url="login")
 def privacy_settings_view(request):
     """User privacy settings page"""
     settings_obj, _ = UserPrivacySettings.objects.get_or_create(user=request.user)
+<<<<<<< HEAD
+=======
+
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
     if request.method == "POST":
         form = UserPrivacyForm(request.POST, instance=settings_obj)
         if form.is_valid():
@@ -397,8 +441,14 @@ def privacy_settings_view(request):
             messages.error(request, "Please correct the errors below.")
     else:
         form = UserPrivacyForm(instance=settings_obj)
+<<<<<<< HEAD
         return render(request, "settings-branches/privacy.html", {"form": form})
     
+=======
+
+    return render(request, "settings/privacy.html", {"form": form})
+
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
 @login_required(login_url="login")
 def terms_view(request):
@@ -419,12 +469,17 @@ def terms_view(request):
         initial = {"agree": profile.terms_accepted}
         form = TermsAcceptanceForm(initial=initial)
 
+<<<<<<< HEAD
     return render(request, "settings-branches/terms.html", {"form": form, "profile": profile})
+=======
+    return render(request, "settings/terms.html", {"form": form, "profile": profile})
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
 
 @login_required(login_url="login")
 def settings_about_view(request):
     """Static informational page about the settings system"""
+<<<<<<< HEAD
     return render(request, "settings-branches/about_settings.html")
 
 # ---------------- Buyer Settings Views ----------------
@@ -564,3 +619,6 @@ def logout_page_view(request):
 def logout_view(request):
     logout(request)
     return redirect("index")
+=======
+    return render(request, "settings/about_settings.html")
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc

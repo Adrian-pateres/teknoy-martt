@@ -1,6 +1,9 @@
 {% extends "teknoymart/base.html" %}
 {% load static %}
+<<<<<<< HEAD
 
+=======
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 {% block content %}
 <div class="popup-container">
   <div class="popup-card" id="deleteStep1">
@@ -9,10 +12,18 @@
 
     <div class="btn-group">
       <button class="btn confirm-btn" onclick="showDeleteFinal()">Yes, Delete</button>
+<<<<<<< HEAD
       <a href="{% url 'home' %}" class="btn cancel-btn" style="text-align:center; padding-top:10px;">Cancel</a>
     </div>
   </div>
 
+=======
+      <a href="{% url 'index' %}" class="btn cancel-btn" style="text-align:center; padding-top:10px;">Cancel</a>
+    </div>
+  </div>
+
+  <!-- Final Confirm -->
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
   <div class="popup-card" id="deleteFinal" style="display:none;">
     <h2>Confirm Deletion</h2>
     <p>This will permanently remove your account and all data.</p>
@@ -23,6 +34,10 @@
     </form>
   </div>
 </div>
+<<<<<<< HEAD
+=======
+{% endblock %}
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 
 <style>
 .popup-container {
@@ -41,7 +56,10 @@
   text-align: center;
   box-shadow: 0 10px 25px rgba(0,0,0,0.15);
   animation: slideDown 0.3s ease-out;
+<<<<<<< HEAD
   margin: auto; /* Ensures it centers if flex fails */
+=======
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -65,16 +83,26 @@
 
 .confirm-btn { background: #d9534f; color: white; }
 .confirm-btn:hover { background: #c0392b; }
+<<<<<<< HEAD
 .cancel-btn { background: #e0e0e0; color: #333; display: inline-block; text-decoration:none;}
+=======
+.cancel-btn { background: #e0e0e0; color: #333; }
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
 .cancel-btn:hover { background: #cfcfcf; }
 </style>
 
 <script>
 function showDeleteFinal() {
+<<<<<<< HEAD
   // This hides the first card and shows the second card
+=======
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
   document.getElementById('deleteStep1').style.display = 'none';
   document.getElementById('deleteFinal').style.display = 'block';
 }
 </script>
+<<<<<<< HEAD
 
 {% endblock %}
+=======
+>>>>>>> b05a911db3601e37ff8ac75905f33203cb8184fc
