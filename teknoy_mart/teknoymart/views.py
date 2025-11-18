@@ -1,13 +1,21 @@
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
-from .forms import StudentRegistrationForm, ProductForm
+from .forms import (
+    StudentRegistrationForm, 
+    ProductForm, 
+    UserPreferencesForm, 
+    UserPrivacyForm, 
+    TermsAcceptanceForm
+)
 from django.contrib import messages
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Product, Profile
+from .models import Product, Profile, UserPreferences, UserPrivacySettings
 from django.http import HttpResponseForbidden
+from django.utils import timezone
+
 
 # ---------------- Helper Functions ----------------
 def _validate_institutional_email(email: str):
@@ -19,12 +27,14 @@ def _validate_institutional_email(email: str):
         raise ValidationError("Please use institutional email (@cit.edu or @cit.edu.ph).")
     return email
 
+
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
 
+
 # -------- Role-based decorator --------
-def role_required(required):  # use: @role_required("seller") or @role_required("buyer")
+def role_required(required):
     def decorator(view_fn):
         @login_required(login_url="login")
         def _wrapped(request, *args, **kwargs):
@@ -38,15 +48,19 @@ def role_required(required):  # use: @role_required("seller") or @role_required(
         return _wrapped
     return decorator
 
+
 # ---------------- Landing / Home ----------------
 def index(request):
     return render(request, "teknoymart/index.html")
 
+
 def about(request):
     return render(request, "teknoymart/about.html")
 
+
 def guest_home(request):
     return render(request, "home/guest_home.html")
+
 
 @login_required(login_url='guest_home')
 @role_required("seller")
@@ -54,11 +68,13 @@ def home(request):
     products = Product.objects.filter(owner=request.user).order_by("-created_at")
     return render(request, "home/home.html", {"products": products})
 
+
 @login_required(login_url='guest_home')
 @role_required("buyer")
 def home_buyer(request):
     products = Product.objects.all().order_by("-created_at")
     return render(request, "home/home_buyer.html", {"products": products})
+
 
 # ---------------- Registration ----------------
 def register_step1(request):
@@ -87,6 +103,7 @@ def register_step1(request):
         return redirect('register_step2')
 
     return render(request, 'register/register.html')
+
 
 def register_step2(request):
     if request.method == 'POST':
@@ -119,6 +136,7 @@ def register_step2(request):
 
     return render(request, 'register/register2.html')
 
+
 def register_step3(request):
     if request.method == 'POST':
         role = request.POST.get('user_type', '').strip()
@@ -129,6 +147,7 @@ def register_step3(request):
         return redirect('register_step4')
 
     return render(request, 'register/register3.html')
+
 
 def register_step4(request):
     needed = ['first_name', 'last_name', 'email', 'username', 'password', 'role']
@@ -169,6 +188,7 @@ def register_step4(request):
 
     return render(request, 'register/register4.html')
 
+
 # ---------------- Authentication ----------------
 def login_view(request):
     if request.method == "POST":
@@ -189,9 +209,11 @@ def login_view(request):
             messages.error(request, "Invalid username or password.")
     return render(request, "login/login.html")
 
+
 def logout_view(request):
     logout(request)
     return redirect("index")
+
 
 # ---------------- Product Views ----------------
 @login_required
@@ -210,11 +232,13 @@ def add_product(request):
         form = ProductForm()
     return render(request, "product/add_product.html", {"form": form, "editing": False})
 
+
 @login_required
 @role_required("seller")
 def product_list(request):
     products = Product.objects.filter(owner=request.user).order_by("-created_at")
     return render(request, "product/product_list.html", {"products": products})
+
 
 @login_required
 @role_required("seller")
@@ -229,7 +253,12 @@ def edit_product(request, pk):
         messages.error(request, "Please correct the errors below.")
     else:
         form = ProductForm(instance=product)
-    return render(request, "product/add_product.html", {"form": form, "editing": True, "product": product})
+    return render(
+        request,
+        "product/add_product.html",
+        {"form": form, "editing": True, "product": product},
+    )
+
 
 @login_required
 @role_required("seller")
@@ -241,31 +270,69 @@ def delete_product(request, pk):
     return redirect("product_list")
 
 
-@login_required
-@role_required("buyer")
-def buy_now(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+# --------------- Settings Views ----------------
+
+@login_required(login_url="login")
+def preferences_view(request):
+    """User preferences page"""
+    prefs, _ = UserPreferences.objects.get_or_create(user=request.user)
 
     if request.method == "POST":
-        payment_method = request.POST.get("payment_method")
-        ref_number = request.POST.get("reference_number")
+        form = UserPreferencesForm(request.POST, instance=prefs)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Preferences saved successfully.")
+            return redirect("preferences")
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = UserPreferencesForm(instance=prefs)
 
-        if not payment_method:
-            messages.error(request, "Please select a payment method.")
-            return redirect("buy_now", product_id=product.id)
-
-        if not ref_number or len(ref_number.strip()) < 6:
-            messages.error(request, "Please enter a valid reference number.")
-            return redirect("buy_now", product_id=product.id)
-
-        # TODO: You can save transaction record here later
-        messages.success(request, "Payment successful!")
-        return redirect("payment_success")
-
-    return render(request, "home/buy_now.html", {"product": product})
+    return render(request, "settings/preferences.html", {"form": form})
 
 
-@login_required
-@role_required("buyer")
-def payment_success(request):
-    return render(request, "home/payment_success.html")
+@login_required(login_url="login")
+def privacy_settings_view(request):
+    """User privacy settings page"""
+    settings_obj, _ = UserPrivacySettings.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        form = UserPrivacyForm(request.POST, instance=settings_obj)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Privacy settings saved successfully.")
+            return redirect("privacy_settings")
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = UserPrivacyForm(instance=settings_obj)
+
+    return render(request, "settings/privacy.html", {"form": form})
+
+
+@login_required(login_url="login")
+def terms_view(request):
+    """Terms & Conditions acceptance page"""
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        form = TermsAcceptanceForm(request.POST)
+        if form.is_valid():
+            profile.terms_accepted = True
+            profile.terms_accepted_at = timezone.now()
+            profile.save()
+            messages.success(request, "Thank you for accepting the Terms & Conditions.")
+            return redirect("index")
+        else:
+            messages.error(request, "You must agree to the Terms & Conditions to continue.")
+    else:
+        initial = {"agree": profile.terms_accepted}
+        form = TermsAcceptanceForm(initial=initial)
+
+    return render(request, "settings/terms.html", {"form": form, "profile": profile})
+
+
+@login_required(login_url="login")
+def settings_about_view(request):
+    """Static informational page about the settings system"""
+    return render(request, "settings/about_settings.html")

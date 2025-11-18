@@ -1,0 +1,77 @@
+{% extends "teknoymart/base.html" %}
+{% load static %}
+{% block content %}
+<div class="popup-container">
+  <div class="popup-card" id="deleteStep1">
+    <h2>Delete Account</h2>
+    <p>Are you sure you want to permanently delete your account?<br>This action cannot be undone.</p>
+
+    <div class="btn-group">
+      <button class="btn confirm-btn" onclick="showDeleteFinal()">Yes, Delete</button>
+      <a href="{% url 'index' %}" class="btn cancel-btn" style="text-align:center; padding-top:10px;">Cancel</a>
+    </div>
+  </div>
+
+  <!-- Final Confirm -->
+  <div class="popup-card" id="deleteFinal" style="display:none;">
+    <h2>Confirm Deletion</h2>
+    <p>This will permanently remove your account and all data.</p>
+
+    <form method="POST" action="{% url 'delete_account' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn confirm-btn" style="width:100%">Confirm Delete</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+<style>
+.popup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.popup-card {
+  background: #fff;
+  padding: 30px;
+  width: 350px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideDown { from { transform: translateY(-20px); opacity:0;} to { transform: translateY(0); opacity:1;} }
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.confirm-btn { background: #d9534f; color: white; }
+.confirm-btn:hover { background: #c0392b; }
+.cancel-btn { background: #e0e0e0; color: #333; }
+.cancel-btn:hover { background: #cfcfcf; }
+</style>
+
+<script>
+function showDeleteFinal() {
+  document.getElementById('deleteStep1').style.display = 'none';
+  document.getElementById('deleteFinal').style.display = 'block';
+}
+</script>
