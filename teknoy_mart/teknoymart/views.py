@@ -4,7 +4,7 @@ from django.contrib.auth import login, authenticate, logout
 from .forms import StudentRegistrationForm, ProductForm, UserPreferencesForm, UserPrivacyForm, TermsAcceptanceForm, ProfileUpdateForm
 from django.contrib import messages
 from django import forms
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from .forms import ProductForm
