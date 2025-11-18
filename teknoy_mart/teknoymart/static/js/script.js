@@ -15,6 +15,10 @@ function validateInstitutionalEmail(el) {
   }
 }
 
+if (false) {
+  renderDemoProducts();
+}
+
 // Ensure the message shows when clicking Register
 document.addEventListener("DOMContentLoaded", () => {
   const form  = document.getElementById("registerForm");
@@ -70,3 +74,61 @@ document.addEventListener("DOMContentLoaded", () => {
     search.addEventListener("input", applyFilters);
   }
 });
+
+
+// ================ HAMBURGER DROPDOWN ================
+(function () {
+  const btn   = document.getElementById('hamburgerBtn');
+  const menu  = document.getElementById('userMenu');
+  if (!btn || !menu) return;
+
+  const close = () => {
+    menu.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  };
+
+  const open = () => {
+    menu.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  };
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.contains('open') ? close() : open();
+  });
+
+  // click outside
+  document.addEventListener('click', (e) => {
+    if (!menu.classList.contains('open')) return;
+    if (!menu.contains(e.target) && e.target !== btn) close();
+  });
+
+  // close with ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') close();
+  });
+})();
+
+// ================ DARK MODE TOGGLE ================
+(function () {
+  const THEME_KEY = 'tm_theme';
+  const root = document.documentElement;
+  const btn = document.getElementById('menu-dark');
+
+  function applySaved() {
+    const t = localStorage.getItem(THEME_KEY) || 'light';
+    root.setAttribute('data-theme', t);
+    if (btn) btn.textContent = (t === 'dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+  }
+
+  function toggleTheme() {
+    const next = (root.getAttribute('data-theme') === 'dark') ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem(THEME_KEY, next);
+    if (btn) btn.textContent = (next === 'dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+  }
+
+  // initialize and wire up
+  applySaved();
+  if (btn) btn.addEventListener('click', toggleTheme);
+})();

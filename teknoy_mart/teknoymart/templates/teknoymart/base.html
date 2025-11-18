@@ -1,5 +1,5 @@
 {% load static %}
-<script src="{% static 'js/script.js' %}" defer></script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +7,117 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}Teknoy Mart{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  
+  <script src="{% static 'js/script.js' %}" defer></script>
+
   {% block extra_css %}{% endblock %}
+
+  <style>
+    /* 1. Main Backgrounds & Text */
+    body.dark-mode, 
+    body.dark-mode .home-shell {
+      background-color: #121212 !important; /* Deep Dark Background */
+      color: #e0e0e0 !important;
+    }
+
+    /* 2. Navbar & Footer */
+    body.dark-mode .navbar,
+    body.dark-mode .footer {
+      background-color: #1e1e1e !important; /* Slightly lighter than background */
+      border-bottom: 1px solid #333;
+      color: #fff !important;
+    }
+    body.dark-mode .logo-text span {
+      color: #fff !important; 
+    }
+
+    /* 3. Product Cards (Overriding the pink style) */
+    body.dark-mode .product-card {
+      background-color: #1e1e1e !important; /* Dark Card */
+      border: 1px solid #333 !important;    /* Remove pink border */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+    }
+    
+    body.dark-mode .product-card .title {
+      color: #e0e0e0 !important; /* Make title white */
+    }
+
+    body.dark-mode .product-card .price {
+      color: #ff6666 !important; /* Lighter red for better contrast on dark */
+    }
+
+    body.dark-mode .product-card .thumb {
+      background-color: #2d2d2d !important; /* Dark gray behind image */
+    }
+
+    /* 4. Search Bar & Inputs */
+    body.dark-mode input,
+    body.dark-mode textarea,
+    body.dark-mode select,
+    body.dark-mode .search-bar input {
+      background-color: #2d2d2d !important;
+      color: #fff !important;
+      border: 1px solid #444 !important;
+    }
+    body.dark-mode input::placeholder {
+      color: #bbb;
+    }
+
+    /* 5. Category Chips & Tabs */
+    body.dark-mode .cat-filter .chip {
+      background-color: #2d2d2d;
+      color: #fff;
+      border-color: #444;
+    }
+    body.dark-mode .cat-filter .chip:hover {
+      background-color: #444;
+    }
+    body.dark-mode .cat-filter .chip.active {
+      background-color: #b71c1c; /* Keep brand red for active */
+      border-color: #b71c1c;
+    }
+    
+    body.dark-mode .tabs a {
+      color: #aaa; /* Dimmed text for inactive tabs */
+    }
+    body.dark-mode .tabs a.active {
+      color: #ff6666; /* Lighter red for active tab */
+      border-bottom-color: #ff6666;
+    }
+
+    /* 6. Dropdowns & Popups */
+    body.dark-mode .dropdown-menu,
+    body.dark-mode .popup-card {
+      background-color: #1e1e1e !important;
+      color: #e0e0e0 !important;
+      border: 1px solid #333;
+    }
+    body.dark-mode .dropdown-menu a {
+      color: #e0e0e0 !important;
+    }
+    body.dark-mode .dropdown-menu a:hover {
+      background-color: #333 !important;
+    }
+
+    /* 7. Headings & Links */
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4 {
+      color: #fff !important;
+    }
+    body.dark-mode a.view-all {
+      color: #ff6666 !important;
+    }
+    
+    /* 8. Buttons */
+    body.dark-mode .btn-secondary,
+    body.dark-mode .cancel-btn {
+      background-color: #333 !important;
+      color: #fff !important;
+      border: 1px solid #555;
+    }
+    body.dark-mode .side-btn {
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+  </style>
 </head>
 <body class="{% block body_class %}{% endblock %}">
 
@@ -18,37 +128,67 @@
     <span>Teknoy Mart</span>
   </div>
   <nav>
-    <a href="#">About</a>
-  </nav>
+    </nav>
 </header>
 {% endblock %}
 
 
-  <!-- Main Content -->
-  <main>
-    {% block content %}{% endblock %}
-  </main>
+<main>
+  {% block content %}{% endblock %}
+</main>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-section">
-      <h4>My Account</h4>
-      <p>Manage your purchases and profile settings.</p>
-    </div>
-    <div class="footer-section">
-      <h4>Contact</h4>
-      <p>Email: support@teknoymart.com</p>
-      <p>Phone: +63 912 345 6789</p>
-    </div>
-    <div class="footer-section">
-      <h4>Information</h4>
-      <ul>
-        <li><a href="#">New Products</a></li>
-        <li><a href="#">Top Sellers</a></li>
-        <li><a href="#">Secure Shopping</a></li>
-      </ul>
-    </div>
-  </footer>
+<footer class="footer">
+  <div class="footer-section">
+    <h4>My Account</h4>
+    <p>Manage your purchases and profile settings.</p>
+  </div>
+  <div class="footer-section">
+    <h4>Contact</h4>
+    <p>Email: support@teknoymart.com</p>
+    <p>Phone: +63 912 345 6789</p>
+  </div>
+  <div class="footer-section">
+    <h4>Information</h4>
+    <ul>
+      <li><a href="#">New Products</a></li>
+      <li><a href="#">Top Sellers</a></li>
+      <li><a href="#">Secure Shopping</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // 1. Identify elements
+    const darkToggleBtn = document.getElementById("menu-dark");
+    const body = document.body;
+
+    // 2. Apply Theme from Memory immediately
+    const currentTheme = localStorage.getItem("theme");
+    if (currentTheme === "dark") {
+      body.classList.add("dark-mode");
+      if (darkToggleBtn) darkToggleBtn.textContent = "☀️ Light Mode";
+    }
+
+    // 3. Handle Click
+    if (darkToggleBtn) {
+      darkToggleBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation(); // Prevents menu from closing
+
+        body.classList.toggle("dark-mode");
+
+        if (body.classList.contains("dark-mode")) {
+          localStorage.setItem("theme", "dark");
+          darkToggleBtn.textContent = "☀️ Light Mode";
+        } else {
+          localStorage.setItem("theme", "light");
+          darkToggleBtn.textContent = "🌙 Dark Mode";
+        }
+      });
+    }
+  });
+</script>
 
 </body>
 </html>

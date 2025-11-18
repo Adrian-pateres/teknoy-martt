@@ -22,7 +22,7 @@ urlpatterns = [
     
     # Dashboards
     path("home/", views.home, name="home"),                  # seller dashboard
-    path("home/buyer/", views.home_buyer, name="home_buyer"),  # buyer dashboard
+
 
     # Authentication
     path("login/", views.login_view, name="login"),
@@ -36,7 +36,14 @@ urlpatterns = [
     path("add-product/", views.add_product, name="add_product"),
     path('myproducts/', views.product_list, name='product_list'),
     
-    
+    # --- About Page ---
+    path("about/", views.about, name="about"),
+
+    # --- Settings Pages ---
+    path("settings/preferences/", views.preferences_view, name="preferences"),
+    path("settings/privacy/", views.privacy_settings_view, name="privacy_settings"),
+    path("settings/terms/", views.terms_view, name="terms"),
+    path("settings/about/", views.settings_about_view, name="settings_about"),
 
     # Product Upload
     path("products/new/", views.add_product, name="add_product"),  # unified
@@ -46,6 +53,8 @@ urlpatterns = [
         "forgot-password/",
         auth_views.PasswordResetView.as_view(
             template_name="password/forgot_password.html",
+            email_template_name="emails/password_reset_email.txt",
+            subject_template_name="emails/password_reset_subject.txt",
             success_url=reverse_lazy("password_reset_done"),
         ),
         name="forgot_password",
@@ -72,6 +81,31 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
+
+    path("buy-now/<int:product_id>/", views.buy_now, name="buy_now"),
+    path("payment-success/", views.payment_success, name="payment_success"),
+
+    # Buyer purchase
+    path("buy-now/<int:product_id>/", views.buy_now, name="buy_now"),
+    path("payment-success/", views.payment_success, name="payment_success"),
+    
+    # --- Buyer Settings Pages ---
+    path("buyer/settings/preferences/", views.buyer_preferences_view, name="buyer_preferences"),
+    path("buyer/settings/privacy/", views.buyer_privacy_view, name="buyer_privacy_settings"),
+    path("buyer/settings/terms/", views.buyer_terms_view, name="buyer_terms"),
+
+    # SELLER Delete
+    path("settings/delete-account/", views.delete_account_view, name="delete_account"),
+
+    # BUYER Delete
+    path("buyer/settings/delete-account/", views.buyer_delete_account_view, name="buyer_delete_account"),
+
+    path("profile/", views.profile_view, name="profile"),
+    
+    path("password-change/", auth_views.PasswordChangeView.as_view(template_name="password/change_password.html", success_url="/profile/"), name="change_password"),
+
+    path("logout-confirm/", views.logout_page_view, name="logout_confirm"),
+    path("logout/", views.logout_view, name="logout"),
 ]
 
 if settings.DEBUG:

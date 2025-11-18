@@ -1,0 +1,89 @@
+{% extends "teknoymart/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="profile-container">
+  <div class="profile-card">
+    <h2>Buyer Profile</h2>
+    
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="profile-header">
+        <div class="img-wrapper">
+          {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile">
+          {% else %}
+            <img src="{% static 'images/seller.png' %}" alt="Default">
+          {% endif %}
+        </div>
+        <label class="upload-btn">
+          Upload Photo
+          {{ form.profile_picture }}
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Student ID (Username)</label>
+        <input type="text" value="{{ user.username }}" disabled class="read-only">
+      </div>
+
+      <div class="form-group">
+        <label>Institutional Email</label>
+        <input type="text" value="{{ user.email }}" disabled class="read-only">
+      </div>
+
+      <div class="row">
+        <div class="form-group half">
+          <label>First Name</label>
+          <input type="text" name="first_name" value="{{ user.first_name }}">
+        </div>
+        <div class="form-group half">
+          <label>Last Name</label>
+          <input type="text" name="last_name" value="{{ user.last_name }}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Date of Birth</label>
+        {{ form.birth_date }}
+      </div>
+
+      <div class="form-group">
+        <label>Bio</label>
+        {{ form.bio }}
+      </div>
+
+      <div class="action-buttons">
+        <a href="{% url 'home_buyer' %}" class="btn cancel-btn">← Back</a>
+        <button type="submit" class="btn save-btn">Save Changes</button>
+      </div>
+      
+      <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+         <a href="{% url 'change_password' %}" class="btn password-btn">Change Password</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<style>
+.profile-container { display: flex; justify-content: center; padding: 40px 20px; background: #f8f9fa; }
+.profile-card { background: white; padding: 40px; border-radius: 15px; width: 100%; max-width: 500px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.profile-header { text-align: center; margin-bottom: 20px; }
+.img-wrapper img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #800000; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 5px; color: #333; }
+.form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+.read-only { background: #e9ecef; cursor: not-allowed; color: #6c757d; }
+.row { display: flex; gap: 10px; }
+.half { flex: 1; }
+.action-buttons { display: flex; gap: 10px; margin-top: 20px; }
+.btn { padding: 12px; border-radius: 8px; border: none; cursor: pointer; width: 100%; font-weight: bold; text-align: center; text-decoration: none; display: inline-block;}
+.save-btn { background: #800000; color: white; }
+.cancel-btn { background: #ddd; color: #333; }
+.password-btn { background: #333; color: white; display: block; }
+.upload-btn input { display: none; }
+.upload-btn { cursor: pointer; color: #800000; font-size: 0.9rem; text-decoration: underline; display: block; margin-top: 5px;}
+</style>
+{% endblock %}

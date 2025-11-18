@@ -47,6 +47,13 @@ body {
   color: #8B0000;
 }
 
+nav a.active {
+  color: #ff6600;
+  font-weight: bold;
+  border-bottom: 2px solid #ff6600;
+}
+
+
 /* Hero Section */
 .hero {
   display: flex;
@@ -185,6 +192,7 @@ select {
 }
 
 .btn-primary {
+  text-decoration: none;
   background-color: #8B0000;
   color: #fff;
 }
@@ -551,3 +559,110 @@ select {
 
 .pw-toggle[aria-pressed="true"]  .eye-open   { display: none; }
 .pw-toggle[aria-pressed="false"] .eye-closed { display: none; }
+
+
+/* --- Top-right actions layout --- */
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* --- Hamburger button (flat, 3 thick bars) --- */
+.hamburger {
+  width: 44px; /* Slightly larger touch target for mobile */
+  height: 44px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; /* Ensures bars are perfectly centered */
+  gap: 5px;            /* Better breathing room between bars */
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: #333;         /* Default dark color */
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.hamburger span {
+  display: block;
+  width: 26px;         /* Standard pleasing width */
+  height: 3px;         /* Thick, visible bars */
+  background: currentColor; /* Inherits color (works with Dark Mode automatically) */
+  border-radius: 4px;  /* Rounded caps look much better than flat ends */
+}
+
+body.dark-mode .hamburger {
+  color: #fff;
+}
+
+/* optional: hover/focus affordance */
+.hamburger:hover {
+  transform: scale(1.05);
+  opacity: 0.8;
+}
+.hamburger:focus-visible{ outline: 10px solid #6aa3ff; outline-offset: 10px; }
+
+/* In dark mode, let bars turn white automatically via your theme var */
+:root[data-theme="dark"] .hamburger{ color: #ff0000; }
+
+/* --- Dropdown menu --- */
+.menu-wrap { position: relative; }
+
+.dropdown-menu {
+  position: absolute;
+  top: 52px;                 /* below button */
+  right: 0;
+  min-width: 220px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e7e7e7);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.12), 0 4px 10px rgba(0,0,0,.06);
+  padding: .5rem;
+  display: none;
+  z-index: 1000;
+}
+
+.dropdown-menu.open { display: block; }
+
+.dropdown-menu a,
+.dropdown-menu .menu-item-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: .7rem .9rem;
+  border-radius: 8px;
+  color: var(--fg, #1f2937);
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu .menu-item-btn:hover {
+  background: var(--hover, #f3f4f6);
+}
+
+.dropdown-menu .danger { color: #b91c1c; }
+
+/* --- Dark theme fallbacks (works with data-theme="dark") --- */
+:root {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --fg: #1f2937;
+  --border: #e5e7eb;
+  --hover: #f3f4f6;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f141a;
+  --surface: #151b22;
+  --fg: #e5e7eb;
+  --border: #2b3440;
+  --hover: #202833;
+}
+
+body { background: var(--bg); color: var(--fg); }

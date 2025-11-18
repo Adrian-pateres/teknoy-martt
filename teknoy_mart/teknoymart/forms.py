@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from .models import Profile, Product
+from .models import Profile, Product, UserPreferences, UserPrivacySettings
 from .validators import validate_institutional_email
+
 
 class StudentRegistrationForm(forms.ModelForm):
     ROLE_CHOICES = [
@@ -77,3 +79,49 @@ class ProductForm(forms.ModelForm):
         if image and image.size > 2*1024*1024:
             raise forms.ValidationError("Image too large. Max size 2MB.")
         return image
+
+
+class UserPreferencesForm(forms.ModelForm):
+    class Meta:
+        model = UserPreferences
+        fields = [
+            "email_alerts",
+            "message_notifications",
+            "system_activity_updates",
+            "language",
+            "time_format_24h",
+            "homepage_view",
+            "dark_mode",
+            "font_size",
+            "layout_density",
+        ]
+
+
+class UserPrivacyForm(forms.ModelForm):
+    class Meta:
+        model = UserPrivacySettings
+        fields = [
+            "show_profile_public",
+            "show_activity_public",
+            "allow_data_export",
+            "allow_data_analysis",
+            "two_factor_enabled",
+            "login_alerts_enabled",
+        ]
+
+
+class TermsAcceptanceForm(forms.Form):
+    agree = forms.BooleanField(
+        required=True,
+        label="I have read and agree to the Terms & Conditions",
+    )
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['profile_picture', 'bio', 'birth_date']
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+            'bio': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Add a bio...'}),
+        }

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model 
-
+from django.conf import settings
 
 class Profile(models.Model):
     ROLE_CHOICES = [
@@ -9,7 +9,15 @@ class Profile(models.Model):
         ('seller', 'Seller'),
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10)  # 'seller' or 'buyer'
+    
+    # New fields for the Profile Page
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    birth_date = models.DateField(null=True, blank=True)
+    
+    terms_accepted = models.BooleanField(default=False)
+    terms_accepted_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
@@ -39,10 +47,10 @@ class Product(models.Model):
         ("merch", "Merch"),
         ("other", "Other"),
     ]
-    owner      = models.ForeignKey(User, on_delete=models.CASCADE, related_name="products")
+    owner      = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="products", null=False, blank=False)
     title      = models.CharField(max_length=120)
     price      = models.DecimalField(max_digits=10, decimal_places=2)
-    category   = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default="other")
+    category   = models.CharField(max_length=120, choices=CATEGORY_CHOICES, default="other")
     description= models.TextField(blank=True)
     image      = models.ImageField(upload_to="products/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -65,7 +73,127 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/', blank=True, null=True)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)  # <-- make sure this exists
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
+    
+class Transaction(models.Model):
+    PAYMENT_METHODS = [
+        ("GCASH", "GCash"),
+        ("MAYA", "Maya"),
+        ("PAYPAL", "PayPal"),
+    ]
+
+    STATUS_CHOICES = [
+        ("PENDING", "Pending"),
+        ("PAID", "Paid"),
+        ("FAILED", "Failed"),
+    ]
+
+    buyer = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="buyer_transactions"
+    )
+
+    seller = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name="seller_transactions"
+    )
+
+    product = models.ForeignKey(
+        'Product', on_delete=models.CASCADE, related_name="transactions"
+    )
+
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHODS)
+
+    reference_number = models.CharField(
+        max_length=50, blank=True, null=True
+    )
+
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="PENDING"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    paid_at = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Transaction #{self.id} - {self.product.title}"
+    
+    # ------ Model for user preferences ------
+class UserPreferences(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="preferences",
+    )
+
+    email_alerts = models.BooleanField(default=True)
+    message_notifications = models.BooleanField(default=True)
+    system_activity_updates = models.BooleanField(default=False)
+
+    language = models.CharField(
+        max_length=100,
+        choices=[
+            ("en", "English"),
+            ("es", "Spanish"),
+            ("fr", "French"),
+        ],
+        default="en",
+    )
+    time_format_24h = models.BooleanField(default=True)
+    homepage_view = models.CharField(
+        max_length=200,
+        choices=[
+            ("dashboard", "Dashboard"),
+            ("inbox", "Inbox"),
+            ("activity", "Recent Activity"),
+        ],
+        default="dashboard",
+    )
+
+    dark_mode = models.BooleanField(default=False)
+    font_size = models.CharField(
+        max_length=100,
+        choices=[
+            ("small", "Small"),
+            ("medium", "Medium"),
+            ("large", "Large"),
+        ],
+        default="medium",
+    )
+    layout_density = models.CharField(
+        max_length=100,
+        choices=[
+            ("comfortable", "Comfortable"),
+            ("compact", "Compact"),
+        ],
+        default="comfortable",
+    )
+
+    def __str__(self):
+        return f"{self.user} preferences"
+    
+    # ------ Model for user privacy settings ------
+class UserPrivacySettings(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="privacy_settings",
+    )
+
+    # Who can see profile/activity
+    show_profile_public = models.BooleanField(default=False)
+    show_activity_public = models.BooleanField(default=False)
+
+    # Data management flags
+    allow_data_export = models.BooleanField(default=True)
+    allow_data_analysis = models.BooleanField(default=True)
+
+    # Security related toggles
+    two_factor_enabled = models.BooleanField(default=False)
+    login_alerts_enabled = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.user} privacy settings"

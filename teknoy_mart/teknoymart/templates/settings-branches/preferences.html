@@ -1,0 +1,132 @@
+{% extends "teknoymart/base.html" %}
+{% load static %} 
+{# optional if you use crispy, otherwise remove #}
+
+{% block content %}
+<div class="settings-container">
+  <div class="settings-box">
+    <h2>Preferences</h2>
+    <p>Customize how the system behaves according to your needs.</p>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <h3>Notifications</h3>
+      <ul>
+        <li>
+          {{ form.email_alerts.label_tag }}
+          {{ form.email_alerts }}
+        </li>
+        <li>
+          {{ form.message_notifications.label_tag }}
+          {{ form.message_notifications }}
+        </li>
+        <li>
+          {{ form.system_activity_updates.label_tag }}
+          {{ form.system_activity_updates }}
+        </li>
+      </ul>
+
+      <h3>General Preferences</h3>
+      <ul>
+        <li>
+          {{ form.language.label_tag }}
+          {{ form.language }}
+        </li>
+        <li>
+          {{ form.time_format_24h.label_tag }} (24h format)
+          {{ form.time_format_24h }}
+        </li>
+        <li>
+          {{ form.homepage_view.label_tag }}
+          {{ form.homepage_view }}
+        </li>
+      </ul>
+
+      <h3>User Interface</h3>
+      <ul>
+        <li>
+          {{ form.dark_mode.label_tag }}
+          {{ form.dark_mode }}
+        </li>
+        <li>
+          {{ form.font_size.label_tag }}
+          {{ form.font_size }}
+        </li>
+        <li>
+          {{ form.layout_density.label_tag }}
+          {{ form.layout_density }}
+        </li>
+      </ul>
+
+      <div class="back-btn-wrapper">
+        <a href="{% url 'home' %}" class="back-btn">Back</a>
+        <button type="submit" class="save-btn">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.settings-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 0;
+}
+
+.settings-box {
+  background: #ffffff;
+  width: 600px;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.settings-box h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.settings-box h3 {
+  margin-top: 25px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.settings-box ul {
+  margin-left: 20px;
+  margin-bottom: 10px;
+  list-style: none;
+  padding-left: 0;
+}
+
+.settings-box li {
+  margin-bottom: 8px;
+}
+
+.back-btn-wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.back-btn,
+.save-btn {
+  background: #6c757d;
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+.back-btn:hover,
+.save-btn:hover {
+  background: #5a6268;
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "teknoymart/base.html" %}
+{% load static %} 
+
+{% block content %}
+<div class="logout-container">
+  <div class="logout-box">
+    <h2>Privacy Settings</h2>
+    <p>Manage your privacy preferences below:</p>
+
+    <form method="post">
+      {% csrf_token %}
+
+      <ul class="privacy-list">
+        <li>
+          <strong>Privacy Controls:</strong>
+          <div>
+            {{ form.show_profile_public }} Show my profile publicly
+          </div>
+          <div>
+            {{ form.show_activity_public }} Show my activity publicly
+          </div>
+        </li>
+
+        <li>
+          <strong>Data Management:</strong>
+          <div>
+            {{ form.allow_data_export }} Allow data export
+          </div>
+          <div>
+            {{ form.allow_data_analysis }} Allow anonymized data analysis
+          </div>
+        </li>
+
+        <li>
+          <strong>Security Options:</strong>
+          <div>
+            {{ form.two_factor_enabled }} Enable two-factor authentication
+          </div>
+          <div>
+            {{ form.login_alerts_enabled }} Send login alerts
+          </div>
+        </li>
+      </ul>
+
+      <div class="btn-group">
+        <a href="{% url 'home_buyer' %}" class="btn cancel-btn">Back</a>
+        <button type="submit" class="btn confirm-btn">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.logout-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.logout-box {
+  background: white;
+  padding: 30px;
+  width: 400px;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.logout-box h2 {
+  margin-bottom: 15px;
+}
+
+.logout-box p {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.privacy-list {
+  text-align: left;
+  margin-bottom: 25px;
+  list-style: none;
+  padding-left: 0;
+}
+
+.privacy-list li {
+  margin-bottom: 12px;
+}
+
+.btn-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.confirm-btn { background: #007bff; color: white; }
+.confirm-btn:hover { background: #0056b3; }
+
+.cancel-btn { background: #6c757d; color: white; }
+.cancel-btn:hover { background: #5a6268; }
+</style>
+
+{% endblock %}
