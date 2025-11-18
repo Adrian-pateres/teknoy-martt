@@ -5,123 +5,185 @@
 
 {% block extra_css %}
 <style>
-.buy-container {
-  max-width: 750px;
-  margin: 3rem auto;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 2rem;
-}
-.product-summary {
+  .buy-container {
+    max-width: 750px;
+    margin: 3rem auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 2rem;
+  }
+
+  .product-summary {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1.5rem;
+  }
+
+  .product-summary img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #eee;
+  }
+
+  .product-info .price {
+    color: #c62828;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .payment-card {
+    width: 200px;
+    background: #fafafa;
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: .2s;
+  }
+
+  .payment-card.selected {
+    border-color: #c62828;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .pay-btn {
+    width: 100%;
+    background: #c62828;
+    color: white;
+    margin-top: 1.5rem;
+    border: none;
+    padding: .8rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  /* POPUP OVERLAY */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+  .modal-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 360px;
+    text-align: center;
+  }
+
+  .modal-box img {
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+  }
+
+  .close-btn {
+    background: #c62828;
+    color: white;
+    padding: .7rem 1.4rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .payment-options {
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 1.5rem;
-}
-.product-summary img {
-  width: 180px;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 12px;
-  border: 1px solid #eee;
-}
-.product-info h2 {
-  margin-bottom: .3rem;
-  color: #222;
-}
-.product-info .price {
-  color: #c62828;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: .3rem;
-}
-.payment-section {
-  margin-top: 2rem;
-}
-.payment-options {
-  display: flex;
-  gap: 1.5rem;
   justify-content: center;
+  gap: 1.2rem;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
+
 .payment-card {
-  width: 200px;
-  background: #fafafa;
-  border-radius: 10px;
+  width: 180px;
   padding: 1rem;
+  background: #fafafa;
+  border-radius: 12px;
   text-align: center;
-  border: 2px solid transparent;
   cursor: pointer;
-  transition: .2s;
+  border: 2px solid transparent;
+  transition: .2s ease;
 }
+
+.payment-card img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: .5rem;
+}
+
 .payment-card:hover {
   border-color: #c62828;
   background: #fff;
 }
+
 .payment-card.selected {
   border-color: #c62828;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-.payment-card img {
-  width: 80px;
-  height: 80px;
-  margin-bottom: .5rem;
+
+.popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    gap: 10px;
 }
-label {
-  display: block;
-  margin-bottom: .5rem;
-  font-weight: 600;
-  color: #333;
+
+.close-btn,
+.success-btn {
+    flex: 1;
+    padding: .7rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
 }
-input[type="text"] {
-  width: 100%;
-  padding: .8rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+
+.close-btn {
+    background: #777;
+    color: white;
 }
-button.pay-btn {
-  display: block;
-  width: 100%;
-  margin-top: 1.5rem;
-  background: #c62828;
-  color: white;
-  font-weight: 600;
-  border: none;
-  padding: 0.9rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: .2s;
+
+.success-btn {
+    background: #c62828;
+    color: white;
 }
-button.pay-btn:hover {
-  background: #a31e1e;
+
+.success-btn:hover {
+    background: #a11b1b;
 }
-.back-link {
-  display: inline-block;
-  margin-top: 1rem;
-  color: #555;
-  text-decoration: none;
-  text-align: center;
-  width: 100%;
-}
-.back-link:hover {
-  color: #c62828;
-}
+
+
 </style>
 {% endblock %}
 
 {% block content %}
+
 <div class="buy-container">
+
   <div class="product-summary">
     {% if product.image %}
-      <img src="{{ product.image.url }}" alt="{{ product.title }}">
+    <img src="{{ product.image.url }}" alt="{{ product.title }}">
     {% else %}
-      <img src="https://cdn-icons-png.flaticon.com/512/126/126477.png" alt="No Image">
+    <img src="https://cdn-icons-png.flaticon.com/512/126/126477.png">
     {% endif %}
+
     <div class="product-info">
       <h2>{{ product.title }}</h2>
       <p>{{ product.description }}</p>
@@ -129,43 +191,94 @@ button.pay-btn:hover {
     </div>
   </div>
 
-  <form method="POST">
-    {% csrf_token %}
-    <div class="payment-section">
-      <h3 style="text-align:center;">Choose Payment Method</h3>
-      <div class="payment-options">
-        <div class="payment-card" onclick="selectPayment('GCash')">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/GCash_Logo.svg" alt="GCash">
-          <p>GCash</p>
-        </div>
-        <div class="payment-card" onclick="selectPayment('Maya')">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Maya_Logo.svg" alt="Maya">
-          <p>Maya</p>
-        </div>
-        <div class="payment-card" onclick="selectPayment('PayPal')">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
-          <p>PayPal</p>
-        </div>
-      </div>
+  <form>
+<h3 style="text-align:center; margin-top: 1.5rem;">Choose Payment Method</h3>
 
-      <input type="hidden" name="payment_method" id="payment_method">
+<div class="payment-options">
 
-      <label for="reference_number">Enter Reference Number</label>
-      <input type="text" id="reference_number" name="reference_number" placeholder="e.g. 1234-5678-ABCD" required>
+  <div class="payment-card" onclick="selectPayment('GCash')">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/GCash_logo.svg" alt="GCash">
+    <p>GCash</p>
+  </div>
 
-      <button type="submit" class="pay-btn">Confirm & Pay</button>
-      <a href="{% url 'home_buyer' %}" class="back-link">← Back to Shop</a>
-    </div>
+  <div class="payment-card" onclick="selectPayment('Maya')">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Paymaya_logo.svg" alt="Maya">
+    <p>Maya</p>
+  </div>
+
+  <div class="payment-card" onclick="selectPayment('PayPal')">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+    <p>PayPal</p>
+  </div>
+
+</div>
+
+
+    <input type="hidden" id="payment_method">
+
+    <button class="pay-btn" onclick="return openQRPopup()">Confirm & Pay</button>
+
+    <a href="{% url 'home_buyer' %}" class="back-link" style="display:block;text-align:center;margin-top:1rem;">
+      ← Back to Shop
+    </a>
+
   </form>
+
+</div>
+
+<!-- POPUP MODAL -->
+<div id="qrModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3 id="methodLabel"></h3>
+
+    <!-- Your QR image -->
+    <img src="{% static 'images/YOUR_QR.png' %}" alt="QR Code">
+
+    <p><strong>Reference #:</strong> <span id="refNumber"></span></p>
+    <p><strong>Amount:</strong> ₱{{ product.price }}</p>
+
+    <button class="close-btn" onclick="closeQR()">Close</button>
+    <button class="success-btn" onclick="goSuccess()">Pay</button>
+  </div>
 </div>
 
 <script>
-let selectedCard = null;
 function selectPayment(method) {
   document.getElementById("payment_method").value = method;
+
   document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('selected'));
-  const selected = Array.from(document.querySelectorAll('.payment-card')).find(c => c.innerText.includes(method));
+
+  let selected = Array.from(document.querySelectorAll('.payment-card'))
+      .find(c => c.innerText.includes(method));
+
   if (selected) selected.classList.add('selected');
 }
+
+function openQRPopup() {
+  let method = document.getElementById("payment_method").value;
+
+  if (!method) {
+    alert("Please choose a payment method.");
+    return false;
+  }
+
+  document.getElementById("methodLabel").innerText = "Pay with " + method;
+
+  // Generate reference #
+  document.getElementById("refNumber").innerText =
+    "REF-" + Math.floor(100000 + Math.random() * 900000);
+
+  document.getElementById("qrModal").style.display = "flex";
+  return false; // prevent page reload
+}
+
+function closeQR() {
+  document.getElementById("qrModal").style.display = "none";
+}
+
+function goSuccess() {
+    window.location.href = "{% url 'payment_success' %}";
+}
 </script>
+
 {% endblock %}
