@@ -561,50 +561,50 @@ select {
 .pw-toggle[aria-pressed="false"] .eye-closed { display: none; }
 
 
-/* --- Top-right actions layout --- */
+
 .top-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-/* --- Hamburger button (flat, 3 thick bars) --- */
+
 .hamburger {
-  width: 44px; /* Slightly larger touch target for mobile */
+  width: 44px;
   height: 44px;
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; /* Ensures bars are perfectly centered */
-  gap: 5px;            /* Better breathing room between bars */
+  align-items: center;
+  gap: 5px;
   padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
-  color: #333;         /* Default dark color */
+  color: #333;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .hamburger span {
   display: block;
-  width: 26px;         /* Standard pleasing width */
-  height: 3px;         /* Thick, visible bars */
-  background: currentColor; /* Inherits color (works with Dark Mode automatically) */
-  border-radius: 4px;  /* Rounded caps look much better than flat ends */
+  width: 26px;
+  height: 3px;
+  background: currentColor;
+  border-radius: 4px;
 }
 
 body.dark-mode .hamburger {
   color: #fff;
 }
 
-/* optional: hover/focus affordance */
+
 .hamburger:hover {
   transform: scale(1.05);
   opacity: 0.8;
 }
 .hamburger:focus-visible{ outline: 10px solid #6aa3ff; outline-offset: 10px; }
 
-/* In dark mode, let bars turn white automatically via your theme var */
+
 :root[data-theme="dark"] .hamburger{ color: #ff0000; }
 
 /* --- Dropdown menu --- */
@@ -612,7 +612,7 @@ body.dark-mode .hamburger {
 
 .dropdown-menu {
   position: absolute;
-  top: 52px;                 /* below button */
+  top: 52px;
   right: 0;
   min-width: 220px;
   background: var(--surface, #fff);
@@ -648,7 +648,7 @@ body.dark-mode .hamburger {
 
 .dropdown-menu .danger { color: #b91c1c; }
 
-/* --- Dark theme fallbacks (works with data-theme="dark") --- */
+
 :root {
   --bg: #ffffff;
   --surface: #ffffff;

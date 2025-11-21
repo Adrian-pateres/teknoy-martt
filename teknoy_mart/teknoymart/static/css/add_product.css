@@ -199,12 +199,12 @@ textarea { resize: none; height: 120px; }
 /* ===== Modal base ===== */
 .modal {
   position: fixed;
-  inset: 0;                      /* top:0; right:0; bottom:0; left:0 */
+  inset: 0;
   background: rgba(0, 0, 0, 0.45);
-  display: none;                 /* hidden by default */
-  align-items: center;           /* vertical center */
-  justify-content: center;       /* horizontal center */
-  padding: 16px;                 /* breathing room on small screens */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
   z-index: 1000;
 }
 
