@@ -115,7 +115,7 @@
 /* ---- Product Grid ---- */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 0.75rem;
   margin-top: 0.75rem;
 }
@@ -130,6 +130,9 @@
   transition: transform .12s ease, box-shadow .12s ease, border-color .12s;
   padding: 0.6rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .product-card:hover {
@@ -324,4 +327,16 @@
     height: 32px;
     font-size: 1rem;
   }
+}
+
+.promo-banner.guest-banner {
+    max-height: 250px;
+    overflow: hidden;
+}
+.promo-banner.guest-banner img {
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+    margin: 0 auto;
+    display: block;
 }
