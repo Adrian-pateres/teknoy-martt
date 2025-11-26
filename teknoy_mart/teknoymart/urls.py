@@ -112,6 +112,12 @@ urlpatterns = [
 
     path("logout-confirm/", views.logout_page_view, name="logout_confirm"),
     path("logout/", views.logout_view, name="logout"),
+
+    # = = Chat / Messaging = = 
+    path("inbox/", views.inbox_view, name="inbox"),
+    path("chat/<int:user_id>/", views.chat_room_view, name="chat_room"),
+
+    path("chat/get/<int:user_id>/", views.get_messages, name="get_messages"),
 ]
 
 
