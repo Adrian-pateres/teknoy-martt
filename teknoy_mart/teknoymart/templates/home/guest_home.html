@@ -1,238 +1,645 @@
 {% extends "teknoymart/base.html" %}
 {% load static %}
 
-{% block title %}Browse Products | Teknoy Mart{% endblock %}
-{% block body_class %}guest-page{% endblock %}
+{% block title %}Welcome to Teknoy Mart - Browse Products{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-{% endblock %}
-
-{# <--- This line here to open the main content block ---> #}
 {% block content %}
-
-<main class="home-shell">
-
-    <div class="search-bar is-disabled" title="Login to search">
-        <input type="text" placeholder="Search products, categories…" disabled aria-disabled="true">
-        <button type="button" disabled aria-disabled="true" aria-label="Search">🔍</button>
-    </div>
-
-    <div class="cat-filter is-disabled" role="tablist" aria-label="Filter by category">
-        <button class="chip active" disabled aria-disabled="true">All</button>
-        <button class="chip" disabled aria-disabled="true">Apparel</button>
-        <button class="chip" disabled aria-disabled="true">Gadgets</button>
-        <button class="chip" disabled aria-disabled="true">School Supplies</button>
-        <button class="chip" disabled aria-disabled="true">Food</button>
-        <button class="chip" disabled aria-disabled="true">Merch</button>
-    </div>
-
-    <div class="tabs">
-        <a href="#" class="active" aria-disabled="true">Shop</a>
-        <a href="#" aria-disabled="true">Products</a>
-        <a href="#" aria-disabled="true">Categories</a>
-    </div>
-
-    <section class="product-section">
-        <h3>🔥 Flash Deals</h3>
-        <div class="product-grid">
-      <div class="product-card preview">
-        <div class="thumb">
-            <img src="{% static 'images/mouse.jpg' %}" alt="Item 1">
-        </div>
-        <div class="meta">
-            <p class="title">Wireless Mouse</p>
-            <p class="price">₱990</p>
-            <div class="lock-overlay" aria-hidden="true">Login to view</div>
-        </div>
-      </div>
-
-      <div class="product-card preview">
-        <div class="thumb">
-            <img src="{% static 'images/hoodie.png' %}" alt="Item 2">
-        </div>
-        <div class="meta">
-            <p class="title">CIT-U Hoodie</p>
-            <p class="price">₱1450</p>
-            <div class="lock-overlay" aria-hidden="true">Login to view</div>
-        </div>
-      </div>
-
-      <div class="product-card preview">
-        <div class="thumb">
-            <img src="{% static 'images/notebook.png' %}" alt="Item 3">
-        </div>
-        <div class="meta">
-            <p class="title">Notebook A5</p>
-            <p class="price">₱550</p>
-            <div class="lock-overlay" aria-hidden="true">Login to view</div>
-        </div>
-      </div>
-    </div>
-    </section>
-
-  <div class="promo-banner guest-banner">
-    <img src="{% static 'images/promobanner.png' %}" alt="Promo Banner">
-  </div>
-
-    <div class="buttons" style="display:flex; gap:.5rem; flex-wrap:wrap;">
-        <a href="{% url 'login' %}" class="btn btn-primary">Login to Continue</a>
-        <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
-    </div>
-
-</main>
-
 <!-- Login Prompt Modal -->
-<div class="guest-overlay" id="loginPrompt" onclick="hideLoginPrompt()">
-  <div class="login-prompt" onclick="event.stopPropagation()">
-    <div class="login-prompt-icon">🔒</div>
+<div class="login-modal" id="loginModal">
+  <div class="modal-overlay" onclick="closeLoginModal()"></div>
+  <div class="modal-content">
+    <div class="modal-icon">
+      <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+        <circle cx="30" cy="30" r="28" fill="#fff3cd" stroke="#ffc107" stroke-width="2"/>
+        <path d="M30 20v12M30 38v2" stroke="#ffc107" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
     <h2>Login Required</h2>
-    <p>You need to login first to access this feature and browse our full catalog of products from CIT-U students.</p>
-    <div class="login-prompt-buttons">
-      <a href="{% url 'login' %}" class="btn btn-primary">Login Now</a>
-      <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
+    <p>You need to log in to access this feature and start shopping on Teknoy Mart!</p>
+    <div class="modal-actions">
+      <a href="{% url 'login' %}" class="btn-login">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M7 2H3a1 1 0 00-1 1v12a1 1 0 001 1h4M11 13l4-4m0 0l-4-4m4 4H7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Log In
+      </a>
+      <a href="{% url 'register' %}" class="btn-register">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="9" cy="5" r="3" stroke="currentColor" stroke-width="2"/>
+          <path d="M2 16a7 7 0 0114 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Sign Up
+      </a>
+      <button class="btn-cancel" onclick="closeLoginModal()">Maybe Later</button>
     </div>
   </div>
 </div>
 
-<script>
-  function showLoginPrompt() {
-    document.getElementById('loginPrompt').classList.add('show');
-  }
+<!-- Guest Banner -->
+<div class="guest-banner">
+  <div class="banner-content">
+    <div class="banner-text">
+      <h1>
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="10" r="6" stroke="currentColor" stroke-width="2"/>
+          <path d="M4 28a12 12 0 0124 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Welcome, Guest!
+      </h1>
+      <p>Browsing as a guest? Join Teknoy Mart to unlock full features and start buying or selling products!</p>
+    </div>
+    <div class="banner-actions">
+      <a href="{% url 'login' %}" class="btn-primary">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M8 2H4a1 1 0 00-1 1v14a1 1 0 001 1h4M12 15l5-5m0 0l-5-5m5 5H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Log In
+      </a>
+      <a href="{% url 'register' %}" class="btn-secondary">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="6" r="4" stroke="currentColor" stroke-width="2"/>
+          <path d="M2 18a8 8 0 0116 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Create Account
+      </a>
+    </div>
+  </div>
+</div>
 
-  function hideLoginPrompt() {
-    document.getElementById('loginPrompt').classList.remove('show');
-  }
+<!-- Benefits Section -->
+<section class="benefits-section">
+  <h2>Why Create an Account?</h2>
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <div class="benefit-icon">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <path d="M32 18H16a2 2 0 00-2 2v16a2 2 0 002 2h16a2 2 0 002-2V20a2 2 0 00-2-2z" stroke="#8B0000" stroke-width="3"/>
+          <path d="M26 12V10a4 4 0 00-4-4h-4a4 4 0 00-4 4v2" stroke="#8B0000" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Buy Products</h3>
+      <p>Purchase quality tech products from verified sellers with secure transactions</p>
+    </div>
 
-  // Close modal on Escape key
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-      hideLoginPrompt();
-    }
-  });
-</script>
+    <div class="benefit-card">
+      <div class="benefit-icon">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <path d="M24 8v32M34 18h-14a6 6 0 000 12h8a6 6 0 010 12H14" stroke="#8B0000" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Sell Products</h3>
+      <p>List your tech products and reach thousands of potential buyers easily</p>
+    </div>
+
+    <div class="benefit-card">
+      <div class="benefit-icon">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <rect x="10" y="14" width="28" height="24" rx="3" stroke="#8B0000" stroke-width="3"/>
+          <path d="M10 22h28M20 30h8" stroke="#8B0000" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Secure Payments</h3>
+      <p>Safe and protected payment processing for all your transactions</p>
+    </div>
+
+    <div class="benefit-card">
+      <div class="benefit-icon">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <circle cx="24" cy="16" r="6" stroke="#8B0000" stroke-width="3"/>
+          <path d="M38 40a14 14 0 00-28 0" stroke="#8B0000" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Build Profile</h3>
+      <p>Create your reputation with reviews and transaction history</p>
+    </div>
+  </div>
+</section>
+
+<!-- Products Section -->
+<section class="products-section">
+  <div class="section-header">
+    <h2>Featured Products</h2>
+    <div class="view-controls">
+      <button class="view-btn active" onclick="changeView('grid')" data-view="grid">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <rect x="2" y="2" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+          <rect x="11" y="2" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+          <rect x="2" y="11" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+          <rect x="11" y="11" width="7" height="7" rx="1" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </button>
+      <button class="view-btn" onclick="changeView('list')" data-view="list">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M3 4h14M3 10h14M3 16h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    {% for product in products %}
+    <div class="product-card">
+      <div class="product-badge">Guest View</div>
+      
+      <div class="product-image">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+        {% else %}
+          <div class="placeholder-image">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+              <rect width="80" height="80" rx="8" fill="#f5f5f5"/>
+              <path d="M30 50l10-10 10 10M40 40v20" stroke="#ddd" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+        {% endif %}
+        <div class="image-overlay">
+          <button class="quick-view-btn" onclick="showLoginPrompt('view this product')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Quick View
+          </button>
+        </div>
+      </div>
+
+      <div class="product-info">
+        <h3 class="product-name">{{ product.name }}</h3>
+        <p class="product-description">{{ product.description|truncatewords:15 }}</p>
+        
+        <div class="product-meta">
+          <span class="product-category">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M2 8l4-4 4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {{ product.category }}
+          </span>
+          <span class="product-condition {{ product.condition }}">
+            {{ product.condition }}
+          </span>
+        </div>
+
+        <div class="product-footer">
+          <div class="product-price">₱{{ product.price|floatformat:2 }}</div>
+          <button class="btn-add-cart" onclick="showLoginPrompt('add to cart')">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M6 16a2 2 0 100 4 2 2 0 000-4zM14 16a2 2 0 100 4 2 2 0 000-4zM1 1h2l3.6 7.6a2 2 0 001.8 1.4h7.2a2 2 0 001.8-1.4L19 4H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Add to Cart
+          </button>
+        </div>
+      </div>
+
+      <div class="locked-overlay" onclick="showLoginPrompt('view this product')">
+        <div class="lock-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <rect x="6" y="14" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
+            <path d="M10 14V10a6 6 0 0112 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="16" cy="21" r="2" fill="currentColor"/>
+          </svg>
+        </div>
+        <p>Login to View</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if not products %}
+  <div class="no-products">
+    <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+      <circle cx="60" cy="60" r="50" fill="#f5f5f5"/>
+      <path d="M45 60h30M60 45v30" stroke="#ddd" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+    <h3>No Products Available</h3>
+    <p>Check back later for new listings!</p>
+  </div>
+  {% endif %}
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section">
+  <div class="cta-content">
+    <h2>Ready to Get Started?</h2>
+    <p>Join thousands of users buying and selling tech products on Teknoy Mart</p>
+    <div class="cta-buttons">
+      <a href="{% url 'register' %}" class="btn-cta-primary">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8" r="5" stroke="currentColor" stroke-width="2"/>
+          <path d="M3 21a9 9 0 0118 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Create Free Account
+      </a>
+      <a href="{% url 'login' %}" class="btn-cta-secondary">
+        Already have an account? Log in
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+  <div class="cta-stats">
+    <div class="stat-item">
+      <div class="stat-number">1000+</div>
+      <div class="stat-label">Active Users</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">500+</div>
+      <div class="stat-label">Products Listed</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">99%</div>
+      <div class="stat-label">Satisfaction Rate</div>
+    </div>
+  </div>
+</section>
 
 <style>
-  /* Guest Page Specific Styles */
-  .guest-overlay {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  /* Login Modal */
+  .login-modal {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: none;
-    justify-content: center;
-    align-items: center;
     z-index: 10000;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn 0.3s ease-in-out;
   }
 
-  .guest-overlay.show {
-    display: flex;
+  .login-modal.active {
+    display: block;
   }
 
-  .login-prompt {
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: white;
     padding: 40px;
-    border-radius: 20px;
+    border-radius: 24px;
+    max-width: 480px;
+    width: 90%;
     text-align: center;
-    max-width: 450px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  body.dark-mode .login-prompt {
-    background: #1e1e1e;
-    color: #fff;
+  @keyframes slideDown {
+    from {
+      transform: translate(-50%, -60%);
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%);
+      opacity: 1;
+    }
   }
 
-  .login-prompt-icon {
-    font-size: 4rem;
-    margin-bottom: 20px;
+  .modal-icon {
+    margin-bottom: 24px;
+    animation: bounce 0.6s ease-in-out;
   }
 
-  .login-prompt h2 {
-    color: #8B0000;
-    margin-bottom: 15px;
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .modal-content h2 {
     font-size: 1.8rem;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    font-weight: 800;
   }
 
-  body.dark-mode .login-prompt h2 {
-    color: #ff6666;
-  }
-
-  .login-prompt p {
+  .modal-content p {
     color: #666;
-    margin-bottom: 25px;
+    font-size: 1.05rem;
+    margin-bottom: 30px;
     line-height: 1.6;
   }
 
-  body.dark-mode .login-prompt p {
-    color: #bbb;
-  }
-
-  .login-prompt-buttons {
+  .modal-actions {
     display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 12px;
   }
 
-  .login-prompt .btn {
-    padding: 12px 30px;
-    border-radius: 25px;
+  .btn-login,
+  .btn-register {
+    padding: 14px 28px;
+    border-radius: 12px;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     transition: all 0.3s;
   }
 
-  .login-prompt .btn-primary {
-    background: linear-gradient(135deg, #8B0000 0%, #a40000 100%);
+  .btn-login {
+    background: linear-gradient(135deg, #8B0000, #a40000);
     color: white;
+    box-shadow: 0 4px 16px rgba(139, 0, 0, 0.3);
   }
 
-  .login-prompt .btn-primary:hover {
+  .btn-login:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+    box-shadow: 0 6px 24px rgba(139, 0, 0, 0.4);
   }
 
-  .login-prompt .btn-secondary {
+  .btn-register {
     background: white;
     color: #8B0000;
     border: 2px solid #8B0000;
   }
 
-  body.dark-mode .login-prompt .btn-secondary {
-    background: #2d2d2d;
-    color: #ff6666;
-    border-color: #ff6666;
-  }
-
-  .login-prompt .btn-secondary:hover {
+  .btn-register:hover {
     background: #8B0000;
     color: white;
   }
 
-  body.dark-mode .login-prompt .btn-secondary:hover {
-    background: #ff6666;
-    color: #1e1e1e;
-  }
-
-  /* Disabled Elements */
-  .is-disabled {
-    opacity: 0.6;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  /* Lock Overlay on Cards */
-  .product-card.preview {
-    position: relative;
+  .btn-cancel {
+    padding: 12px;
+    background: transparent;
+    border: none;
+    color: #999;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.3s;
   }
 
-  .lock-overlay {
+  .btn-cancel:hover {
+    color: #666;
+  }
+
+  /* Guest Banner */
+  .guest-banner {
+    background: linear-gradient(135deg, #8B0000 0%, #a40000 100%);
+    color: white;
+    padding: 60px 24px;
+    margin: 80px 0 40px;
+    text-align: center;
+  }
+
+  .banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .banner-text h1 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .banner-text p {
+    font-size: 1.15rem;
+    opacity: 0.95;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .banner-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 14px 32px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+  }
+
+  .btn-primary {
+    background: white;
+    color: #8B0000;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+  }
+
+  .btn-secondary:hover {
+    background: white;
+    color: #8B0000;
+  }
+
+  /* Benefits Section */
+  .benefits-section {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 24px;
+  }
+
+  .benefits-section h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #1a1a1a;
+    margin-bottom: 50px;
+    font-weight: 800;
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+  }
+
+  .benefit-card {
+    background: white;
+    padding: 32px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+  }
+
+  .benefit-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(139, 0, 0, 0.15);
+  }
+
+  .benefit-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #fff5f5, #ffe5e5);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+  }
+
+  .benefit-card h3 {
+    font-size: 1.4rem;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+
+  .benefit-card p {
+    color: #666;
+    line-height: 1.6;
+  }
+
+  /* Products Section */
+  .products-section {
+    max-width: 1400px;
+    margin: 80px auto;
+    padding: 0 24px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .section-header h2 {
+    font-size: 2rem;
+    color: #1a1a1a;
+    font-weight: 800;
+  }
+
+  .view-controls {
+    display: flex;
+    gap: 8px;
+  }
+
+  .view-btn {
+    width: 44px;
+    height: 44px;
+    border: 2px solid #e0e0e0;
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    color: #666;
+  }
+
+  .view-btn.active {
+    background: #8B0000;
+    border-color: #8B0000;
+    color: white;
+  }
+
+  .view-btn:hover:not(.active) {
+    border-color: #8B0000;
+    color: #8B0000;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+  }
+
+  .products-grid.list-view {
+    grid-template-columns: 1fr;
+  }
+
+  .product-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(139, 0, 0, 0.15);
+  }
+
+  .product-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(139, 0, 0, 0.9);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+    backdrop-filter: blur(10px);
+  }
+
+  .product-image {
+    width: 100%;
+    height: 250px;
+    position: relative;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  .product-card:hover .product-image img {
+    transform: scale(1.05);
+  }
+
+  .placeholder-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .image-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -242,99 +649,273 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 1rem;
-    border-radius: 15px;
     opacity: 0;
     transition: opacity 0.3s;
   }
 
-  .product-card.preview:hover .lock-overlay {
+  .product-card:hover .image-overlay {
     opacity: 1;
   }
 
-  .lock-overlay::before {
-    content: "🔒 ";
-    font-size: 1.5rem;
-    margin-right: 8px;
+  .quick-view-btn {
+    padding: 12px 24px;
+    background: white;
+    color: #8B0000;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
   }
 
-  /* Guest Actions Section */
-  .guest-actions {
+  .quick-view-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+  }
+
+  .product-info {
+    padding: 24px;
+  }
+
+  .product-name {
+    font-size: 1.2rem;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .product-description {
+    color: #666;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .product-meta {
     display: flex;
-    gap: 15px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 30px;
-    padding: 20px;
+    gap: 12px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
   }
 
-  .guest-actions .btn {
-    padding: 12px 30px;
-    border-radius: 25px;
-    text-decoration: none;
+  .product-category,
+  .product-condition {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
     font-weight: 600;
-    transition: all 0.3s;
-    font-size: 1rem;
   }
 
-  .guest-actions .btn-back {
-    background: white;
+  .product-category {
+    background: #f0f0f0;
     color: #666;
-    border: 2px solid #ddd;
   }
 
-  body.dark-mode .guest-actions .btn-back {
-    background: #2d2d2d;
-    color: #bbb;
-    border-color: #444;
+  .product-condition {
+    background: #e8f5e9;
+    color: #2e7d32;
+    text-transform: capitalize;
   }
 
-  .guest-actions .btn-back:hover {
-    background: #f5f5f5;
-    border-color: #8B0000;
+  .product-condition.used {
+    background: #fff3e0;
+    color: #f57c00;
+  }
+
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .product-price {
+    font-size: 1.8rem;
     color: #8B0000;
+    font-weight: 900;
   }
 
-  body.dark-mode .guest-actions .btn-back:hover {
-    background: #3d3d3d;
-    border-color: #ff6666;
-    color: #ff6666;
-  }
-
-  .guest-actions .btn-primary {
-    background: linear-gradient(135deg, #8B0000 0%, #a40000 100%);
+  .btn-add-cart {
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #8B0000, #a40000);
     color: white;
-    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(139, 0, 0, 0.2);
   }
 
-  .guest-actions .btn-primary:hover {
+  .btn-add-cart:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+    box-shadow: 0 6px 20px rgba(139, 0, 0, 0.3);
   }
 
-  .guest-actions .btn-secondary {
-    background: white;
-    color: #8B0000;
-    border: 2px solid #8B0000;
+  .locked-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    cursor: pointer;
+    z-index: 3;
   }
 
-  body.dark-mode .guest-actions .btn-secondary {
-    background: #2d2d2d;
-    color: #ff6666;
-    border-color: #ff6666;
+  .product-card:hover .locked-overlay {
+    opacity: 1;
   }
 
-  .guest-actions .btn-secondary:hover {
-    background: #8B0000;
+  .lock-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #8B0000, #a40000);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: white;
+    margin-bottom: 16px;
+    animation: pulse 2s ease-in-out infinite;
   }
 
-  body.dark-mode .guest-actions .btn-secondary:hover {
-    background: #ff6666;
-    color: #1e1e1e;
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .locked-overlay p {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #8B0000;
+  }
+
+  /* No Products */
+  .no-products {
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .no-products h3 {
+    font-size: 1.8rem;
+    color: #1a1a1a;
+    margin: 24px 0 12px;
+    font-weight: 800;
+  }
+
+  .no-products p {
+    color: #666;
+    font-size: 1.05rem;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: white;
+    padding: 80px 24px;
+    margin: 80px 0 0;
+    text-align: center;
+  }
+
+  .cta-content {
+    max-width: 800px;
+    margin: 0 auto 60px;
+  }
+
+  .cta-content h2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    font-weight: 900;
+  }
+
+  .cta-content p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 40px;
+  }
+
+  .cta-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .btn-cta-primary,
+  .btn-cta-secondary {
+    padding: 16px 40px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s;
+  }
+
+  .btn-cta-primary {
+    background: linear-gradient(135deg, #8B0000, #a40000);
+    color: white;
+    box-shadow: 0 8px 24px rgba(139, 0, 0, 0.3);
+  }
+
+  .btn-cta-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(139, 0, 0, 0.4);
+  }
+
+  .btn-cta-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .btn-cta-secondary:hover {
+    border-color: white;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .cta-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    flex-wrap: wrap;
+    margin-top: 60px;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #8B0000;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 1rem;
+    opacity: 0.8;
   }
 
   /* Animations */
@@ -342,6 +923,135 @@
     from { opacity: 0; }
     to { opacity: 1; }
   }
+
+  /* Dark Mode */
+  body.dark-mode .modal-content {
+    background: #1e1e1e;
+    color: white;
+  }
+
+  body.dark-mode .modal-content h2 {
+    color: white;
+  }
+
+  body.dark-mode .section-header h2,
+  body.dark-mode .benefits-section h2 {
+    color: white;
+  }
+
+  body.dark-mode .product-card,
+  body.dark-mode .benefit-card {
+    background: #1e1e1e;
+  }
+
+  body.dark-mode .product-name,
+  body.dark-mode .benefit-card h3 {
+    color: white;
+  }
+
+  body.dark-mode .product-description,
+  body.dark-mode .benefit-card p {
+    color: #bbb;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .banner-text h1 {
+      font-size: 2rem;
+      flex-direction: column;
+    }
+
+    .banner-actions {
+      flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .benefits-section h2,
+    .cta-content h2 {
+      font-size: 2rem;
+    }
+
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-stats {
+      gap: 30px;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+    }
+  }
+</style>
+
+<script>
+  function showLoginPrompt(action) {
+    const modal = document.getElementById('loginModal');
+    const actionText = modal.querySelector('p');
+    
+    const messages = {
+      'view this product': 'You need to log in to view product details and make purchases!',
+      'add to cart': 'You need to log in to add items to your cart!',
+      'default': 'You need to log in to access this feature!'
+    };
+    
+    actionText.textContent = messages[action] || messages['default'];
+    modal.classList.add('active');
+  }
+
+  function closeLoginModal() {
+    const modal = document.getElementById('loginModal');
+    modal.classList.remove('active');
+  }
+
+  function changeView(view) {
+    const grid = document.getElementById('productsGrid');
+    const buttons = document.querySelectorAll('.view-btn');
+    
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.target.closest('.view-btn').classList.add('active');
+    
+    if (view === 'list') {
+      grid.classList.add('list-view');
+    } else {
+      grid.classList.remove('list-view');
+    }
+  }
+
+  // Close modal when clicking outside
+  document.addEventListener('click', function(e) {
+    const modal = document.getElementById('loginModal');
+    if (e.target === modal) {
+      closeLoginModal();
+    }
+  });
+
+  // Close modal on ESC key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeLoginModal();
+    }
+  });
+
+  // Add staggered animation to product cards
+  document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach((card, index) => {
+      card.style.animation = `slideUp 0.4s ease-out ${index * 0.1}s both`;
+    });
+  });
 
   @keyframes slideUp {
     from {
@@ -353,22 +1063,6 @@
       transform: translateY(0);
     }
   }
+</script>
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .guest-actions {
-      flex-direction: column;
-    }
-
-    .guest-actions .btn {
-      width: 100%;
-      text-align: center;
-    }
-
-    .login-prompt {
-      margin: 20px;
-      padding: 30px 20px;
-    }
-  }
-</style>
 {% endblock %}
