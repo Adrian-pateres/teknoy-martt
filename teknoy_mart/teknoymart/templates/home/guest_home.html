@@ -1,75 +1,424 @@
 {% extends "teknoymart/base.html" %}
 {% load static %}
 
-{% block title %}Welcome | Teknoy Mart{% endblock %}
+{% block title %}Browse Products | Teknoy Mart{% endblock %}
 {% block body_class %}guest-page{% endblock %}
 
-{# Reuse the same CSS used on home #}
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 
-
+{% block content %}
 <main class="home-container">
 
-  <!-- Search (disabled) -->
-  <div class="search-bar is-disabled" title="Login to search">
-    <input type="text" placeholder="Search products, categories…" disabled aria-disabled="true">
-    <button type="button" disabled aria-disabled="true" aria-label="Search">🔍</button>
+  <!-- Search (disabled with click handler) -->
+  <div class="search-bar is-disabled" onclick="showLoginPrompt()">
+    <input type="text" placeholder="🔒 Search products, categories… (Login required)" readonly>
+    <button type="button" aria-label="Search">🔍</button>
   </div>
 
-  <!-- Category chips (disabled look) -->
+  <!-- Category chips (disabled with click handler) -->
   <div class="cat-filter is-disabled" role="tablist" aria-label="Filter by category">
-    <button class="chip active" disabled aria-disabled="true">All</button>
-    <button class="chip" disabled aria-disabled="true">Apparel</button>
-    <button class="chip" disabled aria-disabled="true">Gadgets</button>
-    <button class="chip" disabled aria-disabled="true">School Supplies</button>
-    <button class="chip" disabled aria-disabled="true">Food</button>
-    <button class="chip" disabled aria-disabled="true">Merch</button>
+    <button class="chip active" onclick="showLoginPrompt()">All</button>
+    <button class="chip" onclick="showLoginPrompt()">Apparel</button>
+    <button class="chip" onclick="showLoginPrompt()">Gadgets</button>
+    <button class="chip" onclick="showLoginPrompt()">School Supplies</button>
+    <button class="chip" onclick="showLoginPrompt()">Food</button>
+    <button class="chip" onclick="showLoginPrompt()">Merch</button>
   </div>
 
   <!-- Category Tabs -->
   <div class="tabs">
-    <a href="#" class="active" aria-disabled="true">Shop</a>
-    <a href="#" aria-disabled="true">Products</a>
-    <a href="#" aria-disabled="true">Categories</a>
+    <a href="#" class="active" onclick="showLoginPrompt(); return false;">Shop</a>
+    <a href="#" onclick="showLoginPrompt(); return false;">Products</a>
+    <a href="#" onclick="showLoginPrompt(); return false;">Categories</a>
   </div>
 
   <!-- Flash Deals (preview cards with lock overlay) -->
   <section class="product-section">
-    <h3>🔥 Flash Deals</h3>
+    <div class="section-header">
+      <h3>🔥 Flash Deals</h3>
+      <a href="#" class="view-all" onclick="showLoginPrompt(); return false;">View All →</a>
+    </div>
     <div class="product-grid">
-      <div class="product-card preview">
-        <img src="{% static 'images/mouse.jpg' %}" alt="Item 1">
+      <div class="product-card preview" onclick="showLoginPrompt()">
+        <div class="thumb">
+          <img src="{% static 'images/mouse.jpg' %}" alt="Wireless Mouse">
+        </div>
         <p class="title">Wireless Mouse</p>
         <p class="price">₱990</p>
-        <div class="lock-overlay" aria-hidden="true">Login to view</div>
+        <div class="lock-overlay">Login to view</div>
       </div>
-      <div class="product-card preview">
-        <img src="{% static 'images/hoodie.png' %}" alt="Item 2">
+      <div class="product-card preview" onclick="showLoginPrompt()">
+        <div class="thumb">
+          <img src="{% static 'images/hoodie.png' %}" alt="CIT-U Hoodie">
+        </div>
         <p class="title">CIT-U Hoodie</p>
-        <p class="price">₱1450</p>
-        <div class="lock-overlay" aria-hidden="true">Login to view</div>
+        <p class="price">₱1,450</p>
+        <div class="lock-overlay">Login to view</div>
       </div>
-      <div class="product-card preview">
-        <img src="{% static 'images/notebook.png' %}" alt="Item 3">
+      <div class="product-card preview" onclick="showLoginPrompt()">
+        <div class="thumb">
+          <img src="{% static 'images/notebook.png' %}" alt="Notebook A5">
+        </div>
         <p class="title">Notebook A5</p>
         <p class="price">₱550</p>
-        <div class="lock-overlay" aria-hidden="true">Login to view</div>
+        <div class="lock-overlay">Login to view</div>
+      </div>
+      <div class="product-card preview" onclick="showLoginPrompt()">
+        <div class="thumb">
+          <img src="{% static 'images/mouse.jpg' %}" alt="Gaming Headset">
+        </div>
+        <p class="title">Gaming Headset</p>
+        <p class="price">₱2,500</p>
+        <div class="lock-overlay">Login to view</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- New Arrivals -->
+  <section class="product-section">
+    <div class="section-header">
+      <h3>✨ New Arrivals</h3>
+      <a href="#" class="view-all" onclick="showLoginPrompt(); return false;">View All →</a>
+    </div>
+    <div class="product-grid">
+      <div class="product-card preview" onclick="showLoginPrompt()">
+        <div class="thumb">
+          <img src="{% static 'images/hoodie.png' %}" alt="Tech Backpack">
+        </div>
+        <p class="title">Tech Backpack</p>
+        <p class="price">₱1,800</p>
+        <div class="lock-overlay">Login to view</div>
+      </div>
+      <div class="product-card preview" onclick="showLoginPrompt()">
+        <div class="thumb">
+          <img src="{% static 'images/notebook.png' %}" alt="Study Planner">
+        </div>
+        <p class="title">Study Planner 2025</p>
+        <p class="price">₱450</p>
+        <div class="lock-overlay">Login to view</div>
+      </div>
+      <div class="product-card preview" onclick="showLoginPrompt()">
+        <div class="thumb">
+          <img src="{% static 'images/mouse.jpg' %}" alt="USB Hub">
+        </div>
+        <p class="title">USB-C Hub</p>
+        <p class="price">₱750</p>
+        <div class="lock-overlay">Login to view</div>
+      </div>
+      <div class="product-card preview" onclick="showLoginPrompt()">
+        <div class="thumb">
+          <img src="{% static 'images/hoodie.png' %}" alt="CIT-U Cap">
+        </div>
+        <p class="title">CIT-U Cap</p>
+        <p class="price">₱350</p>
+        <div class="lock-overlay">Login to view</div>
       </div>
     </div>
   </section>
 
   <!-- Promo Banner -->
-  <div class="promo-banner">
-    <img src="{% static 'images/promobanner.png' %}" alt="Promo Banner">
+  <div class="promo-banner" onclick="showLoginPrompt()">
+    <img src="{% static 'images/promobanner.png' %}" alt="Special Promo - Login to view details">
   </div>
 
-  <!-- Call to action -->
-  <div class="buttons" style="display:flex; gap:.5rem; flex-wrap:wrap;">
-    <a href="{% url 'login' %}" class="btn btn-primary">Login to Continue</a>
+  <!-- Action Buttons Below Promo -->
+  <div class="guest-actions">
+    <a href="{% url 'index' %}" class="btn btn-back">← Back to Home</a>
+    <a href="{% url 'login' %}" class="btn btn-primary">Login Now</a>
     <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
   </div>
 
 </main>
+
+<!-- Login Prompt Modal -->
+<div class="guest-overlay" id="loginPrompt" onclick="hideLoginPrompt()">
+  <div class="login-prompt" onclick="event.stopPropagation()">
+    <div class="login-prompt-icon">🔒</div>
+    <h2>Login Required</h2>
+    <p>You need to login first to access this feature and browse our full catalog of products from CIT-U students.</p>
+    <div class="login-prompt-buttons">
+      <a href="{% url 'login' %}" class="btn btn-primary">Login Now</a>
+      <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showLoginPrompt() {
+    document.getElementById('loginPrompt').classList.add('show');
+  }
+
+  function hideLoginPrompt() {
+    document.getElementById('loginPrompt').classList.remove('show');
+  }
+
+  // Close modal on Escape key
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      hideLoginPrompt();
+    }
+  });
+</script>
+
+<style>
+  /* Guest Page Specific Styles */
+  .guest-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .guest-overlay.show {
+    display: flex;
+  }
+
+  .login-prompt {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 450px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+  }
+
+  body.dark-mode .login-prompt {
+    background: #1e1e1e;
+    color: #fff;
+  }
+
+  .login-prompt-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+  }
+
+  .login-prompt h2 {
+    color: #8B0000;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+  }
+
+  body.dark-mode .login-prompt h2 {
+    color: #ff6666;
+  }
+
+  .login-prompt p {
+    color: #666;
+    margin-bottom: 25px;
+    line-height: 1.6;
+  }
+
+  body.dark-mode .login-prompt p {
+    color: #bbb;
+  }
+
+  .login-prompt-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .login-prompt .btn {
+    padding: 12px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+
+  .login-prompt .btn-primary {
+    background: linear-gradient(135deg, #8B0000 0%, #a40000 100%);
+    color: white;
+  }
+
+  .login-prompt .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+  }
+
+  .login-prompt .btn-secondary {
+    background: white;
+    color: #8B0000;
+    border: 2px solid #8B0000;
+  }
+
+  body.dark-mode .login-prompt .btn-secondary {
+    background: #2d2d2d;
+    color: #ff6666;
+    border-color: #ff6666;
+  }
+
+  .login-prompt .btn-secondary:hover {
+    background: #8B0000;
+    color: white;
+  }
+
+  body.dark-mode .login-prompt .btn-secondary:hover {
+    background: #ff6666;
+    color: #1e1e1e;
+  }
+
+  /* Disabled Elements */
+  .is-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Lock Overlay on Cards */
+  .product-card.preview {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .lock-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 15px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .product-card.preview:hover .lock-overlay {
+    opacity: 1;
+  }
+
+  .lock-overlay::before {
+    content: "🔒 ";
+    font-size: 1.5rem;
+    margin-right: 8px;
+  }
+
+  /* Guest Actions Section */
+  .guest-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    padding: 20px;
+    flex-wrap: wrap;
+  }
+
+  .guest-actions .btn {
+    padding: 12px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    font-size: 1rem;
+  }
+
+  .guest-actions .btn-back {
+    background: white;
+    color: #666;
+    border: 2px solid #ddd;
+  }
+
+  body.dark-mode .guest-actions .btn-back {
+    background: #2d2d2d;
+    color: #bbb;
+    border-color: #444;
+  }
+
+  .guest-actions .btn-back:hover {
+    background: #f5f5f5;
+    border-color: #8B0000;
+    color: #8B0000;
+  }
+
+  body.dark-mode .guest-actions .btn-back:hover {
+    background: #3d3d3d;
+    border-color: #ff6666;
+    color: #ff6666;
+  }
+
+  .guest-actions .btn-primary {
+    background: linear-gradient(135deg, #8B0000 0%, #a40000 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+  }
+
+  .guest-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+  }
+
+  .guest-actions .btn-secondary {
+    background: white;
+    color: #8B0000;
+    border: 2px solid #8B0000;
+  }
+
+  body.dark-mode .guest-actions .btn-secondary {
+    background: #2d2d2d;
+    color: #ff6666;
+    border-color: #ff6666;
+  }
+
+  .guest-actions .btn-secondary:hover {
+    background: #8B0000;
+    color: white;
+  }
+
+  body.dark-mode .guest-actions .btn-secondary:hover {
+    background: #ff6666;
+    color: #1e1e1e;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .guest-actions {
+      flex-direction: column;
+    }
+
+    .guest-actions .btn {
+      width: 100%;
+      text-align: center;
+    }
+
+    .login-prompt {
+      margin: 20px;
+      padding: 30px 20px;
+    }
+  }
+</style>
 {% endblock %}

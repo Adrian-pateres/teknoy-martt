@@ -4,32 +4,1001 @@
 {% block title %}Welcome | Teknoy Mart{% endblock %}
 {% block body_class %}index-page{% endblock %}
 
+{% block navbar %}
+<header class="navbar">
+  <div class="logo-text">
+    <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo" class="navbar-logo">
+    <span>Teknoy Mart</span>
+  </div>
+
+  <nav>
+    <a href="#values-section" class="nav-link">Core Values</a>
+    <a href="#vision-section" class="nav-link">Vision & Mission</a>
+    <a href="#about-section" class="nav-link">Our Offer</a>
+    <a href="#benefits-section" class="nav-link">Benefits</a>
+    <a href="#executive-section" class="nav-link">Executive Summary</a>
+  </nav>
+</header>
+{% endblock %}
+
 {% block content %}
-<section class="hero">
-    <div class="hero-content">
-
-        <!-- Welcome Text -->
-        <h2 class="welcome-title">Welcome to Teknoy Mart 🎉</h2>
-        <p class="welcome-desc">
-            Your one-stop platform for convenient shopping, student deals, and campus essentials.  
-            Start exploring today!
-        </p>
-
-        <!-- Buttons -->
-        <div class="buttons">
-            <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
-            <a href="{% url 'register_step1' %}" class="btn btn-secondary">Register</a>
-        </div>
-
-        <!-- Guest -->
-        <div class="guest">
-            <a href="{% url 'guest_home' %}" class="guest-link">Continue as Guest</a>
-        </div>
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-content">
+    <h1 class="hero-title">Your campus marketplace for CIT-U students</h1>
+    <p class="hero-subtitle">
+      Teknoy Mart is a secure platform exclusively for CIT-U students. 
+      Buy, sell, and rent items within a trusted university community.
+    </p>
+    <div class="hero-cta">
+      <input type="email" class="hero-input" placeholder="Enter your @cit.edu email" id="hero-email">
+      <a href="{% url 'register_step1' %}" class="hero-button">Get Started</a>
     </div>
-
-    <!-- Right-side illustration / background -->
-    <div class="hero-image">
-        <img src="{% static 'images/shoppingillustration.png' %}" alt="Shopping Illustration">
-    </div>
+    <a href="{% url 'guest_home' %}" class="guest-link-hero">Continue as Guest →</a>
+  </div>
+  <div class="hero-illustration">
+    <!-- SVG Illustration with Teknoy Mart colors -->
+    <svg class="illustration-fallback" viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background Circle -->
+      <circle cx="300" cy="250" r="180" fill="#ffecec" opacity="0.5"/>
+      
+      <!-- Shopping Bag -->
+      <rect x="220" y="180" width="160" height="180" rx="10" fill="#fff" stroke="#8B0000" stroke-width="4"/>
+      <path d="M 240 180 Q 240 140 300 140 Q 360 140 360 180" stroke="#8B0000" stroke-width="4" fill="none"/>
+      
+      <!-- Handle -->
+      <ellipse cx="300" cy="200" rx="50" ry="20" fill="#fff4f4"/>
+      
+      <!-- Shopping Items -->
+      <circle cx="260" cy="240" r="20" fill="#8B0000"/>
+      <circle cx="340" cy="240" r="20" fill="#a40000"/>
+      <rect x="270" y="280" width="60" height="40" rx="5" fill="#c62828"/>
+      
+      <!-- Decorative Elements -->
+      <circle cx="450" cy="150" r="15" fill="#8B0000" opacity="0.6"/>
+      <circle cx="500" cy="200" r="20" fill="#a40000" opacity="0.6"/>
+      <circle cx="150" cy="180" r="18" fill="#c62828" opacity="0.6"/>
+      <circle cx="100" cy="300" r="25" fill="#8B0000" opacity="0.6"/>
+      
+      <!-- Stars -->
+      <polygon points="480,300 485,315 500,315 488,325 492,340 480,332 468,340 472,325 460,315 475,315" fill="#8B0000"/>
+      <polygon points="120,400 123,410 133,410 125,416 128,426 120,420 112,426 115,416 107,410 117,410" fill="#8B0000"/>
+    </svg>
+  </div>
 </section>
+
+<!-- Core Values Section -->
+<section id="values-section" class="core-values-section">
+  <p class="section-label">What We Stand For</p>
+  <h2 class="section-title">Core Values</h2>
+  <p class="section-description">
+    Our platform is built on fundamental principles that guide every decision and feature we implement.
+  </p>
+
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon">🔒</div>
+      <h3 class="value-title">Security & Trust</h3>
+      <p class="value-text">Ensuring all users are authenticated CIT-U students for a safe marketplace environment.</p>
+    </div>
+
+    <div class="value-card">
+      <div class="value-icon">🤝</div>
+      <h3 class="value-title">Community-Centered</h3>
+      <p class="value-text">Strengthening student connections and cooperation within the CIT-U campus.</p>
+    </div>
+
+    <div class="value-card">
+      <div class="value-icon">♻️</div>
+      <h3 class="value-title">Sustainability</h3>
+      <p class="value-text">Encouraging reuse, and waste reduction for a greener campus.</p>
+    </div>
+
+    <div class="value-card">
+      <div class="value-icon">📱</div>
+      <h3 class="value-title">Accessibility</h3>
+      <p class="value-text">Providing a convenient and intuitive platform accessible to all students.</p>
+    </div>
+
+    <div class="value-card">
+      <div class="value-icon">⚡</div>
+      <h3 class="value-title">Innovation</h3>
+      <p class="value-text">Utilizing modern tools like Django, Supabase, and Render for optimal performance.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Vision & Mission Section -->
+<section id="vision-section" class="vision-mission-section">
+  <div class="vision-mission-container">
+    <div class="vm-card vision-card">
+      <div class="vm-icon">🔭</div>
+      <h2 class="section-heading">Vision</h2>
+      <p class="about-text">
+        To become the trusted and innovative digital marketplace that enhances student life at CIT-U by promoting secure
+        transactions, sustainable resource sharing, and meaningful community connections.
+      </p>
+    </div>
+
+    <div class="vm-card mission-card">
+      <div class="vm-icon">🎯</div>
+      <h2 class="section-heading">Mission</h2>
+      <ul class="mission-list">
+        <li>Provide a secure, university-exclusive online marketplace for safe transactions.</li>
+        <li>Empower students through an accessible platform for academic and personal needs.</li>
+        <li>Promote sustainability and resource sharing through buying, selling, and renting.</li>
+        <li>Strengthen community ties through safe and direct communication.</li>
+        <li>Deliver a modern, scalable platform using advanced technologies.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Our Offer Section -->
+<section id="about-section" class="about-landing">
+  <p class="section-label">What We Do</p>
+  <h2 class="section-title">Our Offer</h2>
+  <p class="section-description">
+    Our goal is to provide CIT-U students with a secure, convenient platform 
+    for buying and selling items while fostering community connections.
+  </p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📚</div>
+      <h3 class="feature-title">Buy & Sell</h3>
+      <p class="feature-text">
+        List and purchase textbooks, gadgets, and campus essentials 
+        from verified CIT-U students.
+      </p>
+      <a href="{% url 'login' %}" class="feature-link">Get Started →</a>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3 class="feature-title">Real-Time Communication</h3>
+      <p class="feature-text">
+        Connect instantly with buyers and sellers through our integrated 
+        real-time chat messaging system.
+      </p>
+      <a href="{% url 'login' %}" class="feature-link">Start Chatting →</a>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🌱</div>
+      <h3 class="feature-title">Grow Community</h3>
+      <p class="feature-text">
+        Promote sustainability through reuse and affordable items 
+        while building meaningful campus connections.
+      </p>
+      <a href="{% url 'register_step1' %}" class="feature-link">Join Now →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits Section -->
+<section id="benefits-section" class="benefits-section">
+  <div class="benefits-illustration">
+    <!-- SVG Illustration with Teknoy Mart colors -->
+    <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" style="max-width: 450px;">
+      <!-- Background -->
+      <circle cx="250" cy="200" r="150" fill="#8B0000" opacity="0.1"/>
+      
+      <!-- Community Circle -->
+      <circle cx="200" cy="180" r="35" fill="#fff" stroke="#8B0000" stroke-width="3"/>
+      <circle cx="200" cy="170" r="12" fill="#8B0000"/>
+      <path d="M 185 195 Q 200 205 215 195" stroke="#8B0000" stroke-width="3" fill="none"/>
+      
+      <circle cx="300" cy="180" r="35" fill="#fff" stroke="#8B0000" stroke-width="3"/>
+      <circle cx="300" cy="170" r="12" fill="#8B0000"/>
+      <path d="M 285 195 Q 300 205 315 195" stroke="#8B0000" stroke-width="3" fill="none"/>
+      
+      <circle cx="250" cy="250" r="35" fill="#fff" stroke="#8B0000" stroke-width="3"/>
+      <circle cx="250" cy="240" r="12" fill="#8B0000"/>
+      <path d="M 235 265 Q 250 275 265 265" stroke="#8B0000" stroke-width="3" fill="none"/>
+      
+      <!-- Connection Lines -->
+      <line x1="220" y1="200" x2="240" y2="230" stroke="#8B0000" stroke-width="2" stroke-dasharray="5,5"/>
+      <line x1="280" y1="200" x2="260" y2="230" stroke="#8B0000" stroke-width="2" stroke-dasharray="5,5"/>
+      
+      <!-- Icons -->
+      <circle cx="350" cy="120" r="20" fill="#a40000" opacity="0.7"/>
+      <circle cx="150" cy="300" r="25" fill="#c62828" opacity="0.7"/>
+      <circle cx="400" cy="250" r="18" fill="#8B0000" opacity="0.7"/>
+    </svg>
+  </div>
+  <div class="benefits-content">
+    <p class="section-label">Why Our Platform</p>
+    <h2 class="section-title">Benefits</h2>
+    <p class="section-description" style="text-align: left; margin-left: 0;">
+      Teknoy Mart provides a secure, university-exclusive marketplace 
+      designed specifically for CIT-U students.
+    </p>
+
+    <ul class="benefits-list">
+      <li class="benefit-item">
+        <div class="benefit-icon">✓</div>
+        <div class="benefit-text">
+          <strong>Secure Transactions</strong> – Only verified @cit.edu students can access the platform
+        </div>
+      </li>
+      <li class="benefit-item">
+        <div class="benefit-icon">✓</div>
+        <div class="benefit-text">
+          <strong>Community-Focused</strong> – Connect with fellow students in a trusted environment
+        </div>
+      </li>
+      <li class="benefit-item">
+        <div class="benefit-icon">✓</div>
+        <div class="benefit-text">
+          <strong>Sustainable Shopping</strong> – Promote reuse and reduce waste on campus
+        </div>
+      </li>
+      <li class="benefit-item">
+        <div class="benefit-icon">✓</div>
+        <div class="benefit-text">
+          <strong>Easy Communication</strong> – Integrated messaging system for safe buyer-seller interactions
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- Executive Overview Section -->
+<section id="executive-section" class="executive-overview-section">
+  <div class="overview-container">
+    <div class="overview-content">
+      <p class="section-label">Platform Overview</p>
+      <h2 class="section-title">Executive Summary</h2>
+      <p class="about-text">
+        The CIT-U eCommerce Platform is a secure, cloud-deployed system that simplifies item exchanges among students.
+        With buying, selling, and renting features supported by Supabase and deployed via Render, it ensures stable performance
+        and secure operations. This platform represents an innovative solution focused on convenience, sustainability,
+        and community building within the CIT-U campus.
+      </p>
+      
+      <div class="tech-stack">
+        <h3 class="tech-heading">Powered By</h3>
+        <div class="tech-badges">
+          <span class="tech-badge">Django</span>
+          <span class="tech-badge">Supabase</span>
+          <span class="tech-badge">Render</span>
+          <span class="tech-badge">PostgreSQL</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="overview-illustration">
+      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- Platform illustration -->
+        <circle cx="200" cy="200" r="150" fill="#8B0000" opacity="0.1"/>
+        
+        <!-- Central platform -->
+        <rect x="150" y="150" width="100" height="100" rx="10" fill="#8B0000"/>
+        <text x="200" y="205" text-anchor="middle" fill="white" font-size="20" font-weight="bold">CIT-U</text>
+        
+        <!-- Connected nodes -->
+        <circle cx="100" cy="100" r="30" fill="#a40000"/>
+        <circle cx="300" cy="100" r="30" fill="#a40000"/>
+        <circle cx="100" cy="300" r="30" fill="#a40000"/>
+        <circle cx="300" cy="300" r="30" fill="#a40000"/>
+        
+        <!-- Connection lines -->
+        <line x1="130" y1="130" x2="170" y2="170" stroke="#8B0000" stroke-width="2" stroke-dasharray="5,5"/>
+        <line x1="270" y1="130" x2="230" y2="170" stroke="#8B0000" stroke-width="2" stroke-dasharray="5,5"/>
+        <line x1="130" y1="270" x2="170" y2="230" stroke="#8B0000" stroke-width="2" stroke-dasharray="5,5"/>
+        <line x1="270" y1="270" x2="230" y2="230" stroke="#8B0000" stroke-width="2" stroke-dasharray="5,5"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Smooth scroll for nav links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          'block': 'start'  // Changed: Added quotes around block
+        });
+      }
+    });
+  });
+</script>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Reset and Base */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Smooth Scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Hero Section Styles */
+  .hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 120px 5% 80px 5%;
+    background: linear-gradient(135deg, #fff4f4 0%, #ffecec 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-content {
+    flex: 1;
+    max-width: 550px;
+    z-index: 2;
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+    animation: fadeInUp 0.8s ease-out;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+    flex-wrap: wrap;
+  }
+
+  .hero-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 15px 20px;
+    border: 2px solid #e0e0e0;
+    border-radius: 50px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s;
+    background: white;
+  }
+
+  .hero-input:focus {
+    border-color: #8B0000;
+    box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1);
+  }
+
+  .hero-button {
+    padding: 15px 35px;
+    background: linear-gradient(135deg, #8B0000 0%, #a40000 100%);
+    color: white !important;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .hero-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 0, 0, 0.4);
+    background: linear-gradient(135deg, #a40000 0%, #8B0000 100%);
+  }
+
+  .hero-illustration {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: float 3s ease-in-out infinite;
+    min-height: 400px;
+  }
+
+  .hero-illustration img {
+    max-width: 100%;
+    max-height: 500px;
+    height: auto;
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.1));
+  }
+
+  /* SVG Fallback if image doesn't exist */
+  .illustration-fallback {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .guest-link-hero {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    color: #666;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+  }
+
+  .guest-link-hero:hover {
+    color: #8B0000;
+  }
+
+  /* Core Values Section */
+  .core-values-section {
+    padding: 100px 5%;
+    background: white;
+    text-align: center;
+  }
+
+  .section-label {
+    color: #8B0000;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    display: block;
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+  }
+
+  .section-description {
+    max-width: 600px;
+    margin: 0 auto 60px;
+    color: #666;
+    line-height: 1.8;
+    font-size: 1.05rem;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .value-card {
+    background: linear-gradient(135deg, #fff4f4 0%, #ffecec 100%);
+    padding: 35px 25px;
+    border-radius: 20px;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+  }
+
+  .value-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(139, 0, 0, 0.15);
+    border-color: #8B0000;
+    background: white;
+  }
+
+  .value-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+
+  .value-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #8B0000;
+    margin-bottom: 15px;
+  }
+
+  .value-text {
+    color: #666;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  /* Vision & Mission Section */
+  .vision-mission-section {
+    padding: 100px 5%;
+    background: linear-gradient(135deg, #fff4f4 0%, #ffecec 100%);
+  }
+
+  .vision-mission-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .vm-card {
+    background: white;
+    padding: 50px 40px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+  }
+
+  .vm-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(139, 0, 0, 0.15);
+  }
+
+  .vm-icon {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .section-heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #8B0000;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .about-text {
+    color: #666;
+    line-height: 1.8;
+    font-size: 1.05rem;
+    text-align: center;
+  }
+
+  .mission-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+
+  .mission-list li {
+    padding: 12px 0;
+    padding-left: 30px;
+    position: relative;
+    color: #666;
+    line-height: 1.6;
+  }
+
+  .mission-list li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #8B0000;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  /* Our Offer Section */
+  .about-landing {
+    padding: 100px 5%;
+    background: white;
+    text-align: center;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+  }
+
+  .feature-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s;
+    text-align: center;
+    border: 2px solid transparent;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(139, 0, 0, 0.15);
+    border-color: #ffecec;
+  }
+
+  .feature-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #fff4f4 0%, #ffecec 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    font-size: 2.5rem;
+  }
+
+  .feature-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+  }
+
+  .feature-text {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+
+  .feature-link {
+    color: #8B0000;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+    font-size: 0.95rem;
+  }
+
+  .feature-link:hover {
+    color: #a40000;
+    text-decoration: underline;
+  }
+
+  /* Benefits Section */
+  .benefits-section {
+    padding: 100px 5%;
+    background: linear-gradient(135deg, #fff4f4 0%, #ffecec 100%);
+    display: flex;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .benefits-illustration {
+    flex: 1;
+    animation: float 3s ease-in-out infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .benefits-illustration img,
+  .benefits-illustration svg {
+    max-width: 100%;
+    max-height: 500px;
+    height: auto;
+  }
+
+  .benefits-content {
+    flex: 1;
+  }
+
+  .benefits-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 30px;
+  }
+
+  .benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 25px;
+    animation: fadeInRight 0.6s ease-out both;
+  }
+
+  .benefit-item:nth-child(1) { animation-delay: 0s; }
+  .benefit-item:nth-child(2) { animation-delay: 0.1s; }
+  .benefit-item:nth-child(3) { animation-delay: 0.2s; }
+  .benefit-item:nth-child(4) { animation-delay: 0.3s; }
+
+  .benefit-icon {
+    width: 40px;
+    height: 40px;
+    background: #8B0000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    flex-shrink: 0;
+    font-size: 1.2rem;
+  }
+
+  .benefit-text {
+    color: #333;
+    line-height: 1.6;
+    text-align: left;
+  }
+
+  /* Executive Overview Section */
+  .executive-overview-section {
+    padding: 100px 5%;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: white;
+  }
+
+  .overview-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+  }
+
+  .overview-content {
+    flex: 1;
+  }
+
+  .executive-overview-section .section-label {
+    color: #ff6666;
+  }
+
+  .executive-overview-section .section-title {
+    color: white;
+  }
+
+  .executive-overview-section .about-text {
+    color: #bbb;
+    text-align: left;
+    margin-bottom: 30px;
+  }
+
+  .tech-stack {
+    margin-top: 40px;
+  }
+
+  .tech-heading {
+    font-size: 1.2rem;
+    color: #ff6666;
+    margin-bottom: 20px;
+  }
+
+  .tech-badges {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .tech-badge {
+    background: rgba(255, 102, 102, 0.2);
+    color: #ff6666;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    border: 2px solid #ff6666;
+    transition: all 0.3s;
+  }
+
+  .tech-badge:hover {
+    background: #ff6666;
+    color: white;
+  }
+
+  .overview-illustration {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .overview-illustration svg {
+    max-width: 400px;
+    width: 100%;
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-section {
+      flex-direction: column;
+      text-align: center;
+      padding: 80px 5% 60px 5%;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+    }
+
+    .hero-cta {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .hero-input {
+      width: 100%;
+    }
+
+    .benefits-section {
+      flex-direction: column;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .section-title {
+      font-size: 2rem;
+    }
+
+    .vision-mission-container {
+      grid-template-columns: 1fr;
+    }
+
+    .values-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .overview-container {
+      flex-direction: column;
+    }
+
+    .overview-illustration {
+      order: -1;
+    }
+  }
+
+  /* Dark Mode Styles */
+  body.dark-mode .hero-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+
+  body.dark-mode .hero-title {
+    color: #fff;
+  }
+
+  body.dark-mode .hero-subtitle {
+    color: #bbb;
+  }
+
+  body.dark-mode .hero-input {
+    background-color: #2d2d2d !important;
+    color: #fff !important;
+    border-color: #444 !important;
+  }
+
+  body.dark-mode .core-values-section {
+    background: #121212;
+  }
+
+  body.dark-mode .value-card {
+    background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%);
+  }
+
+  body.dark-mode .value-card:hover {
+    background: #1e1e1e;
+    border-color: #ff6666;
+  }
+
+  body.dark-mode .value-title {
+    color: #ff6666;
+  }
+
+  body.dark-mode .value-text {
+    color: #bbb;
+  }
+
+  body.dark-mode .vision-mission-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+
+  body.dark-mode .vm-card {
+    background: #1e1e1e;
+  }
+
+  body.dark-mode .section-heading {
+    color: #ff6666;
+  }
+
+  body.dark-mode .about-text,
+  body.dark-mode .mission-list li {
+    color: #bbb;
+  }
+
+  body.dark-mode .mission-list li:before {
+    color: #ff6666;
+  }
+
+  body.dark-mode .about-landing {
+    background: #121212;
+  }
+
+  body.dark-mode .feature-card {
+    background: #1e1e1e;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  body.dark-mode .feature-card:hover {
+    border-color: #2d2d2d;
+    box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
+  }
+
+  body.dark-mode .feature-icon {
+    background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 100%);
+  }
+
+  body.dark-mode .benefits-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+
+  body.dark-mode .section-title,
+  body.dark-mode .feature-title {
+    color: #fff !important;
+  }
+
+  body.dark-mode .section-description,
+  body.dark-mode .feature-text,
+  body.dark-mode .benefit-text {
+    color: #bbb !important;
+  }
+
+  body.dark-mode .guest-link-hero {
+    color: #bbb;
+  }
+
+  body.dark-mode .guest-link-hero:hover {
+    color: #ff6666;
+  }
+
+  body.dark-mode .section-label {
+    color: #ff6666;
+  }
+
+  body.dark-mode .feature-link {
+    color: #ff6666;
+  }
+
+  body.dark-mode .feature-link:hover {
+    color: #ff8888;
+  }
+</style>
 {% endblock %}
