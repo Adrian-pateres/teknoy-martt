@@ -1,0 +1,110 @@
+{% extends "teknoymart/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="chat-wrapper">
+  <div class="chat-room-header">
+    <a href="{% url 'inbox' %}" class="back-link">← Inbox</a>
+    <div class="user-info">
+      <h3>{{ target_user.first_name }} {{ target_user.last_name }}</h3>
+      <span class="status">
+          {{ target_user.profile.role|title }} 
+          <span class="online-indicator">• Online</span>
+      </span>
+    </div>
+  </div>
+
+  <div class="messages-area" id="messagesArea">
+     <div style="text-align:center; padding:20px; color:#999;">Loading chats...</div>
+  </div>
+
+  <form id="chatForm" class="chat-input-area">
+    {% csrf_token %}
+    <input type="text" id="msgInput" name="body" placeholder="Type a message..." required autocomplete="off">
+    <button type="submit">Send</button>
+  </form>
+</div>
+
+<script>
+    const userId = "{{ target_user.id }}";
+    const messagesArea = document.getElementById('messagesArea');
+    const chatForm = document.getElementById('chatForm');
+    const msgInput = document.getElementById('msgInput');
+    
+    const fetchUrl = "{% url 'get_messages' target_user.id %}";
+
+    let isScrolledToBottom = true;
+
+    messagesArea.addEventListener('scroll', () => {
+        const threshold = 50;
+        const position = messagesArea.scrollTop + messagesArea.offsetHeight;
+        const height = messagesArea.scrollHeight;
+        isScrolledToBottom = position > height - threshold;
+    });
+
+    function loadMessages() {
+        fetch(fetchUrl)
+            .then(response => response.text())
+            .then(html => {
+                messagesArea.innerHTML = html;
+                
+                if (isScrolledToBottom) {
+                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                }
+            })
+            .catch(err => console.error("Error loading chats:", err));
+    }
+
+    loadMessages();
+
+    setInterval(loadMessages, 2000);
+
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(chatForm);
+        
+        fetch(window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).then(() => {
+            msgInput.value = '';
+            loadMessages();
+            isScrolledToBottom = true;
+        });
+    });
+</script>
+
+<style>
+  .chat-wrapper { max-width: 600px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; height: 70vh; }
+  .chat-room-header { padding: 15px; background: #8B0000; color: white; display: flex; align-items: center; border-radius: 12px 12px 0 0; }
+  .back-link { color: white; text-decoration: none; margin-right: 15px; font-weight: bold; }
+  .user-info h3 { margin: 0; font-size: 1.1rem; }
+  .user-info .status { font-size: 0.8rem; opacity: 0.8; display: flex; align-items: center; gap: 5px; }
+  .online-indicator { color: #90EE90; font-weight: bold; font-size: 0.7rem; animation: pulse 2s infinite;}
+
+  @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+  
+  .messages-area { flex: 1; padding: 20px; overflow-y: auto; background: #f5f5f5; display: flex; flex-direction: column; gap: 10px; }
+  
+  .message-bubble { max-width: 70%; padding: 10px 15px; border-radius: 18px; position: relative; font-size: 0.95rem; line-height: 1.4; }
+  .sent { align-self: flex-end; background: #8B0000; color: white; border-bottom-right-radius: 4px; }
+  .received { align-self: flex-start; background: #e0e0e0; color: #333; border-bottom-left-radius: 4px; }
+  
+  .message-bubble .time { display: block; font-size: 0.65rem; margin-top: 5px; opacity: 0.7; text-align: right; }
+  .no-msg { text-align: center; color: #999; margin-top: 50px; }
+
+  .chat-input-area { padding: 15px; background: white; border-top: 1px solid #eee; display: flex; gap: 10px; border-radius: 0 0 12px 12px; }
+  .chat-input-area input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+  .chat-input-area button { background: #8B0000; color: white; border: none; padding: 0 20px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+
+  body.dark-mode .chat-wrapper { background: #1e1e1e; border: 1px solid #333; }
+  body.dark-mode .messages-area { background: #121212; }
+  body.dark-mode .chat-input-area { background: #1e1e1e; border-top-color: #333; }
+  body.dark-mode .received { background: #333; color: white; }
+  body.dark-mode .chat-input-area input { background: #2d2d2d; color: white; border-color: #444; }
+</style>
+{% endblock %}

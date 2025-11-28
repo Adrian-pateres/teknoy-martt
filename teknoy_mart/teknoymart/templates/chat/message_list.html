@@ -1,0 +1,8 @@
+{% for msg in chat_messages %}
+  <div class="message-bubble {% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+    <p>{{ msg.body }}</p>
+    <span class="time">{{ msg.timestamp|date:"g:i A" }}</span>
+  </div>
+{% empty %}
+  <p class="no-msg">Start the conversation!</p>
+{% endfor %}

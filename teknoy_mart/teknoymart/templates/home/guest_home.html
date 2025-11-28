@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 
+<<<<<<< HEAD
 {% block content %}
 <main class="home-container">
 
@@ -114,10 +115,72 @@
         <p class="title">CIT-U Cap</p>
         <p class="price">₱350</p>
         <div class="lock-overlay">Login to view</div>
+=======
+{# <--- This line here to open the main content block ---> #}
+{% block content %}
+
+<main class="home-shell">
+
+    <div class="search-bar is-disabled" title="Login to search">
+        <input type="text" placeholder="Search products, categories…" disabled aria-disabled="true">
+        <button type="button" disabled aria-disabled="true" aria-label="Search">🔍</button>
+    </div>
+
+    <div class="cat-filter is-disabled" role="tablist" aria-label="Filter by category">
+        <button class="chip active" disabled aria-disabled="true">All</button>
+        <button class="chip" disabled aria-disabled="true">Apparel</button>
+        <button class="chip" disabled aria-disabled="true">Gadgets</button>
+        <button class="chip" disabled aria-disabled="true">School Supplies</button>
+        <button class="chip" disabled aria-disabled="true">Food</button>
+        <button class="chip" disabled aria-disabled="true">Merch</button>
+    </div>
+
+    <div class="tabs">
+        <a href="#" class="active" aria-disabled="true">Shop</a>
+        <a href="#" aria-disabled="true">Products</a>
+        <a href="#" aria-disabled="true">Categories</a>
+    </div>
+
+    <section class="product-section">
+        <h3>🔥 Flash Deals</h3>
+        <div class="product-grid">
+      <div class="product-card preview">
+        <div class="thumb">
+            <img src="{% static 'images/mouse.jpg' %}" alt="Item 1">
+        </div>
+        <div class="meta">
+            <p class="title">Wireless Mouse</p>
+            <p class="price">₱990</p>
+            <div class="lock-overlay" aria-hidden="true">Login to view</div>
+        </div>
+      </div>
+
+      <div class="product-card preview">
+        <div class="thumb">
+            <img src="{% static 'images/hoodie.png' %}" alt="Item 2">
+        </div>
+        <div class="meta">
+            <p class="title">CIT-U Hoodie</p>
+            <p class="price">₱1450</p>
+            <div class="lock-overlay" aria-hidden="true">Login to view</div>
+        </div>
+      </div>
+
+      <div class="product-card preview">
+        <div class="thumb">
+            <img src="{% static 'images/notebook.png' %}" alt="Item 3">
+        </div>
+        <div class="meta">
+            <p class="title">Notebook A5</p>
+            <p class="price">₱550</p>
+            <div class="lock-overlay" aria-hidden="true">Login to view</div>
+        </div>
+>>>>>>> 90f901fe283ae3c797c83b8968daa4e9e187bf40
       </div>
     </div>
-  </section>
+    </section>
 
+<<<<<<< HEAD
   <!-- Promo Banner -->
   <div class="promo-banner" onclick="showLoginPrompt()">
     <img src="{% static 'images/promobanner.png' %}" alt="Special Promo - Login to view details">
@@ -129,6 +192,16 @@
     <a href="{% url 'login' %}" class="btn btn-primary">Login Now</a>
     <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
   </div>
+=======
+  <div class="promo-banner guest-banner">
+    <img src="{% static 'images/promobanner.png' %}" alt="Promo Banner">
+  </div>
+
+    <div class="buttons" style="display:flex; gap:.5rem; flex-wrap:wrap;">
+        <a href="{% url 'login' %}" class="btn btn-primary">Login to Continue</a>
+        <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
+    </div>
+>>>>>>> 90f901fe283ae3c797c83b8968daa4e9e187bf40
 
 </main>
 

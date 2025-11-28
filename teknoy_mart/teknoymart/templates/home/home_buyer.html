@@ -25,9 +25,11 @@
     </button>
 
     <div id="userMenu" class="dropdown-menu" role="menu">
+      <a role="menuitem" href="{% url 'inbox' %}">💬 Messages</a>
       <a role="menuitem" href="{% url 'about' %}">About</a>
       <a role="menuitem" href="{% url 'buyer_preferences' %}">Preferences</a>
       <a role="menuitem" href="{% url 'buyer_privacy_settings' %}">Privacy</a>
+      <a role="menuitem" href="javascript:void(0);" style="cursor: default; opacity: 0.6;">Transaction History</a>
 
       <button role="menuitem" type="button" id="menu-dark" class="menu-item-btn">
         🌙 Dark Mode
@@ -88,6 +90,7 @@
         </div>
         <div class="meta">
           <p class="title">{{ product.title }}</p>
+          <a href="{% url 'chat_room' product.owner.id %}" class="btn btn-secondary" style="font-size: 0.8rem; margin-top: 5px;">Chat Seller</a>
           <p class="price">₱{{ product.price }}</p>
           <a href="{% url 'buy_now' product.id %}"
              class="btn btn-primary"

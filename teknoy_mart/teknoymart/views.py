@@ -11,8 +11,9 @@ from .forms import ProductForm
 from .models import Product, Profile, UserPreferences, UserPrivacySettings
 from .models import Profile
 from django.http import HttpResponseForbidden
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.utils import timezone
+from .models import Message
 
 
 
@@ -551,3 +552,97 @@ def logout_page_view(request):
 def logout_view(request):
     logout(request)
     return redirect("index")
+
+
+# = = = Chat System Views = = = 
+
+@login_required
+def inbox_view(request):
+    """
+    Displays a list of unique users the current user has exchanged messages with.
+    """
+    user = request.user
+    
+    messages = Message.objects.filter(Q(sender=user) | Q(recipient=user))
+    
+    conversation_partners = set()
+    for msg in messages:
+        if msg.sender != user:
+            conversation_partners.add(msg.sender)
+        else:
+            conversation_partners.add(msg.recipient)
+            
+    conversations = []
+    for partner in conversation_partners:
+        last_msg = Message.objects.filter(
+            Q(sender=user, recipient=partner) | Q(sender=partner, recipient=user)
+        ).order_by('-timestamp').first()
+        
+        conversations.append({
+            'user': partner,
+            'last_message': last_msg
+        })
+    
+    conversations.sort(key=lambda x: x['last_message'].timestamp, reverse=True)
+    
+    return render(request, 'chat/inbox.html', {'conversations': conversations})
+
+
+@login_required
+def chat_room_view(request, user_id):
+    """
+    The actual chat interface between request.user and the target user_id.
+    Includes logic to PREVENT same-role chatting.
+    """
+    user = request.user
+    try:
+        target_user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        messages.error(request, "User not found.")
+        return redirect('inbox')
+
+    # ENFORCE ROLE RESTRICTION (Buyer <-> Seller Only)
+    my_role = user.profile.role
+    target_role = target_user.profile.role
+
+    if my_role == target_role:
+        messages.error(request, f"You cannot chat with other {my_role}s.")
+        return redirect('inbox')
+
+    if request.method == "POST":
+        body = request.POST.get('body')
+        if body:
+            Message.objects.create(sender=user, recipient=target_user, body=body)
+            return redirect('chat_room', user_id=user_id)
+
+    chat_messages = Message.objects.filter(
+        Q(sender=user, recipient=target_user) | Q(sender=target_user, recipient=user)
+    ).order_by('timestamp')
+    
+    Message.objects.filter(sender=target_user, recipient=user, is_read=False).update(is_read=True)
+
+    return render(request, 'chat/room.html', {
+        'target_user': target_user,
+        'chat_messages': chat_messages
+    })
+
+
+@login_required
+def get_messages(request, user_id):
+    """
+    Helper view for Real-Time AJAX updates.
+    Returns only the HTML for the message list.
+    """
+    user = request.user
+    target_user = get_object_or_404(User, id=user_id)
+    
+    chat_messages = Message.objects.filter(
+        Q(sender=user, recipient=target_user) | Q(sender=target_user, recipient=user)
+    ).order_by('timestamp')
+    
+    Message.objects.filter(sender=target_user, recipient=user, is_read=False).update(is_read=True)
+
+    return render(request, 'chat/message_list.html', {
+        'chat_messages': chat_messages,
+        'request': request
+    })
