@@ -8,114 +8,6 @@
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 
-<<<<<<< HEAD
-{% block content %}
-<main class="home-container">
-
-  <!-- Search (disabled with click handler) -->
-  <div class="search-bar is-disabled" onclick="showLoginPrompt()">
-    <input type="text" placeholder="🔒 Search products, categories… (Login required)" readonly>
-    <button type="button" aria-label="Search">🔍</button>
-  </div>
-
-  <!-- Category chips (disabled with click handler) -->
-  <div class="cat-filter is-disabled" role="tablist" aria-label="Filter by category">
-    <button class="chip active" onclick="showLoginPrompt()">All</button>
-    <button class="chip" onclick="showLoginPrompt()">Apparel</button>
-    <button class="chip" onclick="showLoginPrompt()">Gadgets</button>
-    <button class="chip" onclick="showLoginPrompt()">School Supplies</button>
-    <button class="chip" onclick="showLoginPrompt()">Food</button>
-    <button class="chip" onclick="showLoginPrompt()">Merch</button>
-  </div>
-
-  <!-- Category Tabs -->
-  <div class="tabs">
-    <a href="#" class="active" onclick="showLoginPrompt(); return false;">Shop</a>
-    <a href="#" onclick="showLoginPrompt(); return false;">Products</a>
-    <a href="#" onclick="showLoginPrompt(); return false;">Categories</a>
-  </div>
-
-  <!-- Flash Deals (preview cards with lock overlay) -->
-  <section class="product-section">
-    <div class="section-header">
-      <h3>🔥 Flash Deals</h3>
-      <a href="#" class="view-all" onclick="showLoginPrompt(); return false;">View All →</a>
-    </div>
-    <div class="product-grid">
-      <div class="product-card preview" onclick="showLoginPrompt()">
-        <div class="thumb">
-          <img src="{% static 'images/mouse.jpg' %}" alt="Wireless Mouse">
-        </div>
-        <p class="title">Wireless Mouse</p>
-        <p class="price">₱990</p>
-        <div class="lock-overlay">Login to view</div>
-      </div>
-      <div class="product-card preview" onclick="showLoginPrompt()">
-        <div class="thumb">
-          <img src="{% static 'images/hoodie.png' %}" alt="CIT-U Hoodie">
-        </div>
-        <p class="title">CIT-U Hoodie</p>
-        <p class="price">₱1,450</p>
-        <div class="lock-overlay">Login to view</div>
-      </div>
-      <div class="product-card preview" onclick="showLoginPrompt()">
-        <div class="thumb">
-          <img src="{% static 'images/notebook.png' %}" alt="Notebook A5">
-        </div>
-        <p class="title">Notebook A5</p>
-        <p class="price">₱550</p>
-        <div class="lock-overlay">Login to view</div>
-      </div>
-      <div class="product-card preview" onclick="showLoginPrompt()">
-        <div class="thumb">
-          <img src="{% static 'images/mouse.jpg' %}" alt="Gaming Headset">
-        </div>
-        <p class="title">Gaming Headset</p>
-        <p class="price">₱2,500</p>
-        <div class="lock-overlay">Login to view</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- New Arrivals -->
-  <section class="product-section">
-    <div class="section-header">
-      <h3>✨ New Arrivals</h3>
-      <a href="#" class="view-all" onclick="showLoginPrompt(); return false;">View All →</a>
-    </div>
-    <div class="product-grid">
-      <div class="product-card preview" onclick="showLoginPrompt()">
-        <div class="thumb">
-          <img src="{% static 'images/hoodie.png' %}" alt="Tech Backpack">
-        </div>
-        <p class="title">Tech Backpack</p>
-        <p class="price">₱1,800</p>
-        <div class="lock-overlay">Login to view</div>
-      </div>
-      <div class="product-card preview" onclick="showLoginPrompt()">
-        <div class="thumb">
-          <img src="{% static 'images/notebook.png' %}" alt="Study Planner">
-        </div>
-        <p class="title">Study Planner 2025</p>
-        <p class="price">₱450</p>
-        <div class="lock-overlay">Login to view</div>
-      </div>
-      <div class="product-card preview" onclick="showLoginPrompt()">
-        <div class="thumb">
-          <img src="{% static 'images/mouse.jpg' %}" alt="USB Hub">
-        </div>
-        <p class="title">USB-C Hub</p>
-        <p class="price">₱750</p>
-        <div class="lock-overlay">Login to view</div>
-      </div>
-      <div class="product-card preview" onclick="showLoginPrompt()">
-        <div class="thumb">
-          <img src="{% static 'images/hoodie.png' %}" alt="CIT-U Cap">
-        </div>
-        <p class="title">CIT-U Cap</p>
-        <p class="price">₱350</p>
-        <div class="lock-overlay">Login to view</div>
-=======
 {# <--- This line here to open the main content block ---> #}
 {% block content %}
 
@@ -175,24 +67,10 @@
             <p class="price">₱550</p>
             <div class="lock-overlay" aria-hidden="true">Login to view</div>
         </div>
->>>>>>> 90f901fe283ae3c797c83b8968daa4e9e187bf40
       </div>
     </div>
     </section>
 
-<<<<<<< HEAD
-  <!-- Promo Banner -->
-  <div class="promo-banner" onclick="showLoginPrompt()">
-    <img src="{% static 'images/promobanner.png' %}" alt="Special Promo - Login to view details">
-  </div>
-
-  <!-- Action Buttons Below Promo -->
-  <div class="guest-actions">
-    <a href="{% url 'index' %}" class="btn btn-back">← Back to Home</a>
-    <a href="{% url 'login' %}" class="btn btn-primary">Login Now</a>
-    <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
-  </div>
-=======
   <div class="promo-banner guest-banner">
     <img src="{% static 'images/promobanner.png' %}" alt="Promo Banner">
   </div>
@@ -201,7 +79,6 @@
         <a href="{% url 'login' %}" class="btn btn-primary">Login to Continue</a>
         <a href="{% url 'register_step1' %}" class="btn btn-secondary">Create Account</a>
     </div>
->>>>>>> 90f901fe283ae3c797c83b8968daa4e9e187bf40
 
 </main>
 
