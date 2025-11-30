@@ -763,5 +763,96 @@
     // Redirect to checkout page
     // window.location.href = '/checkout/';
   });
+
+  // Notification Toggle
+  const notificationBell = document.getElementById('notificationBell');
+  const notificationDropdown = document.getElementById('notificationDropdown');
+  const notificationBadge = document.getElementById('notificationBadge');
+  const markAllReadBtn = document.getElementById('markAllRead');
+
+  // Toggle notification dropdown
+  notificationBell?.addEventListener('click', function(e) {
+    e.stopPropagation();
+    notificationDropdown.classList.toggle('show');
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!notificationDropdown?.contains(e.target) && e.target !== notificationBell) {
+      notificationDropdown?.classList.remove('show');
+    }
+  });
+
+  // Mark single notification as read
+  document.querySelectorAll('.notification-item').forEach(item => {
+    item.addEventListener('click', function() {
+      const notificationId = this.dataset.id;
+      
+      if (this.classList.contains('unread')) {
+        // Send AJAX request to mark as read
+        fetch(`/notifications/mark-read/${notificationId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            this.classList.remove('unread');
+            updateNotificationBadge();
+          }
+        });
+      }
+    });
+  });
+
+  // Mark all as read
+  markAllReadBtn?.addEventListener('click', function() {
+    fetch('/notifications/mark-all-read/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': csrftoken,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        document.querySelectorAll('.notification-item.unread').forEach(item => {
+          item.classList.remove('unread');
+        });
+        notificationBadge.classList.add('hidden');
+      }
+    });
+  });
+
+  // Update notification badge count
+  function updateNotificationBadge() {
+    const unreadCount = document.querySelectorAll('.notification-item.unread').length;
+    if (unreadCount > 0) {
+      notificationBadge.textContent = unreadCount;
+      notificationBadge.classList.remove('hidden');
+    } else {
+      notificationBadge.classList.add('hidden');
+    }
+  }
+
+  // Initialize badge count
+  updateNotificationBadge();
+
+  // Real-time notification polling (optional)
+  setInterval(function() {
+    fetch('/notifications/get-new/')
+      .then(response => response.json())
+      .then(data => {
+        if (data.has_new) {
+          // Update notification list
+          updateNotificationBadge();
+          // Optionally show a toast
+        }
+      });
+  }, 30000); // Check every 30 seconds
 </script>
 {% endblock %}
