@@ -122,15 +122,24 @@
 <body class="{% block body_class %}{% endblock %}">
 
 {% block navbar %}
-<header class="navbar">
-  <div class="logo-text">
-    <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo" class="navbar-logo">
-    <span>Teknoy Mart</span>
+<nav class="navbar">
+  <div class="nav-left">
+    <div class="logo-text">
+      <img src="{% static 'images/logo.png' %}" alt="Teknoy Mart Logo" class="navbar-logo">
+      <span>Teknoy Mart</span>
+    </div>
   </div>
-
-  <nav>
-    </nav>
-</header>
+  
+  <div class="nav-right">
+    <!-- Include Notifications -->
+    {% include 'teknoymart/components/notifications.html' %}
+    
+    <!-- Profile Icon -->
+    <a href="{% url 'profile' %}" class="profile-link">
+      <span>Profile</span>
+    </a>
+  </div>
+</nav>
 {% endblock %}
 
 <!-- Main Content -->

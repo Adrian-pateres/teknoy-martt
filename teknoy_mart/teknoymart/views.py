@@ -787,3 +787,30 @@ def get_cart_count(request):
     cart = get_or_create_cart(request.user)
     count = cart.total_items if cart else 0
     return JsonResponse({'count': count})
+
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import Notification
+
+@login_required
+@require_POST
+def mark_notification_read(request, notification_id):
+    try:
+        notification = Notification.objects.get(id=notification_id, user=request.user)
+        notification.is_read = True
+        notification.save()
+        return JsonResponse({'success': True})
+    except Notification.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Notification not found'})
+
+@login_required
+@require_POST
+def mark_all_notifications_read(request):
+    Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    return JsonResponse({'success': True})
+
+@login_required
+def get_new_notifications(request):
+    has_new = Notification.objects.filter(user=request.user, is_read=False).exists()
+    return JsonResponse({'has_new': has_new})
