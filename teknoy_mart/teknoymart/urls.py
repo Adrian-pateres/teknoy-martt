@@ -118,6 +118,14 @@ urlpatterns = [
     path("chat/<int:user_id>/", views.chat_room_view, name="chat_room"),
 
     path("chat/get/<int:user_id>/", views.get_messages, name="get_messages"),
+
+    # --- Shopping Cart ---
+    path('cart/', views.shop_cart, name='shop_cart'),
+    path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/update/<int:item_id>/', views.update_cart_item, name='update_cart_item'),
+    path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('cart/clear/', views.clear_cart, name='clear_cart'),
+    path('cart/count/', views.get_cart_count, name='cart_count'),
 ]
 
 

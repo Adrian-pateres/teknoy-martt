@@ -14,6 +14,10 @@ from django.http import HttpResponseForbidden
 from django.db.models import Q, Max
 from django.utils import timezone
 from .models import Message
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from .models import Product, Cart, CartItem
+import json
 
 
 
@@ -646,3 +650,140 @@ def get_messages(request, user_id):
         'chat_messages': chat_messages,
         'request': request
     })
+
+def get_or_create_cart(user):
+    """Helper function to get or create cart for user"""
+    if user.is_authenticated:
+        cart, created = Cart.objects.get_or_create(user=user)
+        return cart
+    return None
+
+
+@login_required
+def shop_cart(request):
+    """Display shopping cart"""
+    cart = get_or_create_cart(request.user)
+    cart_items = cart.items.select_related('product').all() if cart else []
+    
+    context = {
+        'cart': cart,
+        'cart_items': cart_items,
+    }
+    return render(request, 'teknoymart/shop_cart.html', context)
+
+
+@login_required
+@require_POST
+def add_to_cart(request, product_id):
+    """Add product to cart"""
+    product = get_object_or_404(Product, id=product_id, is_available=True)
+    cart = get_or_create_cart(request.user)
+    
+    if not cart:
+        return JsonResponse({'success': False, 'message': 'Please login to add items to cart'})
+    
+    quantity = int(request.POST.get('quantity', 1))
+    
+    # Check stock availability
+    if quantity > product.quantity:
+        return JsonResponse({
+            'success': False, 
+            'message': f'Only {product.quantity} items available in stock'
+        })
+    
+    # Get or create cart item
+    cart_item, created = CartItem.objects.get_or_create(
+        cart=cart,
+        product=product,
+        defaults={'quantity': quantity}
+    )
+    
+    if not created:
+        # Update quantity if item already exists
+        new_quantity = cart_item.quantity + quantity
+        if new_quantity > product.quantity:
+            return JsonResponse({
+                'success': False,
+                'message': f'Cannot add more. Maximum {product.quantity} items available'
+            })
+        cart_item.quantity = new_quantity
+        cart_item.save()
+    
+    return JsonResponse({
+        'success': True,
+        'message': f'{product.name} added to cart',
+        'cart_count': cart.total_items
+    })
+
+
+@login_required
+@require_POST
+def update_cart_item(request, item_id):
+    """Update cart item quantity"""
+    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    
+    try:
+        data = json.loads(request.body)
+        quantity = int(data.get('quantity', 1))
+        
+        if quantity < 1:
+            return JsonResponse({'success': False, 'message': 'Quantity must be at least 1'})
+        
+        if quantity > cart_item.product.quantity:
+            return JsonResponse({
+                'success': False,
+                'message': f'Only {cart_item.product.quantity} items available'
+            })
+        
+        cart_item.quantity = quantity
+        cart_item.save()
+        
+        return JsonResponse({
+            'success': True,
+            'item_total': float(cart_item.total_price),
+            'cart_subtotal': float(cart_item.cart.subtotal),
+            'cart_total': float(cart_item.cart.total),
+            'message': 'Cart updated'
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+
+@login_required
+@require_POST
+def remove_from_cart(request, item_id):
+    """Remove item from cart"""
+    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    product_name = cart_item.product.name
+    cart_item.delete()
+    
+    cart = request.user.cart
+    return JsonResponse({
+        'success': True,
+        'message': f'{product_name} removed from cart',
+        'cart_count': cart.total_items,
+        'cart_subtotal': float(cart.subtotal),
+        'cart_total': float(cart.total)
+    })
+
+
+@login_required
+@require_POST
+def clear_cart(request):
+    """Clear all items from cart"""
+    cart = get_or_create_cart(request.user)
+    if cart:
+        cart.items.all().delete()
+        return JsonResponse({
+            'success': True,
+            'message': 'Cart cleared'
+        })
+    return JsonResponse({'success': False, 'message': 'Cart not found'})
+
+
+@login_required
+def get_cart_count(request):
+    """Get cart item count for navbar"""
+    cart = get_or_create_cart(request.user)
+    count = cart.total_items if cart else 0
+    return JsonResponse({'count': count})
