@@ -16,8 +16,15 @@ from django.utils import timezone
 from .models import Message
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from .models import Product, Cart, CartItem
+from .models import Product, Cart, CartItem, Transaction
 import json
+from django.db.models import Sum
+from decimal import Decimal
+from django.core.paginator import Paginator
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from .models import Notification
 
 
 
@@ -326,7 +333,6 @@ def preferences_view(request):
 
 
 @login_required
-@role_required("buyer")
 def buy_now(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
@@ -334,15 +340,28 @@ def buy_now(request, product_id):
         payment_method = request.POST.get("payment_method")
         ref_number = request.POST.get("reference_number")
 
+        # 1. Validation
         if not payment_method:
             messages.error(request, "Please select a payment method.")
             return redirect("buy_now", product_id=product.id)
 
-        if not ref_number or len(ref_number.strip()) < 6:
-            messages.error(request, "Please enter a valid reference number.")
-            return redirect("buy_now", product_id=product.id)
+        # Only check reference number if NOT using COD
+        if payment_method != "COD":
+            if not ref_number or len(ref_number.strip()) < 6:
+                messages.error(request, "Please enter a valid reference number for online payment.")
+                return redirect("buy_now", product_id=product.id)
+        
+        # 2. Save the Transaction (So it appears in History)
+        Transaction.objects.create(
+            buyer=request.user,
+            seller=product.owner,
+            product=product,
+            amount=product.price,
+            payment_method=payment_method,
+            reference_number=ref_number if payment_method != "COD" else None,
+            status="PENDING"
+        )
 
-        # TODO: You can save transaction record here later
         messages.success(request, "Payment successful!")
         return redirect("payment_success")
 
@@ -352,8 +371,80 @@ def buy_now(request, product_id):
 @login_required
 @role_required("buyer")
 def payment_success(request):
-    return render(request, "home/payment_success.html")
+    tx_id = request.GET.get("tx")
+    transaction = None
+    if tx_id:
+        try:
+            transaction = Transaction.objects.get(id=tx_id, buyer=request.user)
+            # If still pending, mark as PAID (simulated)
+            if transaction.status != "PAID":
+                transaction.status = "PAID"
+                transaction.paid_at = timezone.now()
+                transaction.save()
+        except Transaction.DoesNotExist:
+            transaction = None
 
+    return render(request, "home/payment_success.html", {"transaction": transaction})
+
+
+@login_required
+@role_required("buyer")
+def payment_details(request, product_id):
+    """Second page where buyer fills Student ID, institutional email, names, DOB, phone."""
+    product = get_object_or_404(Product, id=product_id)
+    method = request.GET.get("method", "")
+
+    profile, _ = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        # Collect submitted values
+        student_id = request.POST.get("student_id") or request.user.username
+        email = request.POST.get("email") or request.user.email
+        first_name = request.POST.get("first_name") or request.user.first_name
+        last_name = request.POST.get("last_name") or request.user.last_name
+        dob = request.POST.get("dob") or profile.birth_date
+        phone = request.POST.get("phone") or ""
+
+        # Create a transaction (simulated)
+        ref = "REF-" + str(timezone.now().strftime("%Y%m%d%H%M%S"))[-12:]
+        tx = Transaction.objects.create(
+            buyer=request.user,
+            seller=product.owner,
+            product=product,
+            amount=product.price,
+            payment_method=(request.POST.get("payment_method") or method).upper(),
+            reference_number=ref,
+            status="PENDING",
+        )
+
+        return redirect(f"{reverse('payment_qr')}?tx={tx.id}")
+
+    # Pre-fill form from profile/user
+    initial = {
+        "student_id": request.user.username,
+        "email": request.user.email,
+        "first_name": request.user.first_name,
+        "last_name": request.user.last_name,
+        "dob": profile.birth_date or "",
+        "phone": "",
+        "payment_method": method,
+    }
+
+    return render(request, "home/payment_details.html", {"product": product, "initial": initial})
+
+
+@login_required
+@role_required("buyer")
+def payment_qr(request):
+    tx_id = request.GET.get("tx")
+    tx = None
+    if tx_id:
+        try:
+            tx = Transaction.objects.get(id=tx_id, buyer=request.user)
+        except Transaction.DoesNotExist:
+            tx = None
+
+    return render(request, "home/payment_qr.html", {"transaction": tx})
 
 # --------------- Settings Views for Seller----------------
 
@@ -617,6 +708,13 @@ def chat_room_view(request, user_id):
         body = request.POST.get('body')
         if body:
             Message.objects.create(sender=user, recipient=target_user, body=body)
+            create_notification(
+            user=target_user,
+            title=f"New Message from {user.first_name}",
+            message=f"{user.first_name}: {body[:30]}...", # Preview 30 chars
+            link=f"/chat/{user.id}/", # Link directly to the chat room
+            notif_type='message'
+        )
             return redirect('chat_room', user_id=user_id)
 
     chat_messages = Message.objects.filter(
@@ -659,139 +757,123 @@ def get_or_create_cart(user):
     return None
 
 
+# ---------------- Shopping Cart Logic ----------------
+
 @login_required
 def shop_cart(request):
-    """Display shopping cart"""
-    cart = get_or_create_cart(request.user)
-    cart_items = cart.items.select_related('product').all() if cart else []
-    
+    """
+    Displays the user's cart with fixed shipping logic.
+    """
+    # 1. Get the cart
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_items = cart.items.all().order_by('-added_at')
+
+    # 2. Calculate Subtotal (Sum of all items)
+    #    We use 'item.total_price' because your model likely has that property
+    subtotal = sum(item.total_price for item in cart_items)
+
+    # 3. Calculate Shipping (Constant P50 if cart is not empty)
+    if cart_items.exists():
+        shipping = 50.00
+    else:
+        shipping = 0.00
+
+    # 4. Calculate Grand Total
+    #    Convert subtotal to float/decimal to ensure safe addition
+    total = float(subtotal) + float(shipping)
+
     context = {
-        'cart': cart,
-        'cart_items': cart_items,
+        "cart_items": cart_items,
+        "subtotal": subtotal,
+        "shipping": shipping,
+        "total": total,
+        "item_count": cart_items.count() # Pass count explicitly
     }
-    return render(request, 'teknoymart/shop_cart.html', context)
+    return render(request, "product/shop_cart.html", context)
 
 
 @login_required
-@require_POST
+
 def add_to_cart(request, product_id):
-    """Add product to cart"""
-    product = get_object_or_404(Product, id=product_id, is_available=True)
-    cart = get_or_create_cart(request.user)
+    """
+    Adds item to the user's specific Cart.
+    """
+    product = get_object_or_404(Product, id=product_id)
     
-    if not cart:
-        return JsonResponse({'success': False, 'message': 'Please login to add items to cart'})
-    
-    quantity = int(request.POST.get('quantity', 1))
-    
-    # Check stock availability
-    if quantity > product.quantity:
-        return JsonResponse({
-            'success': False, 
-            'message': f'Only {product.quantity} items available in stock'
-        })
-    
-    # Get or create cart item
-    cart_item, created = CartItem.objects.get_or_create(
-        cart=cart,
-        product=product,
-        defaults={'quantity': quantity}
-    )
+    cart, _ = Cart.objects.get_or_create(user=request.user)
+
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
     
     if not created:
-        # Update quantity if item already exists
-        new_quantity = cart_item.quantity + quantity
-        if new_quantity > product.quantity:
-            return JsonResponse({
-                'success': False,
-                'message': f'Cannot add more. Maximum {product.quantity} items available'
-            })
-        cart_item.quantity = new_quantity
+        cart_item.quantity += 1
         cart_item.save()
-    
-    return JsonResponse({
-        'success': True,
-        'message': f'{product.name} added to cart',
-        'cart_count': cart.total_items
-    })
+        messages.success(request, f"Added another {product.title} to cart.")
+    else:
+        messages.success(request, f"{product.title} added to cart.")
+        
+    return redirect('home_buyer')
 
 
 @login_required
-@require_POST
+
 def update_cart_item(request, item_id):
-    """Update cart item quantity"""
-    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    """
+    Updates quantity. Checks permission using cart__user.
+    """
+    item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
     
-    try:
-        data = json.loads(request.body)
-        quantity = int(data.get('quantity', 1))
+    if request.method == 'POST':
+        action = request.POST.get('action')
         
-        if quantity < 1:
-            return JsonResponse({'success': False, 'message': 'Quantity must be at least 1'})
+        if action == 'increase':
+            item.quantity += 1
+        elif action == 'decrease':
+            item.quantity -= 1
         
-        if quantity > cart_item.product.quantity:
-            return JsonResponse({
-                'success': False,
-                'message': f'Only {cart_item.product.quantity} items available'
-            })
-        
-        cart_item.quantity = quantity
-        cart_item.save()
-        
-        return JsonResponse({
-            'success': True,
-            'item_total': float(cart_item.total_price),
-            'cart_subtotal': float(cart_item.cart.subtotal),
-            'cart_total': float(cart_item.cart.total),
-            'message': 'Cart updated'
-        })
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)})
+        if item.quantity < 1:
+            item.delete()
+        else:
+            item.save()
+            
+    return redirect('shop_cart')
 
 
 @login_required
-@require_POST
+
 def remove_from_cart(request, item_id):
-    """Remove item from cart"""
-    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
-    product_name = cart_item.product.name
-    cart_item.delete()
-    
-    cart = request.user.cart
-    return JsonResponse({
-        'success': True,
-        'message': f'{product_name} removed from cart',
-        'cart_count': cart.total_items,
-        'cart_subtotal': float(cart.subtotal),
-        'cart_total': float(cart.total)
-    })
+    """
+    Removes item. Checks permission using cart__user.
+    """
+    item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    item.delete()
+    messages.success(request, "Item removed from cart.")
+    return redirect('shop_cart')
 
 
 @login_required
-@require_POST
+
 def clear_cart(request):
-    """Clear all items from cart"""
-    cart = get_or_create_cart(request.user)
-    if cart:
-        cart.items.all().delete()
-        return JsonResponse({
-            'success': True,
-            'message': 'Cart cleared'
-        })
-    return JsonResponse({'success': False, 'message': 'Cart not found'})
+    """
+    Deletes all items in the user's cart.
+    """
+    cart, _ = Cart.objects.get_or_create(user=request.user)
+    cart.items.all().delete() # Delete all items linked to this cart
+    messages.success(request, "Cart cleared.")
+    return redirect('shop_cart')
 
 
 @login_required
 def get_cart_count(request):
-    """Get cart item count for navbar"""
-    cart = get_or_create_cart(request.user)
-    count = cart.total_items if cart else 0
+    """
+    Updates navbar badge.
+    """
+    if request.user.is_authenticated:
+        cart, _ = Cart.objects.get_or_create(user=request.user)
+        count = cart.total_items
+    else:
+        count = 0
     return JsonResponse({'count': count})
 
-from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from django.views.decorators.http import require_POST
-from .models import Notification
 
 @login_required
 @require_POST
@@ -814,3 +896,328 @@ def mark_all_notifications_read(request):
 def get_new_notifications(request):
     has_new = Notification.objects.filter(user=request.user, is_read=False).exists()
     return JsonResponse({'has_new': has_new})
+
+
+@login_required
+def transaction_history_view(request):
+    """
+    Displays transaction history with Stats, Pagination, and Type assignment.
+    """
+    user = request.user
+    try:
+        role = user.profile.role
+    except:
+        role = 'buyer'
+
+    # 1. Fetch Data
+    if role == 'seller':
+        tx_list = Transaction.objects.filter(seller=user).order_by('-created_at')
+        # Stats
+        total_sales = tx_list.count()
+        total_purchases = 0
+        total_revenue = tx_list.filter(status='PAID').aggregate(Sum('amount'))['amount__sum'] or 0
+    else:
+        tx_list = Transaction.objects.filter(buyer=user).order_by('-created_at')
+        # Stats
+        total_sales = 0
+        total_purchases = tx_list.count()
+        total_revenue = tx_list.filter(status='PAID').aggregate(Sum('amount'))['amount__sum'] or 0
+
+    # Common Stats
+    pending_count = tx_list.filter(status='PENDING').count()
+
+    # 2. Pagination
+    paginator = Paginator(tx_list, 10) 
+    page_number = request.GET.get('page')
+    transactions = paginator.get_page(page_number)
+
+    # 3. CRITICAL FIX: Manually assign 'type' so the HTML template works
+    for txn in transactions:
+        if role == 'seller':
+            txn.type = 'sale'
+        else:
+            txn.type = 'purchase'
+
+    context = {
+        "transactions": transactions,
+        "role": role,
+        "total_sales": total_sales,
+        "total_purchases": total_purchases,
+        "total_revenue": total_revenue,
+        "pending_count": pending_count,
+    }
+    
+    return render(request, "settings-branches/history.html", context)
+
+
+@login_required
+def view_cart(request):
+    """Shows the user's shopping cart."""
+    cart_items = CartItem.objects.filter(user=request.user).order_by('-added_at')
+    
+    # Calculate total
+    total = sum(item.product.price * item.quantity for item in cart_items)
+    
+    return render(request, "product/shop_cart.html", {
+        "cart_items": cart_items,
+        "total": total
+    })
+
+
+# --- 1. Checkout Logic ---
+@login_required
+def checkout_page(request):
+    """
+    Step 1: Show the Checkout Page for SELECTED items only.
+    """
+    if request.method == 'POST':
+        # Get list of selected item IDs from the checkboxes
+        selected_ids = request.POST.getlist('selected_items')
+        
+        if not selected_ids:
+            messages.error(request, "Please select at least one item to checkout.")
+            return redirect('shop_cart')
+
+        # Filter items by the IDs sent from the form
+        cart_items = CartItem.objects.filter(id__in=selected_ids, cart__user=request.user)
+        
+        # Calculate totals for selected items only
+        subtotal = sum(item.total_price for item in cart_items)
+        shipping = Decimal('50.00')
+        total = subtotal + shipping
+
+        # Store selected IDs in session so we know what to process in the next step
+        request.session['checkout_ids'] = selected_ids
+
+        context = {
+            'cart_items': cart_items,
+            'subtotal': subtotal,
+            'shipping': shipping,
+            'total': total
+        }
+        return render(request, "product/checkout.html", context)
+    
+    # If they try to go to /checkout/ directly without selecting, send them back
+    return redirect('shop_cart')
+
+
+@login_required
+def process_checkout(request):
+    """
+    Step 2: Process payment for SELECTED items only.
+    """
+    if request.method == 'POST':
+        payment_method = request.POST.get('payment_method')
+        
+        # Retrieve the specific IDs we stored in Step 3
+        selected_ids = request.session.get('checkout_ids', [])
+        
+        if not selected_ids:
+            return redirect('shop_cart')
+
+        # Get only the selected items
+        cart_items = CartItem.objects.filter(id__in=selected_ids, cart__user=request.user)
+
+        for item in cart_items:
+            # 1. Create the Transaction Record
+            Transaction.objects.create(
+                buyer=request.user,
+                seller=item.product.owner,
+                product=item.product,
+                amount=item.total_price,
+                payment_method=payment_method,
+                status="PENDING"
+            )
+
+            # --- NEW: NOTIFICATION LOGIC ---
+            
+            # A. Notify the SELLER
+            create_notification(
+                user=item.product.owner, 
+                title="New Order Received! 📦",
+                message=f"Buyer {request.user.first_name} ordered {item.product.title}.",
+                link="/history/", 
+                notif_type='order'
+            )
+
+            # B. Notify the BUYER
+            create_notification(
+                user=request.user, 
+                title="Order Placed Successfully ✅",
+                message=f"Your order for {item.product.title} is now PENDING.",
+                link="/history/", 
+                notif_type='order'
+            )
+            # -------------------------------
+
+        # CRITICAL: Only delete the selected items!
+        cart_items.delete()
+        
+        # Clean up session
+        del request.session['checkout_ids']
+        
+        messages.success(request, "Order placed successfully!")
+        return redirect('transaction_history')
+
+    return redirect('shop_cart')
+
+
+# --- 2. Update shop_cart to show Orders ---
+@login_required
+def shop_cart(request):
+    cart, _ = Cart.objects.get_or_create(user=request.user)
+    cart_items = cart.items.all().order_by('-added_at')
+    my_orders = Transaction.objects.filter(buyer=request.user).order_by('-created_at')
+
+    # Calculate Subtotal
+    # If list is empty, start with Decimal(0)
+    subtotal = sum((item.total_price for item in cart_items), Decimal('0.00'))
+
+    # Calculate Shipping (Must be Decimal)
+    if cart_items.exists():
+        shipping = Decimal('50.00')  # <--- This fixes the error
+    else:
+        shipping = Decimal('0.00')
+
+    # Calculate Total
+    total = subtotal + shipping
+
+    context = {
+        "cart_items": cart_items,
+        "subtotal": subtotal,
+        "shipping": shipping,
+        "total": total,
+        "item_count": cart_items.count(),
+        "my_orders": my_orders,
+    }
+    return render(request, "product/shop_cart.html", context)
+
+# --- 3. Seller Update Status Logic ---
+@login_required
+def update_order_status(request, transaction_id):
+    """
+    Allows SELLER to update status to Paid or Failed.
+    """
+    txn = get_object_or_404(Transaction, id=transaction_id)
+
+    # Security: Ensure only the SELLER of this item can change it
+    if request.user != txn.seller:
+        messages.error(request, "You are not authorized to manage this order.")
+        return redirect('home') # or wherever
+
+    if request.method == "POST":
+        new_status = request.POST.get("status")
+        if new_status in ['PAID', 'FAILED', 'PENDING']:
+            txn.status = new_status
+            txn.save()
+            create_notification(
+                user=txn.buyer,
+                title=f"Order Update: {txn.product.title}",
+                message=f"Your order status has been updated to: {new_status}",
+                link="/history/",
+                notif_type='order'
+            )
+            messages.success(request, f"Order #{txn.id} updated to {new_status}")
+    
+    # Redirect back to Seller Dashboard (Transaction History)
+    return redirect('transaction_history')
+
+
+@login_required
+def delete_transaction(request, transaction_id):
+    """
+    Deletes a specific transaction record.
+    """
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+
+    # Security: Only allow deletion if the user is the buyer or seller involved
+    if request.user != transaction.buyer and request.user != transaction.seller:
+        messages.error(request, "You do not have permission to delete this transaction.")
+        return redirect('transaction_history')
+
+    if request.method == "POST":
+        transaction.delete()
+        messages.success(request, "Transaction deleted successfully.")
+    
+    return redirect('transaction_history')
+
+
+def create_notification(user, title, message, link=None, notif_type='order'):
+    """
+    Helper to generate notifications easily.
+    """
+    Notification.objects.create(
+        user=user,
+        title=title,
+        message=message,
+        link=link,
+        notification_type=notif_type
+    )
+
+
+@login_required
+def notifications_view(request):
+    # Fetch all notifications for this user, newest first
+    notifs = Notification.objects.filter(user=request.user).order_by('-created_at')
+    
+    # Mark all as read when they visit the page (Optional, or do it on click)
+    # notifs.update(is_read=True) 
+
+    return render(request, "teknoymart/components/notifications.html", {
+        "notifications": notifs
+    })
+
+
+@login_required
+def get_notification_data(request):
+    """
+    API to fetch unread count and latest 5 notifications for the navbar.
+    """
+    user = request.user
+    
+    # 1. Get Unread Count
+    unread_count = Notification.objects.filter(user=user, is_read=False).count()
+    
+    # 2. Get Latest 5 Notifications
+    latest_notifs = Notification.objects.filter(user=user).order_by('-created_at')[:5]
+    
+    # 3. Format data for JSON
+    notif_list = []
+    for n in latest_notifs:
+        notif_list.append({
+            'title': n.title,
+            'message': n.message[:40] + "...", # Truncate long messages
+            'type': n.notification_type,
+            'time': n.created_at.strftime("%b %d, %I:%M %p"),
+            'link': n.link or "#",
+            'read': n.is_read
+        })
+
+    return JsonResponse({
+        'count': unread_count,
+        'notifications': notif_list
+    })
+
+
+@login_required
+def delete_conversation(request, partner_id):
+    """
+    Deletes all messages between the current user and the partner.
+    """
+    user = request.user
+    partner = get_object_or_404(User, id=partner_id)
+
+    if request.method == "POST":
+        # 1. RENAME VARIABLE: Use 'chat_msgs' instead of 'messages'
+        chat_msgs = Message.objects.filter(
+            Q(sender=user, recipient=partner) | 
+            Q(sender=partner, recipient=user)
+        )
+        
+        count = chat_msgs.count()
+        chat_msgs.delete() # Delete the query set
+        
+        # 2. Now 'messages' correctly refers to the Django alert module
+        messages.success(request, f"Conversation with {partner.first_name} deleted.")
+        
+    return redirect('inbox')

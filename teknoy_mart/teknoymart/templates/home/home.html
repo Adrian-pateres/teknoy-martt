@@ -15,6 +15,178 @@
     <span>Teknoy Mart</span>
   </div>
   <nav class="top-actions">
+  <div class="nav-item dropdown" id="notifDropdown">
+  <a href="javascript:void(0)" class="nav-link notif-toggle" onclick="toggleNotifMenu()">
+    <span class="icon">🔔</span>
+    <span id="notif-badge" class="badge-count" style="display:none;">0</span>
+  </a>
+
+  <div class="dropdown-menu-right" id="notifMenu">
+    <div class="dropdown-header">
+      <span>Notifications</span>
+      <a href="{% url 'notifications' %}" class="view-all-link">View All</a>
+    </div>
+    
+    <div id="notif-items-list">
+      <div class="loading-spinner">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .nav-item.dropdown { position: relative; display: inline-block; margin-right: 15px; }
+  
+  .notif-toggle { 
+    position: relative; 
+    text-decoration: none; 
+    font-size: 1.2rem; 
+    cursor: pointer;
+  }
+
+  /* Red Badge */
+  .badge-count {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: #ff3b30;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 15px;
+    text-align: center;
+    border: 2px solid white;
+  }
+
+  /* Dropdown Box */
+  .dropdown-menu-right {
+    display: none; /* Hidden by default */
+    position: absolute;
+    right: 0;
+    top: 100%;
+    width: 320px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    z-index: 1000;
+    overflow: hidden;
+    margin-top: 10px;
+    border: 1px solid #eee;
+  }
+
+  /* Header */
+  .dropdown-header {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  .view-all-link { color: #8B0000; text-decoration: none; font-size: 0.8rem; }
+
+  /* List Items */
+  .notif-item {
+    display: flex;
+    gap: 10px;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    text-decoration: none;
+    color: #333;
+    transition: background 0.2s;
+  }
+  .notif-item:hover { background: #fdfdfd; }
+  .notif-item.unread { background: #fff5f5; } /* Light red for unread */
+  
+  .notif-icon-small { font-size: 1.2rem; }
+  .notif-text { flex: 1; font-size: 0.85rem; line-height: 1.3; }
+  .notif-title { display: block; font-weight: 700; margin-bottom: 2px; }
+  .notif-time { display: block; font-size: 0.7rem; color: #999; margin-top: 4px; }
+
+  .empty-msg { padding: 20px; text-align: center; color: #999; font-size: 0.9rem; }
+  .loading-spinner { padding: 20px; text-align: center; color: #ccc; }
+
+  /* Dark Mode Support */
+  body.dark-mode .dropdown-menu-right { background: #1e1e1e; border-color: #333; }
+  body.dark-mode .dropdown-header { background: #252525; border-color: #333; color: white; }
+  body.dark-mode .notif-item { color: #e0e0e0; border-color: #333; }
+  body.dark-mode .notif-item:hover { background: #2d2d2d; }
+  body.dark-mode .notif-item.unread { background: #330000; }
+</style>
+
+<script>
+  function toggleNotifMenu() {
+    const menu = document.getElementById('notifMenu');
+    if (menu.style.display === 'block') {
+      menu.style.display = 'none';
+    } else {
+      menu.style.display = 'block';
+      fetchNotifications(); // Refresh when opening
+    }
+  }
+
+  // Close dropdown if clicking outside
+  document.addEventListener('click', function(e) {
+    const container = document.getElementById('notifDropdown');
+    const menu = document.getElementById('notifMenu');
+    if (!container.contains(e.target)) {
+      menu.style.display = 'none';
+    }
+  });
+
+  function fetchNotifications() {
+    fetch("{% url 'api_notifications' %}")
+      .then(res => res.json())
+      .then(data => {
+        // 1. Update Badge
+        const badge = document.getElementById('notif-badge');
+        badge.innerText = data.count;
+        if (data.count > 0) {
+          badge.style.display = 'block';
+        } else {
+          badge.style.display = 'none';
+        }
+
+        // 2. Build List
+        const listContainer = document.getElementById('notif-items-list');
+        listContainer.innerHTML = ''; // Clear loading
+
+        if (data.notifications.length === 0) {
+          listContainer.innerHTML = '<div class="empty-msg">No notifications</div>';
+          return;
+        }
+
+        data.notifications.forEach(notif => {
+          let icon = '📢';
+          if (notif.type === 'order') icon = '📦';
+          if (notif.type === 'message') icon = '💬';
+
+          const unreadClass = notif.read ? '' : 'unread';
+
+          const html = `
+            <a href="${notif.link}" class="notif-item ${unreadClass}">
+              <div class="notif-icon-small">${icon}</div>
+              <div class="notif-text">
+                <span class="notif-title">${notif.title}</span>
+                ${notif.message}
+                <span class="notif-time">${notif.time}</span>
+              </div>
+            </a>
+          `;
+          listContainer.innerHTML += html;
+        });
+      });
+  }
+
+  // Initial fetch on page load
+  document.addEventListener('DOMContentLoaded', fetchNotifications);
+  
+  // Poll every 30 seconds for new alerts
+  setInterval(fetchNotifications, 30000);
+</script>
   <a href="{% url 'profile' %}">Profile</a>
 
   <!-- Hamburger menu -->
@@ -28,7 +200,7 @@
       <a role="menuitem" href="{% url 'settings_about' %}">About</a>
       <a role="menuitem" href="{% url 'preferences' %}">Preferences</a>
       <a role="menuitem" href="{% url 'privacy_settings' %}">Privacy</a>
-      <a role="menuitem" href="javascript:void(0);" style="cursor: default; opacity: 0.6;">Transaction History</a>
+      <a role="menuitem" href="{% url 'transaction_history' %}">Transaction History</a>
 
       <button role="menuitem" type="button" id="menu-dark" class="menu-item-btn">
         🌙 Dark Mode
@@ -47,7 +219,7 @@
 
   <!-- 🔍 Search Bar -->
   <div class="home-row search-bar">
-    <input id="productSearch" type="text" placeholder="Search products, categories..." aria-label="Search">
+    <input id="productSearch" type="text" placeholder="Search categories..." aria-label="Search">
     <button type="button" aria-label="Search">🔍</button>
   </div>
 

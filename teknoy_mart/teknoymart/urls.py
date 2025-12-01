@@ -126,6 +126,29 @@ urlpatterns = [
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('cart/clear/', views.clear_cart, name='clear_cart'),
     path('cart/count/', views.get_cart_count, name='cart_count'),
+
+    path("cart/", views.view_cart, name="view_cart"),
+    path("cart/add/<int:product_id>/", views.add_to_cart, name="add_to_cart"),
+
+
+    path("history/", views.transaction_history_view, name="transaction_history"),
+
+    path("checkout/", views.checkout_page, name="checkout_page"),
+    path("checkout/process/", views.process_checkout, name="process_checkout"),
+
+    path("history/delete/<int:transaction_id>/", views.delete_transaction, name="delete_transaction"),
+
+    path("order/update/<int:transaction_id>/", views.update_order_status, name="update_order_status"),
+
+    path("payment-details/<int:product_id>/", views.payment_details, name="payment_details"),
+    
+    path("payment-qr/", views.payment_qr, name="payment_qr"),
+
+    path("notifications/", views.notifications_view, name="notifications"),
+
+    path("api/notifications/", views.get_notification_data, name="api_notifications"),
+
+    path("inbox/delete/<int:partner_id>/", views.delete_conversation, name="delete_conversation"),
 ]
 
 

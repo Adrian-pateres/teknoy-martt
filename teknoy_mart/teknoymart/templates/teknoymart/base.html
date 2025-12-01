@@ -13,6 +13,36 @@
   {% block extra_css %}{% endblock %}
 
   <style>
+
+    .profile-link {
+        text-decoration: none;
+        color: #333; /* Dark text by default */
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: background 0.2s ease, color 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .profile-link:hover {
+        background-color: #f0f0f0;
+        color: #8B0000; /* Hover color */
+        text-decoration: none; /* Force no underline */
+    }
+
+    /* Dark Mode Support for Profile Link */
+    body.dark-mode .profile-link {
+        color: #e0e0e0;
+    }
+    body.dark-mode .profile-link:hover {
+        background-color: #333;
+        color: #fff;
+    }
+
+    
     /* 1. Main Backgrounds & Text */
     body.dark-mode, 
     body.dark-mode .home-shell {
@@ -131,8 +161,27 @@
   </div>
   
   <div class="nav-right">
+    <div class="nav-item dropdown" id="notifDropdown" style="position: relative; display: inline-block; margin-right: 15px;">
+      
+      <a href="javascript:void(0)" class="nav-link notif-toggle" onclick="toggleNotifMenu()" style="text-decoration: none; font-size: 1.2rem; cursor: pointer; position: relative;">
+        <span class="icon">🔔</span>
+        <span id="notif-badge" class="badge-count" style="display:none; position: absolute; top: -5px; right: -8px; background-color: #ff3b30; color: white; font-size: 0.7rem; font-weight: bold; padding: 2px 5px; border-radius: 10px; min-width: 15px; text-align: center; border: 2px solid white;">0</span>
+      </a>
+
+      <div class="dropdown-menu-right" id="notifMenu" style="display: none; position: absolute; right: 0; top: 100%; width: 320px; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); z-index: 1000; overflow: hidden; margin-top: 10px; border: 1px solid #eee;">
+        
+        <div class="dropdown-header" style="background: #f8f9fa; padding: 10px 15px; font-weight: bold; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 0.9rem; color: #333;">
+          <span>Notifications</span>
+          <a href="{% url 'notifications' %}" style="color: #8B0000; text-decoration: none; font-size: 0.8rem;">View All</a>
+        </div>
+        
+        <div id="notif-items-list">
+          <div style="padding: 20px; text-align: center; color: #ccc;">Loading...</div>
+        </div>
+      </div>
+    </div>
     <!-- Include Notifications -->
-    {% include 'teknoymart/components/notifications.html' %}
+   
     
     <!-- Profile Icon -->
     <a href="{% url 'profile' %}" class="profile-link">

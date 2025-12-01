@@ -1,7 +1,11 @@
 {% extends "teknoymart/base.html" %}
 {% load static %}
 
+{% block title %}Messages | Teknoy Mart{% endblock %}
+
 {% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <div class="chat-container">
   <div class="chat-header">
     <div class="header-content">
@@ -12,42 +16,78 @@
         {% endif %}
 
         <h2>💬 Messages</h2>
-        
         <div style="width: 80px;"></div> 
     </div>
   </div>
 
   <div class="inbox-list">
     {% for convo in conversations %}
-      <a href="{% url 'chat_room' convo.user.id %}" class="inbox-item">
-        <div class="avatar-circle">
-          {% if convo.user.profile.profile_picture %}
-            <img src="{{ convo.user.profile.profile_picture.url }}" alt="Pic">
-          {% else %}
-            <span>{{ convo.user.first_name|first }}</span>
-          {% endif %}
-        </div>
-        <div class="inbox-details">
-          <h4>{{ convo.user.first_name }} {{ convo.user.last_name }} <span class="role-badge">{{ convo.user.profile.role|title }}</span></h4>
-          <p class="preview">{{ convo.last_message.body|truncatechars:30 }}</p>
-        </div>
-        <div class="inbox-time">
-          {{ convo.last_message.timestamp|date:"M d" }}
-        </div>
-      </a>
+      <div class="inbox-item-wrapper" style="position: relative;">
+        
+        <a href="{% url 'chat_room' convo.user.id %}" class="inbox-item">
+          <div class="avatar-circle">
+            {% if convo.user.profile.profile_picture %}
+              <img src="{{ convo.user.profile.profile_picture.url }}" alt="Pic">
+            {% else %}
+              <span>{{ convo.user.first_name|first }}</span>
+            {% endif %}
+          </div>
+          <div class="inbox-details">
+            <h4>{{ convo.user.first_name }} {{ convo.user.last_name }} <span class="role-badge">{{ convo.user.profile.role|title }}</span></h4>
+            <p class="preview">{{ convo.last_message.body|truncatechars:30 }}</p>
+          </div>
+          <div class="inbox-time">
+            {{ convo.last_message.timestamp|date:"M d" }}
+          </div>
+        </a>
+
+        <form id="delete-form-{{ convo.user.id }}" 
+              action="{% url 'delete_conversation' convo.user.id %}" 
+              method="POST" 
+              style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); z-index: 20;">
+            {% csrf_token %}
+            
+            <button type="button" 
+                    class="btn-delete-chat" 
+                    title="Delete Conversation"
+                    onclick="triggerDelete('{{ convo.user.id }}', event)">
+                ✕
+            </button>
+        </form>
+
+      </div>
     {% empty %}
       <div class="empty-state">
         <p>No messages yet.</p>
-        {% if request.user.profile.role == 'buyer' %}
-            <a href="{% url 'home_buyer' %}" class="btn btn-primary">Browse Shop</a>
-        {% else %}
-            <p>Wait for buyers to contact you!</p>
-            <a href="{% url 'home' %}" class="btn btn-primary">Back to Dashboard</a>
-        {% endif %}
       </div>
     {% endfor %}
   </div>
 </div>
+
+<script>
+  function triggerDelete(userId, event) {
+      // 1. Stop the click from opening the chat
+      event.preventDefault();
+      event.stopPropagation();
+
+      // 2. Show the Popup
+      Swal.fire({
+          title: 'Delete Conversation?',
+          text: "This will permanently remove the chat history.",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#c62828',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it'
+      }).then((result) => {
+          // 3. If Yes, submit the specific form manually
+          if (result.isConfirmed) {
+              const form = document.getElementById('delete-form-' + userId);
+              form.submit();
+          }
+      });
+  }
+</script>
 
 <style>
   .chat-container { max-width: 600px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); overflow: hidden; }
@@ -58,9 +98,21 @@
   .back-link { color: white; text-decoration: none; font-weight: bold; font-size: 0.9rem; width: 80px; }
   .back-link:hover { text-decoration: underline; }
 
-  .inbox-list { display: flex; flex-direction: column; }
-  .inbox-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; text-decoration: none; color: #333; transition: background 0.2s; }
+  .inbox-list { display: flex; flex-direction: column; min-height: 300px; }
+  
+  /* Make space for the button so text doesn't overlap */
+  .inbox-item { 
+      display: flex; 
+      align-items: center; 
+      padding: 15px; 
+      padding-right: 60px; /* Space for delete button */
+      border-bottom: 1px solid #eee; 
+      text-decoration: none; 
+      color: #333; 
+      transition: background 0.2s; 
+  }
   .inbox-item:hover { background: #f9f9f9; }
+  
   .avatar-circle { width: 50px; height: 50px; background: #eee; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold; font-size: 1.2rem; color: #555; }
   .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
   .inbox-details { flex: 1; }
@@ -69,10 +121,46 @@
   .role-badge { font-size: 0.7rem; background: #ddd; padding: 2px 6px; border-radius: 4px; margin-left: 5px; color: #555; vertical-align: middle; }
   .inbox-time { font-size: 0.8rem; color: #999; }
   .empty-state { padding: 40px; text-align: center; color: #666; }
+
+  /* Delete Button Styles */
+  .inbox-item-wrapper:hover .btn-delete-chat {
+      opacity: 1; /* Show on hover */
+  }
+
+  .btn-delete-chat {
+      background: white;
+      border: 1px solid #ddd;
+      color: #999;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0; /* Hidden by default */
+      transition: all 0.2s;
+      font-size: 14px;
+  }
+
+  /* Mobile: Always show button */
+  @media (max-width: 768px) {
+      .btn-delete-chat { opacity: 1; background: #f5f5f5; }
+  }
+
+  .btn-delete-chat:hover {
+      background: #c62828;
+      color: white;
+      border-color: #c62828;
+  }
   
+  /* Dark Mode */
   body.dark-mode .chat-container { background: #1e1e1e; border: 1px solid #333; }
   body.dark-mode .inbox-item { border-bottom-color: #333; color: #e0e0e0; }
   body.dark-mode .inbox-item:hover { background: #2d2d2d; }
   body.dark-mode .preview { color: #aaa; }
+  body.dark-mode .btn-delete-chat { background: #333; border-color: #555; color: #aaa; }
+  body.dark-mode .btn-delete-chat:hover { background: #c62828; color: white; }
 </style>
 {% endblock %}

@@ -1,4 +1,322 @@
-{% extends "teknoymart/base.html" %}{% load static %}{% block title %}Transaction History | Teknoy Mart{% endblock %}{% block content %}<div class="history-container">  <!-- Animated Header with Stats -->  <div class="history-header">    <div class="header-content">      <h1>Transaction History</h1>      <p class="subtitle">Track and manage all your transactions in one place</p>    </div>        <div class="stats-grid">      <div class="stat-card">        <div class="stat-icon purchases">          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>          </svg>        </div>        <div class="stat-info">          <div class="stat-value">{{ total_purchases|default:0 }}</div>          <div class="stat-label">Total Purchases</div>        </div>      </div>      <div class="stat-card">        <div class="stat-icon sales">          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>          </svg>        </div>        <div class="stat-info">          <div class="stat-value">{{ total_sales|default:0 }}</div>          <div class="stat-label">Total Sales</div>        </div>      </div>      <div class="stat-card">        <div class="stat-icon revenue">          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">            <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>          </svg>        </div>        <div class="stat-info">          <div class="stat-value">₱{{ total_revenue|floatformat:2|default:"0.00" }}</div>          <div class="stat-label">Total Revenue</div>        </div>      </div>      <div class="stat-card">        <div class="stat-icon pending">          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>            <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>          </svg>        </div>        <div class="stat-info">          <div class="stat-value">{{ pending_count|default:0 }}</div>          <div class="stat-label">Pending</div>        </div>      </div>    </div>  </div>  <!-- Enhanced Filter Tabs with Icons -->  <div class="filter-tabs">    <button class="tab-btn active" onclick="filterTransactions('all')" data-filter="all">      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">        <rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="2"/>        <path d="M6 9h6M9 6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>      </svg>      <span>All Transactions</span>      <span class="count">{{ transactions.paginator.count|default:0 }}</span>    </button>    <button class="tab-btn" onclick="filterTransactions('purchases')" data-filter="purchases">      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">        <path d="M14 6H4a1 1 0 00-1 1v8a1 1 0 001 1h10a1 1 0 001-1V7a1 1 0 00-1-1z" stroke="currentColor" stroke-width="2"/>        <path d="M12 4V3a2 2 0 00-2-2H8a2 2 0 00-2 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>      </svg>      <span>Purchases</span>    </button>    <button class="tab-btn" onclick="filterTransactions('sales')" data-filter="sales">      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">        <path d="M9 2v14M13 4H7.5a2.5 2.5 0 000 5h3a2.5 2.5 0 010 5H5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>      </svg>      <span>Sales</span>    </button>    <button class="tab-btn" onclick="filterTransactions('pending')" data-filter="pending">      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">        <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="2"/>        <path d="M9 5v4l2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>      </svg>      <span>Pending</span>    </button>  </div>  <!-- Enhanced Search and Controls -->  <div class="controls-bar">    <div class="search-box">      <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">        <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="2"/>        <path d="M19 19l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>      </svg>      <input type="text" id="searchInput" placeholder="Search by product or user..." onkeyup="searchTransactions()">      <button class="clear-search" onclick="clearSearch()" style="display: none;">        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">          <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>        </svg>      </button>    </div>        <div class="filter-group">      <select class="sort-select" onchange="sortTransactions(this.value)">        <option value="newest">📅 Newest First</option>        <option value="oldest">📅 Oldest First</option>        <option value="highest">💰 Highest Amount</option>        <option value="lowest">💰 Lowest Amount</option>      </select>            <button class="export-btn" onclick="exportTransactions()">        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">          <path d="M16 11v4a1 1 0 01-1 1H3a1 1 0 01-1-1v-4M13 6l-4-4m0 0L5 6m4-4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>        </svg>        Export      </button>    </div>  </div>  <!-- Enhanced Transaction List -->  <div class="transactions-list" id="transactionsList">    {% if transactions %}      {% for transaction in transactions %}      <div class="transaction-card" data-type="{{ transaction.type }}" data-status="{{ transaction.status }}">        <div class="card-ribbon {{ transaction.status }}">{{ transaction.status|title }}</div>                <div class="transaction-main">          <div class="transaction-left">            <div class="transaction-image">              {% if transaction.product.image %}                <img src="{{ transaction.product.image.url }}" alt="{{ transaction.product.name }}" loading="lazy">              {% else %}                <div class="placeholder-image">                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">                    <rect width="40" height="40" rx="8" fill="#f0f0f0"/>                    <path d="M15 25l5-5 5 5M20 20v10" stroke="#999" stroke-width="2" stroke-linecap="round"/>                  </svg>                </div>              {% endif %}              <div class="type-badge {{ transaction.type }}">                {% if transaction.type == 'purchase' %}                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">                    <path d="M11 5H3a1 1 0 00-1 1v6a1 1 0 001 1h8a1 1 0 001-1V6a1 1 0 00-1-1z" stroke="currentColor" stroke-width="1.5"/>                    <path d="M9 3V2a1 1 0 00-1-1H6a1 1 0 00-1 1v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>                  </svg>                {% else %}                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">                    <path d="M7 2v10M10 4H6a2 2 0 000 4h2a2 2 0 010 4H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>                  </svg>                {% endif %}              </div>            </div>                        <div class="transaction-details">              <h3 class="product-name">{{ transaction.product.name }}</h3>              <div class="transaction-meta">                <span class="meta-item">                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">                    <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/>                    <path d="M7 3.5v3.5l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>                  </svg>                  {{ transaction.created_at|date:"M d, Y" }}                </span>                <span class="meta-item">                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">                    <circle cx="7" cy="4" r="2.5" stroke="currentColor" stroke-width="1.5"/>                    <path d="M2 12a5 5 0 0110 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>                  </svg>                  {% if transaction.type == 'purchase' %}                    {{ transaction.seller.get_full_name|default:transaction.seller.username }}                  {% else %}                    {{ transaction.buyer.get_full_name|default:transaction.buyer.username }}                  {% endif %}                </span>              </div>              <div class="transaction-tags">                <span class="tag {{ transaction.type }}">{{ transaction.type|title }}</span>                {% if transaction.payment_method %}                  <span class="tag payment">{{ transaction.payment_method }}</span>                {% endif %}              </div>            </div>          </div>                    <div class="transaction-right">            <div class="amount-section">              <div class="amount-label">Amount</div>              <div class="transaction-amount">₱{{ transaction.amount|floatformat:2 }}</div>            </div>                        <div class="action-buttons">              <a href="{% url 'transaction_detail' transaction.id %}" class="btn-action primary">                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">                  <path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.5"/>                  <circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.5"/>                </svg>                View Details              </a>              {% if transaction.status == 'pending' and transaction.type == 'sale' %}              <button class="btn-action secondary" onclick="updateStatus({{ transaction.id }})">                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">                  <path d="M13.5 4.5L6 12L2.5 8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>                </svg>                Complete              </button>              {% endif %}            </div>          </div>        </div>        <div class="transaction-footer">          <div class="footer-info">            <span class="info-item">              <strong>Transaction ID:</strong> #{{ transaction.id|stringformat:"05d" }}            </span>            <span class="info-item">              <strong>Time:</strong> {{ transaction.created_at|date:"h:i A" }}            </span>          </div>          {% if transaction.notes %}          <button class="show-notes" onclick="toggleNotes({{ transaction.id }})">            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">              <path d="M12 7H2M7 2v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>            </svg>            Show Notes          </button>          {% endif %}        </div>        {% if transaction.notes %}        <div class="transaction-notes" id="notes-{{ transaction.id }}" style="display: none;">          <div class="notes-content">            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">              <path d="M12 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V3a1 1 0 00-1-1z" stroke="currentColor" stroke-width="1.5"/>              <path d="M5 6h6M5 9h6M5 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>            </svg>            <p>{{ transaction.notes }}</p>          </div>        </div>        {% endif %}      </div>      {% endfor %}    {% else %}      <div class="empty-state">        <div class="empty-illustration">          <svg width="200" height="200" viewBox="0 0 200 200" fill="none">            <circle cx="100" cy="100" r="80" fill="#f8f8f8"/>            <path d="M70 90h60M70 110h45" stroke="#ddd" stroke-width="4" stroke-linecap="round"/>            <rect x="60" y="75" width="80" height="50" rx="8" stroke="#ddd" stroke-width="3" fill="none"/>            <circle cx="140" cy="60" r="20" fill="#8B0000" opacity="0.1"/>            <path d="M140 50v20M130 60h20" stroke="#8B0000" stroke-width="3" stroke-linecap="round"/>          </svg>        </div>        <h3>No Transactions Found</h3>        <p>Your transaction history will appear here once you start buying or selling items on Teknoy Mart.</p>        <div class="empty-actions">          <a href="{% url 'guest_home' %}" class="btn-primary">            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">              <path d="M15 7H3a1 1 0 00-1 1v7a1 1 0 001 1h12a1 1 0 001-1V8a1 1 0 00-1-1z" stroke="currentColor" stroke-width="2"/>              <path d="M12 5V4a2 2 0 00-2-2H8a2 2 0 00-2 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>            </svg>            Browse Products          </a>          <a href="{% url 'add_product' %}" class="btn-secondary">            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">              <path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>            </svg>            List a Product          </a>        </div>      </div>    {% endif %}  </div>  <!-- Enhanced Pagination -->  {% if transactions and transactions.paginator.num_pages > 1 %}  <div class="pagination">    {% if transactions.has_previous %}      <a href="?page=1" class="page-btn" title="First Page">        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">          <path d="M11 12L7 8l4-4M8 12L4 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>        </svg>      </a>      <a href="?page={{ transactions.previous_page_number }}" class="page-btn" title="Previous">        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">          <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>        </svg>        Previous      </a>    {% endif %}        <div class="page-numbers">      {% for num in transactions.paginator.page_range %}        {% if transactions.number == num %}          <span class="page-number active">{{ num }}</span>        {% elif num > transactions.number|add:'-3' and num < transactions.number|add:'3' %}          <a href="?page={{ num }}" class="page-number">{{ num }}</a>        {% endif %}      {% endfor %}    </div>        {% if transactions.has_next %}      <a href="?page={{ transactions.next_page_number }}" class="page-btn" title="Next">        Next        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">          <path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>        </svg>      </a>      <a href="?page={{ transactions.paginator.num_pages }}" class="page-btn" title="Last Page">        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">          <path d="M5 12l4-4-4-4M8 12l4-4-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>        </svg>      </a>    {% endif %}  </div>  {% endif %}</div><style>  * {    margin: 0;    padding: 0;    box-sizing: border-box;  }  .history-container {    max-width: 1400px;    margin: 80px auto 40px;    padding: 0 24px;    animation: fadeIn 0.5s ease-in-out;  }  /* Enhanced Header */  .history-header {    margin-bottom: 40px;  }  .header-content {    text-align: center;    margin-bottom: 40px;  }  .history-header h1 {    font-size: 3rem;    color: #1a1a1a;    margin-bottom: 12px;    font-weight: 800;    background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);    -webkit-background-clip: text;    -webkit-text-fill-color: transparent;    background-clip: text;  }  .subtitle {    color: #666;    font-size: 1.15rem;    font-weight: 500;  }  /* Stats Grid */  .stats-grid {    display: grid;    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));    gap: 20px;    margin-bottom: 40px;  }  .stat-card {    background: white;    border-radius: 16px;    padding: 24px;    display: flex;    align-items: center;    gap: 20px;    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);    transition: all 0.3s ease;    position: relative;    overflow: hidden;  }  .stat-card::before {    content: '';    position: absolute;    top: 0;    left: 0;    width: 4px;    height: 100%;    background: linear-gradient(180deg, #8B0000, #DC143C);    opacity: 0;    transition: opacity 0.3s;  }  .stat-card:hover {    transform: translateY(-4px);    box-shadow: 0 8px 24px rgba(139, 0, 0, 0.15);  }  .stat-card:hover::before {    opacity: 1;  }  .stat-icon {    width: 56px;    height: 56px;    border-radius: 14px;    display: flex;    align-items: center;    justify-content: center;    flex-shrink: 0;  }  .stat-icon.purchases {    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);    color: #1976d2;  }  .stat-icon.sales {    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);    color: #388e3c;  }  .stat-icon.revenue {    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);    color: #f57c00;  }  .stat-icon.pending {    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);    color: #c2185b;  }  .stat-info {    flex: 1;  }  .stat-value {    font-size: 2rem;    font-weight: 800;    color: #1a1a1a;    line-height: 1;    margin-bottom: 6px;  }  .stat-label {    font-size: 0.95rem;    color: #666;    font-weight: 600;  }  /* Enhanced Filter Tabs */  .filter-tabs {    display: flex;    gap: 12px;    margin-bottom: 30px;    flex-wrap: wrap;    padding: 8px;    background: white;    border-radius: 16px;    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);  }  .tab-btn {    flex: 1;    min-width: 180px;    padding: 14px 24px;    border: 2px solid transparent;    background: transparent;    border-radius: 12px;    font-weight: 600;    font-size: 0.95rem;    cursor: pointer;    transition: all 0.3s;    color: #666;    display: flex;    align-items: center;    justify-content: center;    gap: 8px;    position: relative;  }  .tab-btn svg {    transition: transform 0.3s;  }  .tab-btn.active {    background: linear-gradient(135deg, #8B0000 0%, #a40000 100%);    color: white;    box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3);  }  .tab-btn.active svg {    transform: scale(1.1);  }  .tab-btn:hover:not(.active) {    background: #f5f5f5;    color: #8B0000;    border-color: #8B0000;  }  .tab-btn .count {    background: rgba(255, 255, 255, 0.2);    padding: 2px 8px;    border-radius: 10px;    font-size: 0.85rem;    font-weight: 700;  }  .tab-btn.active .count {    background: rgba(255, 255, 255, 0.25);  }  /* Enhanced Controls Bar */  .controls-bar {    display: flex;    gap: 16px;    margin-bottom: 30px;    flex-wrap: wrap;  }  .search-box {    flex: 1;    min-width: 300px;    position: relative;  }  .search-box input {    width: 100%;    padding: 14px 50px 14px 50px;    border: 2px solid #e0e0e0;    border-radius: 12px;    font-size: 1rem;    outline: none;    transition: all 0.3s;    background: white;  }  .search-box input:focus {    border-color: #8B0000;    box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.1);  }  .search-icon {    position: absolute;    left: 18px;    top: 50%;    transform: translateY(-50%);    color: #999;    pointer-events: none;  }  .clear-search {    position: absolute;    right: 15px;    top: 50%;    transform: translateY(-50%);    background: #f0f0f0;    border: none;    border-radius: 50%;    width: 24px;    height: 24px;    display: flex;    align-items: center;    justify-content: center;    cursor: pointer;    transition: all 0.2s;  }  .clear-search:hover {    background: #8B0000;    color: white;  }  .filter-group {    display: flex;    gap: 12px;  }  .sort-select {    padding: 14px 20px;    border: 2px solid #e0e0e0;    border-radius: 12px;    font-size: 1rem;    cursor: pointer;    outline: none;    background: white;    font-weight: 600;    min-width: 200px;    transition: all 0.3s;  }  .sort-select:hover,  .sort-select:focus {    border-color: #8B0000;  }
+{% extends "teknoymart/base.html" %}{% load static %}{% block title %}Transaction History | Teknoy Mart{% endblock %}{% block content %}<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script><div class="history-container">  <!-- Animated Header with Stats -->  <div class="history-header">
+    <div class="back-nav">
+        {% if role == 'seller' %}
+            <a href="{% url 'home' %}" class="btn-back">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Dashboard
+            </a>
+        {% else %}
+            <a href="{% url 'home_buyer' %}" class="btn-back">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Shop
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="header-content">
+      <h1>Transaction History</h1>
+      <p class="subtitle">Track and manage all your transactions in one place</p>
+    </div>        <div class="stats-grid">
+      
+      {% if role == 'buyer' %}
+      <div class="stat-card">
+        <div class="stat-icon purchases">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ total_purchases|default:0 }}</div>
+          <div class="stat-label">Total Purchases</div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if role == 'seller' %}
+      <div class="stat-card">
+        <div class="stat-icon sales">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ total_sales|default:0 }}</div>
+          <div class="stat-label">Total Sales</div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if role == 'seller' %}
+      <div class="stat-card">
+        <div class="stat-icon revenue">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">₱{{ total_revenue|floatformat:2|default:"0.00" }}</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="stat-card">
+        <div class="stat-icon pending">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="stat-info">
+          <div class="stat-value">{{ pending_count|default:0 }}</div>
+          <div class="stat-label">Pending</div>
+        </div>
+      </div>
+
+    </div>    </div>  </div>  <!-- Enhanced Filter Tabs with Icons -->  <div class="filter-tabs">
+    
+    <button class="tab-btn active" onclick="handleFilterClick('all', this)" data-filter="all">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" stroke-width="2"/>
+        <path d="M6 9h6M9 6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>All Transactions</span>
+    </button>
+
+    <button class="tab-btn {% if role == 'seller' %}restricted{% endif %}" 
+            onclick="handleFilterClick('purchases', this)">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M14 6H4a1 1 0 00-1 1v8a1 1 0 001 1h10a1 1 0 001-1V7a1 1 0 00-1-1z" stroke="currentColor" stroke-width="2"/>
+        <path d="M12 4V3a2 2 0 00-2-2H8a2 2 0 00-2 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>Purchases</span>
+      {% if role == 'seller' %}<span class="lock-icon">🔒</span>{% endif %}
+    </button>
+
+    <button class="tab-btn {% if role == 'buyer' %}restricted{% endif %}" 
+            onclick="handleFilterClick('sales', this)">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M9 2v14M13 4H7.5a2.5 2.5 0 000 5h3a2.5 2.5 0 010 5H5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>Sales</span>
+      {% if role == 'buyer' %}<span class="lock-icon">🔒</span>{% endif %}
+    </button>
+
+    <button class="tab-btn" onclick="handleFilterClick('pending', this)" data-filter="pending">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="2"/>
+        <path d="M9 5v4l2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>Pending</span>
+    </button>
+  </div>  <!-- Enhanced Search and Controls -->  
+  <div class="controls-bar">
+    <div class="bulk-actions" style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+        
+        <button type="button" onclick="submitBulkDelete()" class="btn-bulk-delete" id="bulkDeleteBtn" style="display: none;">
+            🗑️ Delete Selected
+        </button>
+    </div> 
+    <div class="search-box">      
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">        
+        <circle cx="9" cy="9" r="7" stroke="currentColor" stroke-width="2"/>        
+        <path d="M19 19l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>      
+      </svg>      <input type="text" id="searchInput" placeholder="Search by product or user..." onkeyup="searchTransactions()">      <button class="clear-search" onclick="clearSearch()" style="display: none;">        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">          <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>        </svg>      </button>    </div>        <div class="filter-group">      <select class="sort-select" onchange="sortTransactions(this.value)">        <option value="newest">📅 Newest First</option>        <option value="oldest">📅 Oldest First</option>        <option value="highest">💰 Highest Amount</option>        <option value="lowest">💰 Lowest Amount</option>      </select>            <button class="export-btn" onclick="exportTransactions()">        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">          <path d="M16 11v4a1 1 0 01-1 1H3a1 1 0 01-1-1v-4M13 6l-4-4m0 0L5 6m4-4v10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>        </svg>        Export      </button>    </div>  </div>  <!-- Enhanced Transaction List -->  
+      <div class="transactions-list" id="transactionsList">    
+        {% if transactions %}      
+        {% for transaction in transactions %}      
+        <div class="transaction-card" data-type="{{ transaction.type }}" data-status="{{ transaction.status }}">        
+          <div class="card-ribbon {{ transaction.status }}">{{ transaction.status|title }}
+
+          </div>                
+          <div class="transaction-main">          
+            <div class="transaction-left">            
+              <div class="transaction-image">              
+                {% if transaction.product.image %}                
+                <img src="{{ transaction.product.image.url }}" alt="{{ transaction.product.name }}" loading="lazy">              
+                {% else %}                
+                <div class="placeholder-image">                  
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">                    
+                    <rect width="40" height="40" rx="8" fill="#f0f0f0"/>                    
+                    <path d="M15 25l5-5 5 5M20 20v10" stroke="#999" stroke-width="2" stroke-linecap="round"/>                  
+                  </svg>                
+                </div>              
+                {% endif %}              
+                <div class="type-badge {{ transaction.type }}">                
+                  {% if transaction.type == 'purchase' %}                  
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">                    
+                    <path d="M11 5H3a1 1 0 00-1 1v6a1 1 0 001 1h8a1 1 0 001-1V6a1 1 0 00-1-1z" stroke="currentColor" stroke-width="1.5"/>                    
+                    <path d="M9 3V2a1 1 0 00-1-1H6a1 1 0 00-1 1v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>                  
+                  </svg>                
+                  {% else %}                  
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">                    
+                    <path d="M7 2v10M10 4H6a2 2 0 000 4h2a2 2 0 010 4H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>                  
+                  </svg>                
+                  {% endif %}              
+                </div>            
+              </div>                        
+              <div class="transaction-details">              
+                <h3 class="product-name">{{ transaction.product.name }}</h3>              
+                <div class="transaction-meta">                
+                  <span class="meta-item">                  
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">                    
+                      <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/>                    
+                      <path d="M7 3.5v3.5l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>                 
+                    </svg>                  
+                    {{ transaction.created_at|date:"M d, Y" }}                
+                  </span>                
+                  <span class="meta-item">                  
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">                    
+                      <circle cx="7" cy="4" r="2.5" stroke="currentColor" stroke-width="1.5"/>                    
+                      <path d="M2 12a5 5 0 0110 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>                  
+                    </svg>                  
+                    {% if transaction.type == 'purchase' %}                    
+                    {{ transaction.seller.get_full_name|default:transaction.seller.username }}                  
+                    {% else %}                    
+                    {{ transaction.buyer.get_full_name|default:transaction.buyer.username }}                  
+                    {% endif %}                
+                  </span>              
+                </div>              
+                <div class="transaction-tags">                
+                  <span class="tag {{ transaction.type }}">{{ transaction.type|title }}</span>                
+                  {% if transaction.payment_method %}                  
+                  <span class="tag payment">{{ transaction.payment_method }}</span>                
+                  {% endif %}              
+                </div>            
+              </div>          
+            </div>                    
+            <div class="transaction-right">            
+              <div class="amount-section">              
+                <div class="amount-label">Amount</div>              
+                <div class="transaction-amount">₱{{ transaction.amount|floatformat:2 }}</div>            
+              </div>                        
+              <div class="action-buttons">
+  <a href="#" class="btn-action primary" style="flex:1; justify-content: center;"> View Details
+    <form action="{% url 'delete_transaction' transaction.id %}" method="POST" onsubmit="confirmDelete(event, this)">
+      {% csrf_token %}
+      <button type="submit" class="btn-action delete-btn" title="Delete Record">
+        🗑️
+      </button>
+  </form>
+  </a>
+
+  {% if role == 'seller' and transaction.status == 'PENDING' %}
+      <form action="{% url 'update_order_status' transaction.id %}" method="POST" style="display:flex; gap:10px; align-items: center;">
+          {% csrf_token %}
+          <button type="submit" name="status" value="PAID" class="btn-xs btn-green" title="Mark as Paid">✔</button>
+          <button type="submit" name="status" value="FAILED" class="btn-xs btn-red" title="Mark as Failed">✖</button>
+      </form>
+  {% endif %}
+
+</div>          
+</div>        
+</div>        
+<div class="transaction-footer">          
+  <div class="footer-info">            
+    <span class="info-item">              
+      <strong>Transaction ID:</strong> #{{ transaction.id|stringformat:"05d" }}            
+      </span>            
+      <span class="info-item">              
+        <strong>Time:</strong> {{ transaction.created_at|date:"h:i A" }}            
+        </span>          
+        </div>          
+        {% if transaction.notes %}          
+        <button class="show-notes" onclick="toggleNotes({{ transaction.id }})">            
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">              
+            <path d="M12 7H2M7 2v10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>            
+            </svg>            
+            Show Notes          
+            </button>          
+            {% endif %}        
+            </div>        
+            {% if transaction.notes %}        
+            <div class="transaction-notes" id="notes-{{ transaction.id }}" style="display: none;">          
+              <div class="notes-content">            
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">              
+                  <path d="M12 2H4a1 1 0 00-1 1v10a1 1 0 001 1h8a1 1 0 001-1V3a1 1 0 00-1-1z" stroke="currentColor" stroke-width="1.5"/>              
+                  <path d="M5 6h6M5 9h6M5 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>            
+                  </svg>            
+                  <p>{{ transaction.notes }}</p>          
+                  </div>        
+                  </div>        
+                  {% endif %}      
+                  </div>      
+                  {% endfor %}    
+                  {% else %}      
+                  <div class="empty-state">        
+                    <div class="empty-illustration">          
+                      <svg width="200" height="200" viewBox="0 0 200 200" fill="none">            
+                        <circle cx="100" cy="100" r="80" fill="#f8f8f8"/>            
+                        <path d="M70 90h60M70 110h45" stroke="#ddd" stroke-width="4" stroke-linecap="round"/>            
+                        <rect x="60" y="75" width="80" height="50" rx="8" stroke="#ddd" stroke-width="3" fill="none"/>            
+                        <circle cx="140" cy="60" r="20" fill="#8B0000" opacity="0.1"/>            
+                        <path d="M140 50v20M130 60h20" stroke="#8B0000" stroke-width="3" stroke-linecap="round"/>          
+                        </svg>        
+                        </div>        
+                        <h3>No Transactions Found</h3>        
+                        <p>Your transaction history will appear here once you start buying or selling items on Teknoy Mart.</p>        
+                        <div class="empty-actions">          
+                          <a href="{% url 'home_buyer' %}" class="btn-primary">            
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">              
+                              <path d="M15 7H3a1 1 0 00-1 1v7a1 1 0 001 1h12a1 1 0 001-1V8a1 1 0 00-1-1z" stroke="currentColor" stroke-width="2"/>              
+                              <path d="M12 5V4a2 2 0 00-2-2H8a2 2 0 00-2 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>            
+                              </svg>            
+                              Browse Products          
+                              </a>          
+                              <a href="{% url 'add_product' %}" class="btn-secondary">            
+                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">              
+                                  <path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>            
+                                  </svg>            
+                                  List a Product          
+                                  </a>        
+                                  </div>      
+                                  </div>    
+                                  {% endif %}  
+                                  </div>  <!-- Enhanced Pagination -->  
+                                  {% if transactions and transactions.paginator.num_pages > 1 %}  
+                                  <div class="pagination">    
+                                    {% if transactions.has_previous %}      
+                                    <a href="?page=1" class="page-btn" title="First Page">        
+                                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">          
+                                        <path d="M11 12L7 8l4-4M8 12L4 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>        
+                                        </svg>      
+                                        </a>      
+                                        <a href="?page={{ transactions.previous_page_number }}" class="page-btn" title="Previous">        
+                                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">          
+                                            <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>        
+                                            </svg>        
+                                            Previous      
+                                            </a>    
+                                            {% endif %}        
+                                            <div class="page-numbers">      
+                                              {% for num in transactions.paginator.page_range %}        
+                                              {% if transactions.number == num %}          
+                                              <span class="page-number active">{{ num }}</span>        
+                                              {% elif num > transactions.number|add:'-3' and num < transactions.number|add:'3' %}          
+                                              <a href="?page={{ num }}" class="page-number">{{ num }}</a>        
+                                              {% endif %}      
+                                              {% endfor %}    
+                                              </div>        
+                                              {% if transactions.has_next %}      
+                                              <a href="?page={{ transactions.next_page_number }}" class="page-btn" title="Next">        
+                                                Next        
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">          
+                                                  <path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>        
+                                                  </svg>      
+                                                  </a>      
+                                                  <a href="?page={{ transactions.paginator.num_pages }}" class="page-btn" title="Last Page">        
+                                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">          
+                                                      <path d="M5 12l4-4-4-4M8 12l4-4-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>        
+                                                      </svg>      
+                                                      </a>    
+                                                      {% endif %}  
+                                                      </div>  
+                                                      {% endif %}
+                                                      </div><style>  * {    margin: 0;    padding: 0;    box-sizing: border-box;  }  .history-container {    max-width: 1400px;    margin: 80px auto 40px;    padding: 0 24px;    animation: fadeIn 0.5s ease-in-out;  }  /* Enhanced Header */  .history-header {    margin-bottom: 40px;  }  .header-content {    text-align: center;    margin-bottom: 40px;  }  .history-header h1 {    font-size: 3rem;    color: #1a1a1a;    margin-bottom: 12px;    font-weight: 800;    background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);    -webkit-background-clip: text;    -webkit-text-fill-color: transparent;    background-clip: text;  }  .subtitle {    color: #666;    font-size: 1.15rem;    font-weight: 500;  }  /* Stats Grid */  .stats-grid {    display: grid;    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));    gap: 20px;    margin-bottom: 40px;  }  .stat-card {    background: white;    border-radius: 16px;    padding: 24px;    display: flex;    align-items: center;    gap: 20px;    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);    transition: all 0.3s ease;    position: relative;    overflow: hidden;  }  .stat-card::before {    content: '';    position: absolute;    top: 0;    left: 0;    width: 4px;    height: 100%;    background: linear-gradient(180deg, #8B0000, #DC143C);    opacity: 0;    transition: opacity 0.3s;  }  .stat-card:hover {    transform: translateY(-4px);    box-shadow: 0 8px 24px rgba(139, 0, 0, 0.15);  }  .stat-card:hover::before {    opacity: 1;  }  .stat-icon {    width: 56px;    height: 56px;    border-radius: 14px;    display: flex;    align-items: center;    justify-content: center;    flex-shrink: 0;  }  .stat-icon.purchases {    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);    color: #1976d2;  }  .stat-icon.sales {    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);    color: #388e3c;  }  .stat-icon.revenue {    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);    color: #f57c00;  }  .stat-icon.pending {    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);    color: #c2185b;  }  .stat-info {    flex: 1;  }  .stat-value {    font-size: 2rem;    font-weight: 800;    color: #1a1a1a;    line-height: 1;    margin-bottom: 6px;  }  .stat-label {    font-size: 0.95rem;    color: #666;    font-weight: 600;  }  /* Enhanced Filter Tabs */  .filter-tabs {    display: flex;    gap: 12px;    margin-bottom: 30px;    flex-wrap: wrap;    padding: 8px;    background: white;    border-radius: 16px;    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);  }  .tab-btn {    flex: 1;    min-width: 180px;    padding: 14px 24px;    border: 2px solid transparent;    background: transparent;    border-radius: 12px;    font-weight: 600;    font-size: 0.95rem;    cursor: pointer;    transition: all 0.3s;    color: #666;    display: flex;    align-items: center;    justify-content: center;    gap: 8px;    position: relative;  }  .tab-btn svg {    transition: transform 0.3s;  }  .tab-btn.active {    background: linear-gradient(135deg, #8B0000 0%, #a40000 100%);    color: white;    box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3);  }  .tab-btn.active svg {    transform: scale(1.1);  }  .tab-btn:hover:not(.active) {    background: #f5f5f5;    color: #8B0000;    border-color: #8B0000;  }  .tab-btn .count {    background: rgba(255, 255, 255, 0.2);    padding: 2px 8px;    border-radius: 10px;    font-size: 0.85rem;    font-weight: 700;  }  .tab-btn.active .count {    background: rgba(255, 255, 255, 0.25);  }  /* Enhanced Controls Bar */  .controls-bar {    display: flex;    gap: 16px;    margin-bottom: 30px;    flex-wrap: wrap;  }  .search-box {    flex: 1;    min-width: 300px;    position: relative;  }  .search-box input {    width: 100%;    padding: 14px 50px 14px 50px;    border: 2px solid #e0e0e0;    border-radius: 12px;    font-size: 1rem;    outline: none;    transition: all 0.3s;    background: white;  }  .search-box input:focus {    border-color: #8B0000;    box-shadow: 0 0 0 4px rgba(139, 0, 0, 0.1);  }  .search-icon {    position: absolute;    left: 18px;    top: 50%;    transform: translateY(-50%);    color: #999;    pointer-events: none;  }  .clear-search {    position: absolute;    right: 15px;    top: 50%;    transform: translateY(-50%);    background: #f0f0f0;    border: none;    border-radius: 50%;    width: 24px;    height: 24px;    display: flex;    align-items: center;    justify-content: center;    cursor: pointer;    transition: all 0.2s;  }  .clear-search:hover {    background: #8B0000;    color: white;  }  .filter-group {    display: flex;    gap: 12px;  }  .sort-select {    padding: 14px 20px;    border: 2px solid #e0e0e0;    border-radius: 12px;    font-size: 1rem;    cursor: pointer;    outline: none;    background: white;    font-weight: 600;    min-width: 200px;    transition: all 0.3s;  }  .sort-select:hover,  .sort-select:focus {    border-color: #8B0000;  }
 
   .export-btn {
     padding: 14px 24px;
@@ -268,6 +586,12 @@
     background: #8B0000;
     color: white;
   }
+
+  /* Custom Status Buttons */
+  .btn-xs { border: none; width: 32px; height: 32px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: transform 0.2s;}
+  .btn-xs:hover { transform: scale(1.1); }
+  .btn-green { background: #4caf50; box-shadow: 0 2px 5px rgba(76, 175, 80, 0.4); }
+  .btn-red { background: #f44336; box-shadow: 0 2px 5px rgba(244, 67, 54, 0.4); }
 
   /* Transaction Footer */
   .transaction-footer {
@@ -648,16 +972,141 @@
       justify-content: center;
     }
   }
+
+
+  /* Delete Button Style */
+  .delete-btn {
+    background: #fff;
+    color: #c62828;
+    border: 2px solid #c62828;
+    width: 42px; /* Square shape */
+    justify-content: center;
+    padding: 0;
+  }
+  
+  .delete-btn:hover {
+    background: #c62828;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(198, 40, 40, 0.3);
+  }
+
+  /* Dark Mode support */
+  body.dark-mode .delete-btn {
+    background: #1e1e1e;
+    border-color: #ef5350;
+    color: #ef5350;
+  }
+  body.dark-mode .delete-btn:hover {
+    background: #c62828;
+    color: white;
+  }
+
+
+  .back-nav {
+    margin-bottom: 20px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #666;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background-color: #e0e0e0;
+    color: #8B0000; /* Teknoy Red */
+    transform: translateX(-4px); /* Slight move left effect */
+}
+
+/* Dark Mode Support */
+body.dark-mode .btn-back {
+    background-color: #2d2d2d;
+    color: #bbb;
+}
+
+body.dark-mode .btn-back:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+
+/* Restricted Tab Style */
+  .tab-btn.restricted {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background-color: #f9f9f9;
+      border-color: #eee;
+  }
+  
+  .tab-btn.restricted:hover {
+      background-color: #f0f0f0;
+      color: #666; /* Don't turn red on hover */
+      border-color: #eee;
+  }
+
+  .lock-icon {
+      font-size: 0.8rem;
+      margin-left: 5px;
+  }
+
+  /* Dark Mode Support */
+  body.dark-mode .tab-btn.restricted {
+      background-color: #252525;
+      color: #777;
+      border-color: #333;
+  }
 </style>
 
 <script>
+  // Store the current user role from Django
+  const currentUserRole = "{{ role }}"; 
+
+  // New Smart Click Handler
+  function handleFilterClick(type, btnElement) {
+    
+    // 1. Check Restrictions
+    if (type === 'sales' && currentUserRole === 'buyer') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Restricted Access',
+            text: "This filter is for Seller's view only.",
+            confirmButtonColor: '#8B0000'
+        });
+        return; // Stop here
+    }
+
+    if (type === 'purchases' && currentUserRole === 'seller') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Restricted Access',
+            text: "This filter is for Buyer's view only.",
+            confirmButtonColor: '#8B0000'
+        });
+        return; // Stop here
+    }
+
+    // 2. If allowed, Update UI Classes
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    btnElement.classList.add('active');
+
+    // 3. Call the actual filter logic
+    filterTransactions(type);
+  }
+
+
   // Filter transactions
   function filterTransactions(type) {
     const cards = document.querySelectorAll('.transaction-card');
-    const buttons = document.querySelectorAll('.tab-btn');
-    
-    buttons.forEach(btn => btn.classList.remove('active'));
-    event.target.closest('.tab-btn').classList.add('active');
     
     cards.forEach((card, index) => {
       card.style.animation = 'none';
@@ -669,12 +1118,15 @@
       } else if (type === 'sales') {
         card.style.display = card.dataset.type === 'sale' ? 'block' : 'none';
       } else if (type === 'pending') {
-        card.style.display = card.dataset.status === 'pending' ? 'block' : 'none';
+        card.style.display = card.dataset.status === 'PENDING' ? 'block' : 'none';
       }
       
-      setTimeout(() => {
-        card.style.animation = `slideUp 0.4s ease-out ${index * 0.05}s both`;
-      }, 10);
+      // Re-trigger animation for visible cards
+      if (card.style.display === 'block') {
+          setTimeout(() => {
+            card.style.animation = `slideUp 0.4s ease-out ${index * 0.05}s both`;
+          }, 10);
+      }
     });
   }
 
@@ -786,6 +1238,29 @@
       card.style.animation = `slideUp 0.4s ease-out ${index * 0.1}s both`;
     });
   });
+
+
+  // Custom Delete Confirmation using SweetAlert
+  function confirmDelete(event, form) {
+    // 1. Stop the form from submitting immediately
+    event.preventDefault(); 
+
+    // 2. Show the Custom Alert
+    Swal.fire({
+      title: 'Teknoy Mart',  // <--- This replaces "127.0.0.1 says"
+      text: "Are you sure you want to delete this transaction history? This cannot be undone.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#c62828', // Teknoy Red
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      // 3. If user clicks "Yes", submit the form manually
+      if (result.isConfirmed) {
+        form.submit();
+      }
+    });
+  }
 </script>
 
 {% endblock %}

@@ -340,3 +340,48 @@
     margin: 0 auto;
     display: block;
 }
+
+/* --- New Product Card Actions --- */
+.action-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px; /* Space between Buy Now and Add Cart */
+    margin-top: 10px;
+    margin-bottom: 8px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    flex: 1; /* Makes them equal width */
+    white-space: nowrap;
+}
+
+/* Chat Button Style */
+.btn-chat {
+    display: block;
+    width: 100%;
+    color: #555;
+    font-size: 0.85rem;
+    text-decoration: none;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 5px;
+    transition: all 0.2s;
+}
+
+.btn-chat:hover {
+    background-color: #f0f0f0;
+    color: #333;
+    border-color: #ccc;
+}
+
+/* Dark Mode Support */
+body.dark-mode .btn-chat {
+    border-color: #444;
+    color: #ccc;
+}
+body.dark-mode .btn-chat:hover {
+    background-color: #333;
+    color: white;
+}

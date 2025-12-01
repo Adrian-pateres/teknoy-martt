@@ -1,0 +1,162 @@
+{% extends "teknoymart/base.html" %}
+{% load static %}
+
+{% block title %}Checkout | Teknoy Mart{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+  <div class="checkout-card">
+    <div class="checkout-header">
+      <h2>💸 Checkout</h2>
+      <a href="{% url 'view_cart' %}" class="back-link">← Back to Cart</a>
+    </div>
+
+    <div class="checkout-body">
+      <div class="order-summary">
+        <h3>Order Summary</h3>
+        <div class="item-list">
+          {% for item in cart_items %}
+          <div class="summary-item">
+            <span>{{ item.quantity }}x {{ item.product.title }}</span>
+            <span class="price">₱{{ item.total_price|floatformat:2 }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        
+        <div class="divider"></div>
+        
+        <div class="totals">
+          <div class="row">
+            <span>Subtotal</span>
+            <span>₱{{ subtotal|floatformat:2 }}</span>
+          </div>
+          <div class="row">
+            <span>Shipping Fee</span>
+            <span>₱{{ shipping|floatformat:2 }}</span>
+          </div>
+          <div class="row total">
+            <span>Total to Pay</span>
+            <span class="highlight">₱{{ total|floatformat:2 }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="payment-section">
+        <h3>Select Payment Method</h3>
+        <form action="{% url 'process_checkout' %}" method="POST" id="paymentForm">
+          {% csrf_token %}
+          
+          <div class="payment-options">
+            <label class="payment-option">
+              <input type="radio" name="payment_method" value="GCASH" checked>
+              <div class="option-box">
+                <span class="icon">🔵</span>
+                <span>GCash</span>
+              </div>
+            </label>
+
+            <label class="payment-option">
+              <input type="radio" name="payment_method" value="PAYMAYA">
+              <div class="option-box">
+                <span class="icon">🟢</span>
+                <span>PayMaya</span>
+              </div>
+            </label>
+
+            <label class="payment-option">
+              <input type="radio" name="payment_method" value="COD">
+              <div class="option-box">
+                <span class="icon">💵</span>
+                <span>Cash on Delivery</span>
+              </div>
+            </label>
+
+            <label class="payment-option">
+              <input type="radio" name="payment_method" value="PAYPAL">
+              <div class="option-box">
+                <span class="icon" style="color:#00457C; font-weight:bold;">P</span>
+                <span>PayPal</span>
+              </div>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-confirm">Confirm Payment</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .checkout-container { display: flex; justify-content: center; padding: 40px 20px; background: #f8f9fa; min-height: 80vh; }
+  .checkout-card { background: white; width: 100%; max-width: 900px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; display: flex; flex-direction: column; }
+  
+  .checkout-header { background: #8B0000; color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+  .checkout-header h2 { margin: 0; font-size: 1.5rem; }
+  .back-link { color: white; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+
+  .checkout-body { display: flex; padding: 30px; gap: 40px; }
+  
+  .order-summary, .payment-section { flex: 1; }
+  
+  .item-list { max-height: 200px; overflow-y: auto; margin-bottom: 15px; }
+  .summary-item { display: flex; justify-content: space-between; margin-bottom: 10px; color: #555; font-size: 0.95rem; }
+  
+  .divider { height: 1px; background: #eee; margin: 15px 0; }
+  
+  .row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .row.total { font-size: 1.2rem; font-weight: 800; color: #333; margin-top: 10px; }
+  .highlight { color: #8B0000; }
+
+  /* Payment Options */
+  .payment-options { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  .payment-option input { display: none; } /* Hide radio circle */
+  
+  .option-box { 
+    border: 2px solid #eee; 
+    padding: 15px; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    transition: 0.2s;
+    font-weight: 600;
+  }
+  
+  /* Selected State */
+  .payment-option input:checked + .option-box {
+    border-color: #8B0000;
+    background-color: #fff5f5;
+    color: #8B0000;
+  }
+
+  .btn-confirm {
+    margin-top: 25px;
+    width: 100%;
+    padding: 15px;
+    background: #8B0000;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-confirm:hover { background: #a00000; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .checkout-body { flex-direction: column; gap: 20px; }
+  }
+  
+  /* Dark Mode */
+  body.dark-mode .checkout-container { background: #121212; }
+  body.dark-mode .checkout-card { background: #1e1e1e; box-shadow: none; border: 1px solid #333; }
+  body.dark-mode .summary-item, body.dark-mode .row { color: #ccc; }
+  body.dark-mode .row.total { color: white; }
+  body.dark-mode .option-box { border-color: #444; color: #e0e0e0; }
+  body.dark-mode .payment-option input:checked + .option-box { background-color: #330000; border-color: #ff4444; color: #ff4444; }
+</style>
+{% endblock %}
