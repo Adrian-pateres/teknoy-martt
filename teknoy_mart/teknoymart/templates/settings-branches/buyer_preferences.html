@@ -1,132 +1,652 @@
 {% extends "teknoymart/base.html" %}
-{% load static %} 
-{# optional if you use crispy, otherwise remove #}
+{% load static %}
+
+{% block title %}Preferences | Teknoy Mart{% endblock %}
 
 {% block content %}
-<div class="settings-container">
-  <div class="settings-box">
-    <h2>Preferences</h2>
-    <p>Customize how the system behaves according to your needs.</p>
-
-    <form method="post">
-      {% csrf_token %}
-
-      <h3>Notifications</h3>
-      <ul>
-        <li>
-          {{ form.email_alerts.label_tag }}
-          {{ form.email_alerts }}
-        </li>
-        <li>
-          {{ form.message_notifications.label_tag }}
-          {{ form.message_notifications }}
-        </li>
-        <li>
-          {{ form.system_activity_updates.label_tag }}
-          {{ form.system_activity_updates }}
-        </li>
-      </ul>
-
-      <h3>General Preferences</h3>
-      <ul>
-        <li>
-          {{ form.language.label_tag }}
-          {{ form.language }}
-        </li>
-        <li>
-          {{ form.time_format_24h.label_tag }} (24h format)
-          {{ form.time_format_24h }}
-        </li>
-        <li>
-          {{ form.homepage_view.label_tag }}
-          {{ form.homepage_view }}
-        </li>
-      </ul>
-
-      <h3>User Interface</h3>
-      <ul>
-        <li>
-          {{ form.dark_mode.label_tag }}
-          {{ form.dark_mode }}
-        </li>
-        <li>
-          {{ form.font_size.label_tag }}
-          {{ form.font_size }}
-        </li>
-        <li>
-          {{ form.layout_density.label_tag }}
-          {{ form.layout_density }}
-        </li>
-      </ul>
-
-      <div class="back-btn-wrapper">
-        <a href="{% url 'home_buyer' %}" class="back-btn">Back</a>
-        <button type="submit" class="save-btn">Save</button>
+<div class="preferences-page">
+  <div class="preferences-header">
+    <a href="{% url 'home_buyer' %}" class="back-btn-header">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      Back to Dashboard
+    </a>
+    <div class="header-content">
+      <div class="header-icon">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+          <path d="M12 1v6m0 6v6M5.6 5.6l4.2 4.2m4.4 4.4l4.2 4.2M1 12h6m6 0h6M5.6 18.4l4.2-4.2m4.4-4.4l4.2-4.2" stroke-width="2"></path>
+        </svg>
       </div>
-    </form>
+      <h1>Preferences</h1>
+      <p class="subtitle">Customize your Teknoy Mart experience</p>
+      <p class="last-updated">Manage notifications, display, and privacy settings</p>
+    </div>
+  </div>
+
+  <div class="preferences-container">
+    <aside class="preferences-nav">
+      <div class="nav-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="3" y1="12" x2="21" y2="12" stroke-width="2"></line>
+          <line x1="3" y1="6" x2="21" y2="6" stroke-width="2"></line>
+          <line x1="3" y1="18" x2="21" y2="18" stroke-width="2"></line>
+        </svg>
+        <span>Quick Navigation</span>
+      </div>
+
+      <a href="#notifications" class="nav-link active">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-width="2"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke-width="2"></path>
+          </svg>
+        </span>
+        Notifications
+      </a>
+
+      <a href="#display" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" stroke-width="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21" stroke-width="2"></line>
+            <line x1="12" y1="17" x2="12" y2="21" stroke-width="2"></line>
+          </svg>
+        </span>
+        Display
+      </a>
+
+      <a href="#privacy_shortcuts" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"></path>
+          </svg>
+        </span>
+        Privacy
+      </a>
+    </aside>
+
+    <main class="preferences-content">
+      <form method="post">
+        {% csrf_token %}
+
+        <!-- Notification Settings -->
+        <section id="notifications" class="preferences-section">
+          <h2>Notification Settings</h2>
+          <p>Choose what notifications you want to receive</p>
+          <div class="preference-options">
+            <label class="preference-item">
+              <div class="pref-info">
+                <span class="pref-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-width="2"></path>
+                  </svg>
+                </span>
+                <div>
+                  <strong>Message Notifications</strong>
+                  <p>Get notified when you receive new messages</p>
+                </div>
+              </div>
+              <input type="checkbox" name="notify_messages" checked>
+            </label>
+
+            <label class="preference-item">
+              <div class="pref-info">
+                <span class="pref-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="9" cy="21" r="1" stroke-width="2"></circle>
+                    <circle cx="20" cy="21" r="1" stroke-width="2"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" stroke-width="2"></path>
+                  </svg>
+                </span>
+                <div>
+                  <strong>Order Status Updates</strong>
+                  <p>Track your orders with real-time updates</p>
+                </div>
+              </div>
+              <input type="checkbox" name="notify_orders">
+            </label>
+
+            <label class="preference-item">
+              <div class="pref-info">
+                <span class="pref-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke-width="2"></path>
+                  </svg>
+                </span>
+                <div>
+                  <strong>Promotional Announcements</strong>
+                  <p>Stay updated with special offers and deals</p>
+                </div>
+              </div>
+              <input type="checkbox" name="notify_promos">
+            </label>
+          </div>
+        </section>
+
+        <!-- Display Preferences -->
+        <section id="display" class="preferences-section">
+          <h2>Display Preferences</h2>
+          <p>Customize how Teknoy Mart looks on your device</p>
+          <div class="preference-options">
+            <label class="preference-item">
+              <div class="pref-info">
+                <span class="pref-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke-width="2"></path>
+                  </svg>
+                </span>
+                <div>
+                  <strong>Dark Mode</strong>
+                  <p>Reduce eye strain with dark theme</p>
+                </div>
+              </div>
+              <input type="checkbox" name="dark_mode">
+            </label>
+
+            <label class="preference-item">
+              <div class="pref-info">
+                <span class="pref-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke-width="2"></rect>
+                    <line x1="9" y1="9" x2="15" y2="9" stroke-width="2"></line>
+                    <line x1="9" y1="15" x2="15" y2="15" stroke-width="2"></line>
+                  </svg>
+                </span>
+                <div>
+                  <strong>Compact Layout</strong>
+                  <p>View more content on your screen</p>
+                </div>
+              </div>
+              <input type="checkbox" name="compact_view">
+            </label>
+          </div>
+        </section>
+
+        <!-- Privacy Shortcuts -->
+        <section id="privacy_shortcuts" class="preferences-section">
+          <h2>Privacy Shortcuts</h2>
+          <p>Control what information others can see</p>
+          <div class="preference-options">
+            <label class="preference-item">
+              <div class="pref-info">
+                <span class="pref-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke-width="2"></path>
+                    <polyline points="22,6 12,13 2,6" stroke-width="2"></polyline>
+                  </svg>
+                </span>
+                <div>
+                  <strong>Hide Email Address</strong>
+                  <p>Keep your email private from other users</p>
+                </div>
+              </div>
+              <input type="checkbox" name="hide_email">
+            </label>
+
+            <label class="preference-item">
+              <div class="pref-info">
+                <span class="pref-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-width="2"></path>
+                    <circle cx="12" cy="7" r="4" stroke-width="2"></circle>
+                  </svg>
+                </span>
+                <div>
+                  <strong>Private Profile</strong>
+                  <p>Limit profile visibility to trusted users</p>
+                </div>
+              </div>
+              <input type="checkbox" name="hide_profile">
+            </label>
+          </div>
+        </section>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <a href="{% url 'home_buyer' %}" class="btn-cancel">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+            Cancel
+          </a>
+          <button type="submit" class="btn-confirm">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Save Preferences
+          </button>
+        </div>
+      </form>
+    </main>
   </div>
 </div>
 
 <style>
-.settings-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 50px 0;
-}
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-.settings-box {
-  background: #ffffff;
-  width: 600px;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-}
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+  }
 
-.settings-box h2 {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
+  .preferences-page {
+    min-height: 100vh;
+    background: #f5f7fa;
+  }
 
-.settings-box h3 {
-  margin-top: 25px;
-  font-size: 18px;
-  font-weight: 600;
-}
+  /* Header */
+  .preferences-header {
+    background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+    color: white;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
+  }
 
-.settings-box ul {
-  margin-left: 20px;
-  margin-bottom: 10px;
-  list-style: none;
-  padding-left: 0;
-}
+  .back-btn-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+  }
 
-.settings-box li {
-  margin-bottom: 8px;
-}
+  .back-btn-header:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateX(-5px);
+  }
 
-.back-btn-wrapper {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-}
+  .header-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
-.back-btn,
-.save-btn {
-  background: #6c757d;
-  padding: 10px 20px;
-  border-radius: 8px;
-  color: #fff;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-}
+  .header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
 
-.back-btn:hover,
-.save-btn:hover {
-  background: #5a6268;
-}
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .header-icon svg {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  }
+
+  .header-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    margin-bottom: 0.5rem;
+  }
+
+  .last-updated {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  /* Container Layout */
+  .preferences-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Navigation Sidebar */
+  .preferences-nav {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 2rem;
+  }
+
+  .nav-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #800020;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .nav-header svg {
+    stroke: #800020;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    color: #555;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .nav-link:hover {
+    background: #f8f9fa;
+    color: #800020;
+    transform: translateX(5px);
+  }
+
+  .nav-link.active {
+    background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+    color: white;
+    font-weight: 500;
+  }
+
+  .nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(128, 0, 32, 0.1);
+    border-radius: 6px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link.active .nav-icon {
+    background: rgba(255,255,255,0.2);
+  }
+
+  .nav-link.active .nav-icon svg {
+    stroke: white;
+  }
+
+  .nav-icon svg {
+    stroke: #800020;
+  }
+
+  /* Content Area */
+  .preferences-content {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Section Styles */
+  .preferences-section {
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+  }
+
+  .preferences-section:last-of-type {
+    margin-bottom: 2rem;
+  }
+
+  .preferences-section:nth-child(1) { animation-delay: 0.1s; }
+  .preferences-section:nth-child(2) { animation-delay: 0.2s; }
+  .preferences-section:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .preferences-section h2 {
+    color: #800020;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #f0f0f0;
+  }
+
+  .preferences-section > p {
+    color: #777;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Preference Options */
+  .preference-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .preference-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .preference-item:hover {
+    background: #fff;
+    border-color: #800020;
+    box-shadow: 0 2px 8px rgba(128, 0, 32, 0.1);
+  }
+
+  .pref-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+  }
+
+  .pref-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(128, 0, 32, 0.1);
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .pref-icon svg {
+    stroke: #800020;
+  }
+
+  .pref-info div {
+    flex: 1;
+  }
+
+  .pref-info strong {
+    display: block;
+    color: #333;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .pref-info p {
+    color: #777;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  .preference-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #800020;
+  }
+
+  /* Form Actions */
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #f0f0f0;
+  }
+
+  .btn-cancel,
+  .btn-confirm {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.9rem 1.8rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: none;
+  }
+
+  .btn-cancel {
+    background: #e9ecef;
+    color: #555;
+  }
+
+  .btn-cancel:hover {
+    background: #dee2e6;
+    transform: translateY(-2px);
+  }
+
+  .btn-confirm {
+    background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+    color: white;
+  }
+
+  .btn-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(128, 0, 32, 0.4);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 968px) {
+    .preferences-container {
+      grid-template-columns: 1fr;
+      padding: 1rem;
+    }
+
+    .preferences-nav {
+      position: static;
+      margin-bottom: 1.5rem;
+    }
+
+    .header-content h1 {
+      font-size: 2rem;
+    }
+
+    .preferences-content {
+      padding: 1.5rem;
+    }
+
+    .form-actions {
+      flex-direction: column;
+    }
+
+    .btn-cancel,
+    .btn-confirm {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .preference-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .preference-item input[type="checkbox"] {
+      align-self: flex-end;
+    }
+  }
 </style>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll and active navigation
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.preferences-section');
+
+    // Update active link on scroll
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (pageYOffset >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').substring(1) === current) {
+          link.classList.add('active');
+        }
+      });
+    });
+
+    // Smooth scroll on click
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
+        if (targetSection) {
+          targetSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}

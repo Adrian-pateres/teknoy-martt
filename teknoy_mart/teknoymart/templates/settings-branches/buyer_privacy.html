@@ -1,114 +1,652 @@
 {% extends "teknoymart/base.html" %}
-{% load static %} 
+{% load static %}
+
+{% block title %}Privacy Policy | Teknoy Mart{% endblock %}
 
 {% block content %}
-<div class="logout-container">
-  <div class="logout-box">
-    <h2>Privacy Settings</h2>
-    <p>Manage your privacy preferences below:</p>
-
-    <form method="post">
-      {% csrf_token %}
-
-      <ul class="privacy-list">
-        <li>
-          <strong>Privacy Controls:</strong>
-          <div>
-            {{ form.show_profile_public }} Show my profile publicly
-          </div>
-          <div>
-            {{ form.show_activity_public }} Show my activity publicly
-          </div>
-        </li>
-
-        <li>
-          <strong>Data Management:</strong>
-          <div>
-            {{ form.allow_data_export }} Allow data export
-          </div>
-          <div>
-            {{ form.allow_data_analysis }} Allow anonymized data analysis
-          </div>
-        </li>
-
-        <li>
-          <strong>Security Options:</strong>
-          <div>
-            {{ form.two_factor_enabled }} Enable two-factor authentication
-          </div>
-          <div>
-            {{ form.login_alerts_enabled }} Send login alerts
-          </div>
-        </li>
-      </ul>
-
-      <div class="btn-group">
-        <a href="{% url 'home_buyer' %}" class="btn cancel-btn">Back</a>
-        <button type="submit" class="btn confirm-btn">Save</button>
+<div class="privacy-page">
+  <div class="privacy-header">
+    <a href="{% url 'home_buyer' %}" class="back-btn-header">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      Back to Dashboard
+    </a>
+    <div class="header-content">
+      <div class="header-icon">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"></path>
+        </svg>
       </div>
-    </form>
+      <h1>Privacy Policy</h1>
+      <p class="subtitle">Your privacy matters to us. Learn how we protect your data.</p>
+      <p class="last-updated">Last updated: December 3, 2025</p>
+    </div>
+  </div>
+
+  <div class="privacy-container">
+    <aside class="privacy-nav">
+      <div class="nav-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="3" y1="12" x2="21" y2="12" stroke-width="2"></line>
+          <line x1="3" y1="6" x2="21" y2="6" stroke-width="2"></line>
+          <line x1="3" y1="18" x2="21" y2="18" stroke-width="2"></line>
+        </svg>
+        <span>Quick Navigation</span>
+      </div>
+
+      <a href="#introduction" class="nav-link active">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+            <line x1="12" y1="16" x2="12" y2="12" stroke-width="2"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8" stroke-width="2"></line>
+          </svg>
+        </span>
+        Introduction
+      </a>
+
+      <a href="#collection" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-width="2"></path>
+            <circle cx="12" cy="7" r="4" stroke-width="2"></circle>
+          </svg>
+        </span>
+        Information We Collect
+      </a>
+
+      <a href="#usage" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M12 20h9" stroke-width="2"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke-width="2"></path>
+          </svg>
+        </span>
+        How We Use Your Info
+      </a>
+
+      <a href="#sharing" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="18" cy="5" r="3" stroke-width="2"></circle>
+            <circle cx="6" cy="12" r="3" stroke-width="2"></circle>
+            <circle cx="18" cy="19" r="3" stroke-width="2"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke-width="2"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke-width="2"></line>
+          </svg>
+        </span>
+        Data Sharing
+      </a>
+
+      <a href="#security" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-width="2"></path>
+          </svg>
+        </span>
+        Data Security
+      </a>
+
+      <a href="#rights" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M9 11l3 3L22 4" stroke-width="2"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" stroke-width="2"></path>
+          </svg>
+        </span>
+        Your Rights
+      </a>
+
+      <a href="#cookies" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+            <circle cx="12" cy="12" r="3" stroke-width="2"></circle>
+            <line x1="12" y1="2" x2="12" y2="9" stroke-width="2"></line>
+            <line x1="12" y1="15" x2="12" y2="22" stroke-width="2"></line>
+          </svg>
+        </span>
+        Cookies & Tracking
+      </a>
+
+      <a href="#contact" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke-width="2"></path>
+            <polyline points="22,6 12,13 2,6" stroke-width="2"></polyline>
+          </svg>
+        </span>
+        Contact Us
+      </a>
+    </aside>
+
+    <main class="privacy-content">
+      <!-- Introduction Section -->
+      <section id="introduction" class="privacy-section">
+        <h2>Introduction</h2>
+        <p>At Teknoy Mart, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your data when you use our platform.</p>
+        <p>By using Teknoy Mart, you agree to the collection and use of information in accordance with this policy. We encourage you to read this document carefully to understand our practices regarding your data.</p>
+      </section>
+
+      <!-- Information Collection Section -->
+      <section id="collection" class="privacy-section">
+        <h2>Information We Collect</h2>
+        <p>We collect only the information necessary to provide you with a secure and efficient marketplace experience within the CIT-U community.</p>
+        
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>Personal Information</h4>
+            <ul>
+              <li>Full name and CIT-U ID number</li>
+              <li>Email address (CIT-U email preferred)</li>
+              <li>Phone number (optional)</li>
+              <li>Profile picture (optional)</li>
+              <li>Department and year level</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h4>Transaction Data</h4>
+            <ul>
+              <li>Product listings and descriptions</li>
+              <li>Purchase and sales history</li>
+              <li>Messages and communications</li>
+              <li>Reviews and ratings</li>
+              <li>Payment information (encrypted)</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h4>Technical Information</h4>
+            <ul>
+              <li>IP address and device information</li>
+              <li>Browser type and version</li>
+              <li>Operating system</li>
+              <li>Access times and pages visited</li>
+              <li>Cookies and tracking data</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h4>Location Data</h4>
+            <ul>
+              <li>Campus location for meet-ups</li>
+              <li>Building and room preferences</li>
+              <li>Delivery location within campus</li>
+              <li>Approximate location for security</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Usage Section -->
+      <section id="usage" class="privacy-section">
+        <h2>How We Use Your Information</h2>
+        <p>We use the information we collect for legitimate business purposes to improve your experience and maintain a safe marketplace.</p>
+        
+        <ul>
+          <li><strong>Account Management:</strong> To create and manage your account, verify your CIT-U affiliation, and provide personalized services.</li>
+          <li><strong>Transaction Processing:</strong> To facilitate buying and selling, process payments, arrange meet-ups, and maintain transaction records.</li>
+          <li><strong>Communication:</strong> To send notifications about orders, messages, platform updates, and respond to your inquiries.</li>
+          <li><strong>Platform Improvement:</strong> To analyze usage patterns, improve features, fix bugs, and enhance overall user experience.</li>
+          <li><strong>Safety & Security:</strong> To detect and prevent fraud, enforce our terms, protect against prohibited activities, and maintain platform integrity.</li>
+          <li><strong>Legal Compliance:</strong> To comply with applicable laws, regulations, legal processes, and governmental requests.</li>
+        </ul>
+      </section>
+
+      <!-- Data Sharing Section -->
+      <section id="sharing" class="privacy-section">
+        <h2>Data Sharing & Disclosure</h2>
+        <p><strong>We Do Not Sell Your Data.</strong> Your personal information is never sold to third parties for marketing purposes. We only share data when necessary to provide our services or as required by law.</p>
+
+        <ul>
+          <li><strong>Within CIT-U Community:</strong> Basic profile information (name, department) is visible to other verified CIT-U users to facilitate trust and transactions.</li>
+          <li><strong>University Administration:</strong> We may share information with CIT-U administrators for account verification, policy enforcement, and incident investigation.</li>
+          <li><strong>Service Providers:</strong> Third-party services (hosting, payment processing, analytics) may access data strictly for operational purposes under confidentiality agreements.</li>
+          <li><strong>Legal Requirements:</strong> We may disclose information when required by law, court order, or to protect our rights and the safety of users.</li>
+        </ul>
+      </section>
+
+      <!-- Security Section -->
+      <section id="security" class="privacy-section">
+        <h2>Data Security</h2>
+        <p>We implement industry-standard security measures to protect your personal information from unauthorized access, disclosure, alteration, and destruction.</p>
+        
+        <ul>
+          <li><strong>Encryption:</strong> All data transmissions are encrypted using SSL/TLS protocols. Sensitive data is encrypted at rest using AES-256 encryption.</li>
+          <li><strong>Secure Storage:</strong> Data is stored on secure servers with restricted access, regular backups, and comprehensive disaster recovery plans.</li>
+          <li><strong>Access Controls:</strong> Strict authentication mechanisms and role-based access controls ensure only authorized personnel can access data.</li>
+          <li><strong>Regular Audits:</strong> We conduct regular security audits, vulnerability assessments, and penetration testing to identify and fix potential issues.</li>
+          <li><strong>Payment Security:</strong> Payment information is processed through PCI-compliant payment gateways and is never stored on our servers.</li>
+          <li><strong>Incident Response:</strong> We have a comprehensive incident response plan to quickly address any security breaches or data incidents.</li>
+        </ul>
+      </section>
+
+      <!-- Your Rights Section -->
+      <section id="rights" class="privacy-section">
+        <h2>Your Rights & Choices</h2>
+        <p>You have several rights regarding your personal information. We are committed to helping you exercise these rights.</p>
+        
+        <ul>
+          <li><strong>Right to Access:</strong> You can request a copy of all personal data we hold about you in a structured, commonly used format.</li>
+          <li><strong>Right to Rectification:</strong> You can update or correct inaccurate or incomplete personal information at any time through your account settings.</li>
+          <li><strong>Right to Erasure:</strong> You can request deletion of your account and associated data, subject to legal retention requirements.</li>
+          <li><strong>Right to Restrict Processing:</strong> You can request that we limit how we use your data in certain circumstances while maintaining your account.</li>
+          <li><strong>Data Portability:</strong> You can receive your data in a portable format to transfer to another service provider if you wish.</li>
+          <li><strong>Communication Preferences:</strong> You can control what notifications and marketing communications you receive from us.</li>
+        </ul>
+      </section>
+
+      <!-- Cookies Section -->
+      <section id="cookies" class="privacy-section">
+        <h2>Cookies & Tracking Technologies</h2>
+        <p>We use cookies and similar tracking technologies to enhance your experience, analyze usage, and provide personalized content.</p>
+        
+        <ul>
+          <li><strong>Essential Cookies (Required):</strong> Necessary for the website to function properly. These cannot be disabled as they are essential for security, authentication, and basic functionality.</li>
+          <li><strong>Performance Cookies (Optional):</strong> Help us understand how visitors interact with our website by collecting anonymous information about usage patterns.</li>
+          <li><strong>Functionality Cookies (Optional):</strong> Enable enhanced functionality and personalization based on your preferences and behavior on our site.</li>
+        </ul>
+        <p>You can control and manage cookies through your browser settings or using our preference center.</p>
+      </section>
+
+      <!-- Contact Section -->
+      <section id="contact" class="privacy-section">
+        <h2>Contact Us</h2>
+        <p>If you have any questions, concerns, or requests regarding this Privacy Policy or how we handle your personal information, please don't hesitate to reach out to us.</p>
+        
+        <ul>
+          <li><strong>Email:</strong> privacy@teknoymart.edu.ph (Response time: 24-48 hours)</li>
+          <li><strong>Office:</strong> Teknoy Mart Support Center, CIT-U Main Campus, N. Bacalso Ave, Cebu City</li>
+          <li><strong>Phone:</strong> +63 32 261 7900 (Mon-Fri, 8AM-5PM)</li>
+          <li><strong>Data Protection Officer:</strong> dpo@teknoymart.edu.ph</li>
+        </ul>
+      </section>
+
+      <!-- Updates Notice -->
+      <div class="updates-notice">
+        <h4>⚠️ Policy Updates</h4>
+        <p>We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on this page and updating the "Last Updated" date. We encourage you to review this policy periodically for any changes.</p>
+      </div>
+    </main>
   </div>
 </div>
 
 <style>
-.logout-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 70vh;
-}
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-.logout-box {
-  background: white;
-  padding: 30px;
-  width: 400px;
-  text-align: center;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+  }
 
-.logout-box h2 {
-  margin-bottom: 15px;
-}
+  .privacy-page {
+    min-height: 100vh;
+    background: #f5f7fa;
+  }
 
-.logout-box p {
-  margin-bottom: 20px;
-  color: #333;
-}
+  /* Header */
+  .privacy-header {
+    background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+    color: white;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
+  }
 
-.privacy-list {
-  text-align: left;
-  margin-bottom: 25px;
-  list-style: none;
-  padding-left: 0;
-}
+  .back-btn-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+  }
 
-.privacy-list li {
-  margin-bottom: 12px;
-}
+  .back-btn-header:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateX(-5px);
+  }
 
-.btn-group {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
+  .header-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
-.btn {
-  flex: 1;
-  padding: 10px 0;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
+  .header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
 
-.confirm-btn { background: #007bff; color: white; }
-.confirm-btn:hover { background: #0056b3; }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
 
-.cancel-btn { background: #6c757d; color: white; }
-.cancel-btn:hover { background: #5a6268; }
+  .header-icon svg {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  }
+
+  .header-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    margin-bottom: 0.5rem;
+  }
+
+  .last-updated {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  /* Container Layout */
+  .privacy-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Navigation Sidebar */
+  .privacy-nav {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 2rem;
+  }
+
+  .nav-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #800020;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .nav-header svg {
+    stroke: #800020;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    color: #555;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .nav-link:hover {
+    background: #f8f9fa;
+    color: #800020;
+    transform: translateX(5px);
+  }
+
+  .nav-link.active {
+    background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+    color: white;
+    font-weight: 500;
+  }
+
+  .nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(128, 0, 32, 0.1);
+    border-radius: 6px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link.active .nav-icon {
+    background: rgba(255,255,255,0.2);
+  }
+
+  .nav-link.active .nav-icon svg {
+    stroke: white;
+  }
+
+  .nav-icon svg {
+    stroke: #800020;
+  }
+
+  /* Content Area */
+  .privacy-content {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Section Styles */
+  .privacy-section {
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+  }
+
+  .privacy-section:last-of-type {
+    margin-bottom: 2rem;
+  }
+
+  .privacy-section:nth-child(1) { animation-delay: 0.1s; }
+  .privacy-section:nth-child(2) { animation-delay: 0.2s; }
+  .privacy-section:nth-child(3) { animation-delay: 0.3s; }
+  .privacy-section:nth-child(4) { animation-delay: 0.4s; }
+  .privacy-section:nth-child(5) { animation-delay: 0.5s; }
+  .privacy-section:nth-child(6) { animation-delay: 0.6s; }
+  .privacy-section:nth-child(7) { animation-delay: 0.7s; }
+  .privacy-section:nth-child(8) { animation-delay: 0.8s; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .privacy-section h2 {
+    color: #800020;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #f0f0f0;
+  }
+
+  .privacy-section p {
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+  }
+
+  .privacy-section ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 1rem 0;
+  }
+
+  .privacy-section ul li {
+    color: #555;
+    line-height: 1.8;
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.75rem;
+    font-size: 1.05rem;
+  }
+
+  .privacy-section ul li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #800020;
+    font-weight: bold;
+  }
+
+  .privacy-section ul li strong {
+    color: #333;
+    font-weight: 600;
+  }
+
+  /* Info Grid */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .info-card {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 4px solid #800020;
+  }
+
+  .info-card h4 {
+    color: #800020;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .info-card ul {
+    margin: 0;
+  }
+
+  /* Updates Notice */
+  .updates-notice {
+    background: #fff3cd;
+    border-left: 4px solid #856404;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 2rem;
+  }
+
+  .updates-notice h4 {
+    color: #856404;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .updates-notice p {
+    color: #666;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 968px) {
+    .privacy-container {
+      grid-template-columns: 1fr;
+      padding: 1rem;
+    }
+
+    .privacy-nav {
+      position: static;
+      margin-bottom: 1.5rem;
+    }
+
+    .header-content h1 {
+      font-size: 2rem;
+    }
+
+    .privacy-content {
+      padding: 1.5rem;
+    }
+
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll and active navigation
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.privacy-section');
+
+    // Update active link on scroll
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (pageYOffset >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').substring(1) === current) {
+          link.classList.add('active');
+        }
+      });
+    });
+
+    // Smooth scroll on click
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
+        if (targetSection) {
+          targetSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}
