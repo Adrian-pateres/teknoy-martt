@@ -1,7 +1,7 @@
 {% extends "teknoymart/base.html" %}
 {% load static %} 
 
-{% block title %}About | Teknoy Mart{% endblock %}
+{% block title %}About Settings | Teknoy Mart{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/about.css' %}">
@@ -11,63 +11,63 @@
 <section class="about-section">
   <div class="about-container">
 
-    <h1 class="about-title">About CIT-U eCommerce Platform</h1>
-
+    <h1 class="about-title">About Teknoy Mart Settings</h1>
     <p class="about-text">
-      The <strong>CIT-U eCommerce Platform</strong> is a secure and community-focused digital
-      marketplace designed exclusively for the students of <strong>Cebu Institute of Technology – University (CIT-U)</strong>.
-      Built to enhance campus life and promote sustainable resource sharing, the platform enables students to conveniently
-      <strong>buy, sell, and rent</strong> items within a safe, university-verified environment.
+      The settings section of the <strong>CIT-U eCommerce Platform (Teknoy Mart)</strong> lets students
+      personalize how they use the system, manage their privacy, and understand how the platform works. 
+      These tools are designed to keep transactions secure, convenient, and aligned with university policies.
     </p>
 
-    <p class="about-text">
-      A key component of the platform’s security is its <strong>university email authentication system</strong>, restricting access
-      to users with valid <strong>@cit.edu</strong> email addresses. This ensures all participants are verified CIT-U members,
-      reducing risks associated with public online marketplaces.
-    </p>
-
-    <p class="about-text">
-      The platform provides features like item listing, searching, filtering, rental posting, and an integrated
-      <strong>messaging system</strong> for safe communication between buyers and sellers. These tools ensure smooth interactions
-      and efficient transactions.
-    </p>
-
-    <p class="about-text">
-      From a technical standpoint, the system is powered by modern technologies: <strong>Django</strong> for backend logic,
-      HTML/CSS/JavaScript for frontend, <strong>Supabase</strong> for secure database management, and <strong>Render</strong> for
-      cloud deployment. Together, they ensure performance, reliability, and ease of maintenance.
-    </p>
-
-    <h2 class="section-heading">Vision</h2>
-    <p class="about-text">
-      To become the trusted and innovative digital marketplace that enhances student life at CIT-U by promoting secure
-      transactions, sustainable resource sharing, and meaningful community connections.
-    </p>
-
-    <h2 class="section-heading">Mission</h2>
+    <!-- Features -->
+    <h2 class="section-heading">Platform Features</h2>
     <ul class="mission-list">
-      <li>Provide a secure, university-exclusive online marketplace for safe transactions.</li>
-      <li>Empower students through an accessible platform for academic and personal needs.</li>
-      <li>Promote sustainability and resource sharing through buying, selling, and renting.</li>
-      <li>Strengthen community ties through safe and direct communication.</li>
-      <li>Deliver a modern, scalable platform using advanced technologies.</li>
+      <li><strong>🔐 University Email Authentication</strong> – Registration is restricted to valid <strong>@cit.edu</strong> email accounts to ensure only CIT-U students can access the platform.</li>
+      <li><strong>🛒 Buy</strong> – Browse listings posted by fellow students for academic, personal, or everyday needs.</li>
+      <li><strong>📦 Sell</strong> – Post items for sale with clear details, pricing, and images so other students can easily discover them.</li>
+      <li><strong>🔍 Search &amp; Filter</strong> – Find items quickly using categories, price ranges, and availability filters.</li>
+      <li><strong>💬 Messaging System</strong> – Communicate safely inside the platform between buyers and sellers without exposing personal contact details.</li>
     </ul>
 
-    <h2 class="section-heading">Core Values</h2>
-    <ul class="core-values-list">
-      <li><strong>Security & Trust</strong> – Ensuring all users are authenticated CIT-U students.</li>
-      <li><strong>Community-Centered</strong> – Strengthening student connections and cooperation.</li>
-      <li><strong>Sustainability</strong> – Encouraging reuse, rentals, and waste reduction.</li>
-      <li><strong>Accessibility</strong> – Providing a convenient and intuitive platform.</li>
-      <li><strong>Innovation</strong> – Utilizing modern tools like Django, Supabase, and Render.</li>
-    </ul>
-
-    <h2 class="section-heading">Executive Overview</h2>
+    <!-- Tech Stack -->
+    <h2 class="section-heading">Tech Stack</h2>
     <p class="about-text">
-      The CIT-U eCommerce Platform is a secure, cloud-deployed system that simplifies item exchanges among students.
-      With buying, selling, and renting features supported by Supabase and deployed via Render, it ensures stable performance
-      and secure operations. This platform represents an innovative solution focused on convenience, sustainability,
-      and community building within the CIT-U campus.
+      Teknoy Mart is built using a modern web stack chosen for reliability, maintainability, and ease of deployment.
+    </p>
+    <ul class="core-values-list">
+      <li><strong>Frontend:</strong> HTML, CSS, JavaScript (using Django Templates, with optional React integration).</li>
+      <li><strong>Backend:</strong> Python, Django for business logic and security.</li>
+      <li><strong>Database:</strong> MySQL and <strong>Supabase</strong> for structured data and secure storage.</li>
+      <li><strong>Authentication:</strong> Django Authentication with university email validation to enforce @cit.edu access.</li>
+      <li><strong>Deployment (optional):</strong> Heroku, Vercel, or Docker-based setups for cloud hosting and scalability.</li>
+    </ul>
+
+    <!-- Project Management -->
+    <h2 class="section-heading">Project Management Team</h2>
+    <p class="about-text">
+      The platform is guided by a structured project team to ensure that features, requirements, and user experience stay aligned with CIT-U student needs.
+    </p>
+    <ul class="mission-list">
+      <li><strong>Olo, Reinzo Carlo</strong> – Product Owner</li>
+      <li><strong>Nicer, Mikel Josh</strong> – Business Analyst</li>
+      <li><strong>Olimba, Jay-Z &amp; Onting, Christian</strong> – Scrum Master</li>
+    </ul>
+
+    <!-- Development Team -->
+    <h2 class="section-heading">Development Team</h2>
+    <p class="about-text">
+      Teknoy Mart is developed and maintained by a dedicated engineering team responsible for building features, fixing issues, and improving performance.
+    </p>
+    <ul class="core-values-list">
+      <li><strong>Kate Marielle C. Potane</strong> – Lead Developer</li>
+      <li><strong>Herlanz Milby L. Panonce</strong> – Frontend Developer</li>
+      <li><strong>Adrian O. Pateres</strong> – Backend Developer</li>
+    </ul>
+
+    <!-- How Students Use the System -->
+    <h2 class="section-heading">How Students Use Teknoy Mart</h2>
+    <p class="about-text">
+      Students log in with their CIT-U email, configure their preferences and privacy settings, then browse, post, or manage listings from any device with internet access. 
+      Messaging tools and secure authentication help keep every transaction organized and safe within the campus community.
     </p>
 
     <!-- Back Button -->
