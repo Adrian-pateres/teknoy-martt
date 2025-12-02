@@ -1,123 +1,1054 @@
 {% extends "teknoymart/base.html" %}
+{% load static %}
+
+{% block title %}Terms & Conditions | Teknoy Mart{% endblock %}
+
 {% block content %}
-<div class="logout-container">
-  <div class="logout-box">
-    <h2>Terms & Conditions</h2>
-    <p>Please read the following carefully before using the platform:</p>
-
-     <div class="terms-content">
-      <h3>1. Acceptance of Terms</h3>
-      <p>By accessing or using the CIT-U eCommerce Platform, you agree to comply with these Terms and Conditions. All users must have a valid CIT-U email address to register and use the services.</p>
-
-      <h3>2. User Responsibilities</h3>
-      <ul>
-        <li>Users must provide accurate information during registration.</li>
-        <li>Users are responsible for the security of their accounts, including passwords and login credentials.</li>
-        <li>Users must respect other users and avoid posting offensive, illegal, or inappropriate content.</li>
-      </ul>
-
-      <h3>3. Buying, Selling, and Renting</h3>
-      <ul>
-        <li>All transactions are conducted at the user’s own risk.</li>
-        <li>Items listed must comply with university regulations and local laws.</li>
-        <li>The platform is not responsible for disputes between buyers and sellers.</li>
-      </ul>
-
-      <h3>4. Privacy and Security</h3>
-      <p>User data will be handled according to the Privacy Policy. Users must not attempt to access other accounts or bypass platform security features.</p>
-
-      <h3>5. Termination</h3>
-      <p>The platform reserves the right to suspend or terminate accounts that violate these Terms and Conditions.</p>
-
-      <h3>6. Changes to Terms</h3>
-      <p>We may update these Terms periodically. Continued use of the platform indicates acceptance of any changes.</p>
+<div class="terms-page">
+  <div class="terms-header">
+    <a href="{% url 'home_buyer' %}" class="back-btn-header">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M19 12H5M12 19l-7-7 7-7" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      Back to Dashboard
+    </a>
+    <div class="header-content">
+      <div class="header-icon">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke-width="2"></path>
+          <polyline points="14 2 14 8 20 8" stroke-width="2"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13" stroke-width="2"></line>
+          <line x1="16" y1="17" x2="8" y2="17" stroke-width="2"></line>
+        </svg>
+      </div>
+      <h1>Terms & Conditions</h1>
+      <p class="subtitle">Please read these terms carefully before using Teknoy Mart</p>
+      <p class="last-updated">Last updated: December 3, 2025</p>
     </div>
+  </div>
 
-    <form method="post">
-      {% csrf_token %}
-      <div class="checkbox-group">
-        {{ form.agree }}
-        {{ form.agree.label_tag }}
-        {% if form.agree.errors %}
-          <div class="error">{{ form.agree.errors.0 }}</div>
-        {% endif %}
+  <div class="terms-container">
+    <aside class="terms-nav">
+      <div class="nav-header">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <line x1="3" y1="12" x2="21" y2="12" stroke-width="2"></line>
+          <line x1="3" y1="6" x2="21" y2="6" stroke-width="2"></line>
+          <line x1="3" y1="18" x2="21" y2="18" stroke-width="2"></line>
+        </svg>
+        <span>Quick Navigation</span>
       </div>
 
-      <div class="btn-group">
-        <a href="{% url 'home_buyer' %}" class="btn cancel-btn">Back</a>
-        <button type="submit" class="btn confirm-btn">Confirm</button>
-      </div>
-    </form>
+      <a href="#acceptance" class="nav-link active">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="20 6 9 17 4 12" stroke-width="2"></polyline>
+          </svg>
+        </span>
+        Acceptance
+      </a>
+
+      <a href="#eligibility" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-width="2"></path>
+            <circle cx="12" cy="7" r="4" stroke-width="2"></circle>
+          </svg>
+        </span>
+        Eligibility
+      </a>
+
+      <a href="#account" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+            <circle cx="12" cy="10" r="3" stroke-width="2"></circle>
+            <path d="M6.2 18.8c1.5-2 3.5-3 5.8-3s4.3 1 5.8 3" stroke-width="2"></path>
+          </svg>
+        </span>
+        Account
+      </a>
+
+      <a href="#usage" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M12 2v20M2 12h20" stroke-width="2"></path>
+          </svg>
+        </span>
+        Platform Usage
+      </a>
+
+      <a href="#transactions" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <line x1="12" y1="1" x2="12" y2="23" stroke-width="2"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke-width="2"></path>
+          </svg>
+        </span>
+        Transactions
+      </a>
+
+      <a href="#prohibited" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke-width="2"></line>
+          </svg>
+        </span>
+        Prohibited
+      </a>
+
+      <a href="#liability" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"></path>
+          </svg>
+        </span>
+        Liability
+      </a>
+
+      <a href="#termination" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke-width="2"></path>
+            <polyline points="16 17 21 12 16 7" stroke-width="2"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12" stroke-width="2"></line>
+          </svg>
+        </span>
+        Termination
+      </a>
+
+      <a href="#changes" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <polyline points="23 4 23 10 17 10" stroke-width="2"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke-width="2"></path>
+          </svg>
+        </span>
+        Changes
+      </a>
+
+      <a href="#contact" class="nav-link">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke-width="2"></path>
+            <polyline points="22,6 12,13 2,6" stroke-width="2"></polyline>
+          </svg>
+        </span>
+        Contact
+      </a>
+    </aside>
+
+    <main class="terms-content">
+      <!-- Acceptance of Terms -->
+      <section id="acceptance" class="terms-section">
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing and using the <strong>Teknoy Mart</strong> platform, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service. If you do not agree to these terms, you must not use this platform.</p>
+        
+        <div class="info-card highlight-card">
+          <div class="info-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+              <line x1="12" y1="16" x2="12" y2="12" stroke-width="2"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8" stroke-width="2"></line>
+            </svg>
+          </div>
+          <div class="info-content">
+            <h4>Important Notice</h4>
+            <p>These terms constitute a legally binding agreement between you and Teknoy Mart. Your continued use of the platform indicates your acceptance of any modifications to these terms.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- User Eligibility -->
+      <section id="eligibility" class="terms-section">
+        <h2>2. User Eligibility</h2>
+        <p>To use Teknoy Mart, you must meet the following requirements:</p>
+        <ul>
+          <li>Be a currently enrolled student at <strong>Cebu Institute of Technology - University (CIT-U)</strong></li>
+          <li>Possess a valid <strong>@cit.edu</strong> email address</li>
+          <li>Be at least 18 years of age or have parental/guardian consent</li>
+          <li>Comply with all university policies and regulations</li>
+          <li>Provide accurate and truthful information during registration</li>
+        </ul>
+
+        <div class="info-card warning-card">
+          <div class="info-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" stroke-width="2"></path>
+              <line x1="12" y1="9" x2="12" y2="13" stroke-width="2"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17" stroke-width="2"></line>
+            </svg>
+          </div>
+          <div class="info-content">
+            <h4>Verification Required</h4>
+            <p>We reserve the right to verify your student status at any time. Accounts that fail verification will be suspended or terminated.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Account Responsibilities -->
+      <section id="account" class="terms-section">
+        <h2>3. Account Responsibilities</h2>
+        <p>When you create an account on Teknoy Mart, you agree to:</p>
+
+        <div class="responsibility-grid">
+          <div class="responsibility-card">
+            <div class="responsibility-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-width="2"></path>
+              </svg>
+            </div>
+            <h4>Secure Your Account</h4>
+            <p>Maintain the confidentiality of your password and account credentials. You are responsible for all activities under your account.</p>
+          </div>
+
+          <div class="responsibility-card">
+            <div class="responsibility-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke-width="2"></path>
+                <circle cx="8.5" cy="7" r="4" stroke-width="2"></circle>
+                <polyline points="17 11 19 13 23 9" stroke-width="2"></polyline>
+              </svg>
+            </div>
+            <h4>Accurate Information</h4>
+            <p>Provide truthful and up-to-date information. Update your profile promptly if your details change.</p>
+          </div>
+
+          <div class="responsibility-card">
+            <div class="responsibility-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke-width="2"></line>
+              </svg>
+            </div>
+            <h4>No Account Sharing</h4>
+            <p>Your account is personal and non-transferable. Do not share your login credentials with others.</p>
+          </div>
+
+          <div class="responsibility-card">
+            <div class="responsibility-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" stroke-width="2"></path>
+                <polyline points="22 4 12 14.01 9 11.01" stroke-width="2"></polyline>
+              </svg>
+            </div>
+            <h4>Notify Us of Breaches</h4>
+            <p>Immediately report any unauthorized access or security breaches to our support team.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Platform Usage -->
+      <section id="usage" class="terms-section">
+        <h2>4. Platform Usage Guidelines</h2>
+        <p>Teknoy Mart is designed exclusively for CIT-U students to buy and sell items within the university community. You agree to use the platform in accordance with these guidelines:</p>
+
+        <ul>
+          <li><strong>Appropriate Content:</strong> Only list items that are legal, safe, and appropriate for a university marketplace.</li>
+          <li><strong>Honest Descriptions:</strong> Provide accurate descriptions, fair pricing, and clear photos of items you're selling.</li>
+          <li><strong>Respectful Communication:</strong> Engage with other users professionally and courteously.</li>
+          <li><strong>Timely Responses:</strong> Respond to inquiries and messages promptly.</li>
+          <li><strong>Report Issues:</strong> Use the reporting feature to flag suspicious activity or policy violations.</li>
+        </ul>
+      </section>
+
+      <!-- Transactions -->
+      <section id="transactions" class="terms-section">
+        <h2>5. Transactions and Payments</h2>
+        <p>All transactions on Teknoy Mart are conducted directly between buyers and sellers. Please note:</p>
+
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>🤝 Direct Transactions</h4>
+            <ul>
+              <li>Teknoy Mart facilitates connections but does not process payments</li>
+              <li>Arrange payment methods directly with the other party</li>
+              <li>Meet in safe, public locations on campus for exchanges</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h4>💳 Payment Options</h4>
+            <ul>
+              <li>Cash transactions (recommended)</li>
+              <li>GCash, PayMaya, or mobile payment apps</li>
+              <li>Bank transfers when applicable</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h4>📦 Delivery & Meetups</h4>
+            <ul>
+              <li>Arrange meetups within CIT-U campus</li>
+              <li>Inspect items before payment</li>
+              <li>Request receipts when applicable</li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h4>⚠️ Platform Liability</h4>
+            <ul>
+              <li>Not liable for transaction disputes</li>
+              <li>No guarantee of item quality</li>
+              <li>Users assume all transaction risks</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="info-card warning-card">
+          <div class="info-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-width="2"></path>
+            </svg>
+          </div>
+          <div class="info-content">
+            <h4>Safety First</h4>
+            <p>Always prioritize your safety. Never share sensitive personal information, and report suspicious behavior immediately.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Prohibited Activities -->
+      <section id="prohibited" class="terms-section">
+        <h2>6. Prohibited Activities</h2>
+        <p>The following activities are strictly prohibited and may result in immediate account termination:</p>
+
+        <div class="prohibited-grid">
+          <div class="prohibited-item">
+            <div class="prohibited-icon">🚫</div>
+            <h4>Illegal Items</h4>
+            <p>Weapons, drugs, counterfeit goods</p>
+          </div>
+
+          <div class="prohibited-item">
+            <div class="prohibited-icon">⚠️</div>
+            <h4>Fraud & Scams</h4>
+            <p>Fraudulent schemes or deception</p>
+          </div>
+
+          <div class="prohibited-item">
+            <div class="prohibited-icon">❌</div>
+            <h4>Harassment</h4>
+            <p>Bullying or threatening users</p>
+          </div>
+
+          <div class="prohibited-item">
+            <div class="prohibited-icon">🔞</div>
+            <h4>Inappropriate</h4>
+            <p>Explicit or offensive content</p>
+          </div>
+
+          <div class="prohibited-item">
+            <div class="prohibited-icon">📧</div>
+            <h4>Spam</h4>
+            <p>Unsolicited messages</p>
+          </div>
+
+          <div class="prohibited-item">
+            <div class="prohibited-icon">🤖</div>
+            <h4>Bots</h4>
+            <p>Automated tools or scripts</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Limitation of Liability -->
+      <section id="liability" class="terms-section">
+        <h2>7. Limitation of Liability</h2>
+        <p>Teknoy Mart provides the platform "as is" and makes no warranties regarding its availability, reliability, or suitability. By using the platform, you acknowledge that:</p>
+        <ul>
+          <li>Teknoy Mart is not responsible for the quality, safety, or legality of items listed</li>
+          <li>We do not guarantee the accuracy of user-provided information</li>
+          <li>We are not liable for losses incurred from transactions between users</li>
+          <li>The platform is not responsible for user conduct or disputes</li>
+          <li>We are not liable for data loss, security breaches, or service interruptions</li>
+        </ul>
+      </section>
+
+      <!-- Termination -->
+      <section id="termination" class="terms-section">
+        <h2>8. Account Termination</h2>
+        <p>Teknoy Mart reserves the right to suspend or terminate your account at any time for violations of these terms.</p>
+
+        <div class="termination-reasons">
+          <div class="termination-card">
+            <h4>🔴 Immediate Termination</h4>
+            <ul>
+              <li>Illegal activities</li>
+              <li>Fraudulent behavior</li>
+              <li>Severe harassment</li>
+              <li>Multiple policy violations</li>
+            </ul>
+          </div>
+
+          <div class="termination-card">
+            <h4>🟡 Suspension with Warning</h4>
+            <ul>
+              <li>First-time violations</li>
+              <li>Unresponsive to inquiries</li>
+              <li>Inappropriate content</li>
+              <li>Spam or excessive messaging</li>
+            </ul>
+          </div>
+
+          <div class="termination-card">
+            <h4>⚪ Voluntary Deletion</h4>
+            <ul>
+              <li>Request deletion anytime</li>
+              <li>Contact support to initiate</li>
+              <li>Data permanently removed</li>
+              <li>Deletion is irreversible</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Changes to Terms -->
+      <section id="changes" class="terms-section">
+        <h2>9. Changes to Terms</h2>
+        <p>Teknoy Mart reserves the right to modify these Terms of Service at any time. When we make changes, we will notify users through:</p>
+        <ul>
+          <li>Email notifications to your registered CIT-U email</li>
+          <li>In-platform announcements and banners</li>
+          <li>Updates to the "Last Updated" date at the top</li>
+        </ul>
+
+        <div class="info-card highlight-card">
+          <div class="info-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+              <line x1="12" y1="16" x2="12" y2="12" stroke-width="2"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8" stroke-width="2"></line>
+            </svg>
+          </div>
+          <div class="info-content">
+            <h4>Your Acceptance</h4>
+            <p>Continued use after changes constitutes acceptance. If you disagree, discontinue use and close your account.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact" class="terms-section">
+        <h2>10. Contact Us</h2>
+        <p>If you have questions about these Terms of Service, please contact us:</p>
+
+        <div class="contact-cards">
+          <div class="contact-card">
+            <div class="contact-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke-width="2"></path>
+                <polyline points="22,6 12,13 2,6" stroke-width="2"></polyline>
+              </svg>
+            </div>
+            <h4>Email Support</h4>
+            <p><a href="mailto:teknoymart@cit.edu">teknoymart@cit.edu</a></p>
+          </div>
+
+          <div class="contact-card">
+            <div class="contact-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke-width="2"></path>
+                <circle cx="12" cy="10" r="3" stroke-width="2"></circle>
+              </svg>
+            </div>
+            <h4>Physical Address</h4>
+            <p>CIT-U Main Campus<br>N. Bacalso Ave, Cebu City</p>
+          </div>
+
+          <div class="contact-card">
+            <div class="contact-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" stroke-width="2"></circle>
+                <polyline points="12 6 12 12 16 14" stroke-width="2"></polyline>
+              </svg>
+            </div>
+            <h4>Support Hours</h4>
+            <p>Monday - Friday<br>9:00 AM - 5:00 PM (PHT)</p>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 </div>
 
 <style>
-/* keep all your existing styles */
-.logout-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 75vh;
-}
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-.logout-box {
-  background: white;
-  padding: 30px;
-  width: 500px;
-  text-align: left;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+  }
 
-.logout-box h2 {
-  text-align: center;
-  margin-bottom: 15px;
-}
+  .terms-page {
+    min-height: 100vh;
+    background: #f5f7fa;
+  }
 
-.terms-content h3 {
-  margin-top: 15px;
-  margin-bottom: 5px;
-  font-weight: 600;
-}
+  /* Header */
+  .terms-header {
+    background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+    color: white;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    position: relative;
+  }
 
-.terms-content p, .terms-content ul {
-  margin-bottom: 12px;
-  font-size: 14px;
-  color: #333;
-}
+  .back-btn-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+  }
 
-.terms-content ul { padding-left: 20px; }
+  .back-btn-header:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateX(-5px);
+  }
 
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  gap: 10px;
-}
+  .header-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
-.btn-group {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
+  .header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
 
-.btn {
-  flex: 1;
-  padding: 10px 0;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: 0.2s ease;
-  text-align: center;
-}
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
 
-.confirm-btn { background: #28a745; color: white; }
-.confirm-btn:hover { background: #218838; }
+  .header-icon svg {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  }
 
-.cancel-btn { background: #6c757d; color: white; }
-.cancel-btn:hover { background: #5a6268; }
+  .header-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    margin-bottom: 0.5rem;
+  }
+
+  .last-updated {
+    font-size: 0.9rem;
+    opacity: 0.8;
+  }
+
+  /* Container Layout */
+  .terms-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Navigation Sidebar */
+  .terms-nav {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 2rem;
+  }
+
+  .nav-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #800020;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .nav-header svg {
+    stroke: #800020;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    color: #555;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .nav-link:hover {
+    background: #f8f9fa;
+    color: #800020;
+    transform: translateX(5px);
+  }
+
+  .nav-link.active {
+    background: linear-gradient(135deg, #800020 0%, #4a0012 100%);
+    color: white;
+    font-weight: 500;
+  }
+
+  .nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(128, 0, 32, 0.1);
+    border-radius: 6px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link.active .nav-icon {
+    background: rgba(255,255,255,0.2);
+  }
+
+  .nav-link.active .nav-icon svg {
+    stroke: white;
+  }
+
+  .nav-icon svg {
+    stroke: #800020;
+  }
+
+  /* Content Area */
+  .terms-content {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Section Styles */
+  .terms-section {
+    margin-bottom: 3rem;
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+  }
+
+  .terms-section:last-child {
+    margin-bottom: 2rem;
+  }
+
+  .terms-section:nth-child(1) { animation-delay: 0.1s; }
+  .terms-section:nth-child(2) { animation-delay: 0.2s; }
+  .terms-section:nth-child(3) { animation-delay: 0.3s; }
+  .terms-section:nth-child(4) { animation-delay: 0.4s; }
+  .terms-section:nth-child(5) { animation-delay: 0.5s; }
+  .terms-section:nth-child(6) { animation-delay: 0.6s; }
+  .terms-section:nth-child(7) { animation-delay: 0.7s; }
+  .terms-section:nth-child(8) { animation-delay: 0.8s; }
+  .terms-section:nth-child(9) { animation-delay: 0.9s; }
+  .terms-section:nth-child(10) { animation-delay: 1s; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .terms-section h2 {
+    color: #800020;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid #f0f0f0;
+  }
+
+  .terms-section p {
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+  }
+
+  .terms-section ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 1rem 0;
+  }
+
+  .terms-section ul li {
+    color: #555;
+    line-height: 1.8;
+    padding-left: 1.5rem;
+    position: relative;
+    margin-bottom: 0.75rem;
+    font-size: 1.05rem;
+  }
+
+  .terms-section ul li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #800020;
+    font-weight: bold;
+  }
+
+  .terms-section ul li strong {
+    color: #333;
+    font-weight: 600;
+  }
+
+  /* Info Cards */
+  .info-card {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin: 1.5rem 0;
+    border-left: 4px solid #800020;
+  }
+
+  .highlight-card {
+    background: linear-gradient(135deg, rgba(128, 0, 32, 0.05) 0%, rgba(128, 0, 32, 0.02) 100%);
+  }
+
+  .warning-card {
+    background: linear-gradient(135deg, rgba(255, 152, 0, 0.05) 0%, rgba(255, 152, 0, 0.02) 100%);
+    border-left-color: #ff9800;
+  }
+
+  .info-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #800020, #4a0012);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .warning-card .info-icon {
+    background: linear-gradient(135deg, #ff9800, #ff6f00);
+  }
+
+  .info-icon svg {
+    stroke: white;
+  }
+
+  .info-content h4 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-content p {
+    margin: 0;
+    font-size: 1rem;
+    color: #666;
+  }
+
+  /* Info Grid */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .info-grid .info-card {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .info-grid .info-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .info-grid .info-card ul {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  /* Responsibility Grid */
+  .responsibility-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .responsibility-card {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .responsibility-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(128, 0, 32, 0.1);
+  }
+
+  .responsibility-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #800020, #4a0012);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .responsibility-icon svg {
+    stroke: white;
+  }
+
+  .responsibility-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .responsibility-card p {
+    font-size: 0.95rem;
+    color: #666;
+    margin: 0;
+  }
+
+  /* Prohibited Grid */
+  .prohibited-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .prohibited-item {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.05) 0%, rgba(238, 90, 111, 0.05) 100%);
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid rgba(255, 107, 107, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  .prohibited-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.2);
+  }
+
+  .prohibited-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .prohibited-item h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .prohibited-item p {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+  }
+
+  /* Termination Reasons */
+  .termination-reasons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .termination-card {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+  }
+
+  .termination-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+
+  .termination-card ul {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  /* Contact Cards */
+  .contact-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .contact-card {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .contact-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #800020, #4a0012);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+  }
+
+  .contact-icon svg {
+    stroke: white;
+  }
+
+  .contact-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-card p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #666;
+  }
+
+  .contact-card a {
+    color: #800020;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .contact-card a:hover {
+    text-decoration: underline;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 968px) {
+    .terms-container {
+      grid-template-columns: 1fr;
+      padding: 1rem;
+    }
+
+    .terms-nav {
+      position: static;
+      margin-bottom: 1.5rem;
+    }
+
+    .header-content h1 {
+      font-size: 2rem;
+    }
+
+    .terms-content {
+      padding: 1.5rem;
+    }
+
+    .info-grid,
+    .responsibility-grid,
+    .termination-reasons,
+    .contact-cards {
+      grid-template-columns: 1fr;
+    }
+
+    .prohibited-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
 </style>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll and active navigation
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.terms-section');
+
+    // Update active link on scroll
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (pageYOffset >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href').substring(1) === current) {
+          link.classList.add('active');
+        }
+      });
+    });
+
+    // Smooth scroll on click
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        const targetSection = document.querySelector(targetId);
+        if (targetSection) {
+          targetSection.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}
